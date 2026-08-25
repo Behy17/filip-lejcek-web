@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Filip Lejček — profesionální moderátor</title>
+<meta name="description" content="Profesionální moderátor Filip Lejček. Konference, firemní akce, galavečery a sportovní eventy. Přesná příprava, jistota na pódiu, schopnost reagovat na cokoliv.">
+<meta name="theme-color" content="#D5CFBE">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Filip Lejček — profesionální moderátor">
+<meta property="og:description" content="Moderování, které drží pozornost. Konference, firemní akce, galavečery.">
+<meta property="og:image" content="img/og-image.jpg">
+<meta property="og:locale" content="cs_CZ">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="img/filip-lejcek.webp" type="image/webp" media="(min-width:981px)" fetchpriority="high">
+<link rel="preload" as="image" href="img/filip-lejcek-mobil.webp" type="image/webp" media="(max-width:980px)" fetchpriority="high">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#hlavni-obsah">Přeskočit na hlavní obsah</a>
+
+<!-- ══ Kompaktní navigace (objeví se po odscrollování hero) ══ -->
+<header class="topbar" id="topbar">
+  <a class="topbar__logo" href="#hero" aria-label="Filip Lejček — domů">
+    <span>LEJČEK</span>
+  </a>
+  <nav class="topbar__nav" aria-label="Hlavní navigace">
+    <a href="#o-mne">O mně</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#reference">Reference</a>
+    <a class="btn btn--primary btn--sm" href="#kontakt">Poptat termín</a>
+  </nav>
+</header>
+
+<main id="hlavni-obsah">
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero__sticky">
+
+    <!-- Vrstva 1 — atmosféra -->
+    <div class="hero__aurora" aria-hidden="true"></div>
+
+    <!-- Vrstva 2 — fotografie moderátora (výřez bez pozadí) -->
+    <div class="hero__photo-layer" aria-hidden="true">
+      <picture>
+        <!-- na telefonu užší portrétní výřez (hlava po kolena) -->
+        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.webp"
+                type="image/webp" width="535" height="760">
+        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.png"
+                type="image/png" width="535" height="760">
+        <source srcset="img/filip-lejcek.webp" type="image/webp" width="538" height="1178">
+        <img class="hero__photo" src="img/filip-lejcek.png"
+             width="538" height="1178"
+             alt="" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
+
+    <!-- Vrstva 3 — zrno -->
+    <div class="hero__grain" aria-hidden="true"></div>
+
+    <!-- Vrstva 4 — obsah -->
+    <div class="hero__top">
+      <h1 class="wordmark" id="wordmark">
+        <span class="wordmark__inner" aria-hidden="true"><span class="wordmark__l">L</span><span class="wordmark__l">E</span><span class="wordmark__l">J</span><span class="wordmark__l">Č</span><span class="wordmark__l">E</span><span class="wordmark__l">K</span></span>
+        <span class="u-sr">Filip Lejček — profesionální moderátor</span>
+      </h1>
+
+      <nav class="hero__nav" aria-label="Navigace hero sekce">
+        <ul class="navgroup navgroup--left">
+          <li><a href="#hero">domů</a></li>
+          <li class="navsep" aria-hidden="true"></li>
+          <li><a href="#o-mne">o mně</a></li>
+          <li class="navsep" aria-hidden="true"></li>
+          <li><a href="#portfolio">portfolio</a></li>
+        </ul>
+        <ul class="navgroup navgroup--right">
+          <li><a href="#foto">foto</a></li>
+          <li class="navsep" aria-hidden="true"></li>
+          <li><a href="#video">video</a></li>
+          <li class="navsep" aria-hidden="true"></li>
+          <li><a href="#reference">reference</a></li>
+          <li class="navsep" aria-hidden="true"></li>
+          <li><a href="#kontakt">kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Headline + CTA -->
+    <div class="hero__center">
+      <p class="hero__headline">
+        <span class="ln"><span class="ln__i">Moderování,</span></span>
+        <span class="ln"><span class="ln__i">které drží</span></span>
+        <span class="ln"><span class="ln__i">pozornost.</span></span>
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#kontakt">
+          Nezávazná poptávka
+        </a>
+        <a class="btn btn--ghost" href="#o-mne">O mně</a>
+      </div>
+    </div>
+
+    <!-- Spodní texty -->
+    <div class="hero__bottom">
+      <p class="hero__kicker"><span class="ln"><span class="ln__i">Profesionální moderátor.</span></span><span class="ln"><span class="ln__i">To je Filip Lejček.</span></span></p>
+      <p class="hero__lede"><span class="ln"><span class="ln__i">Konference, firemní večer, sportovní událost</span></span><span class="ln"><span class="ln__i">i slavnostní příležitost – přizpůsobím styl</span></span><span class="ln"><span class="ln__i">moderace vašemu publiku, programu i atmosféře</span></span><span class="ln"><span class="ln__i">celé akce. Zajistím profesionální průběh,</span></span><span class="ln"><span class="ln__i">energii a nezapomenutelný zážitek.</span></span></p>
+    </div>
+
+    <!-- Plovoucí karty -->
+    <div class="hero__cards">
+
+      <div class="cards-left">
+        <article class="card card--wide" data-card>
+          <p class="card__txt"><strong>150+</strong><span>odmoderovaných akcí</span></p>
+        </article>
+
+        <article class="card card--tall" data-card>
+          <p class="card__txt"><strong>8</strong><span>let na pódiu</span></p>
+        </article>
+      </div>
+
+      <article class="card card--traits" data-card>
+        <ul>
+          <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M18.2 11.4A9.2 9.2 0 0 1 9.2 18.2 9.1 9.1 0 0 1 0 9.06 9.2 9.2 0 0 1 9.2 0a9.2 9.2 0 0 1 8.8 6.18c-3.2.96-8.8 2.88-8.8 2.88l9 2.34Z"/></svg><span>Spontánní</span></li>
+          <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0l2.3 5.9L18 8.2l-5.7 2.3L10 16.4l-2.3-5.9L2 8.2l5.7-2.3L10 0Z"/></svg><span>Připravený</span></li>
+          <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0l10 10-10 10L0 10 10 0Z"/></svg><span>Vtipný</span></li>
+          <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0l7.5 3.1v5.6c0 4.6-3.1 8.6-7.5 11.3C5.6 17.3 2.5 13.3 2.5 8.7V3.1L10 0Z"/></svg><span>Spolehlivý</span></li>
+          <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M16.9 9.6a4.5 4.5 0 0 0-2.5-1.3 4.5 4.5 0 0 0 2.5-1.3 3.9 3.9 0 1 0-5.5-5.5A4.5 4.5 0 0 0 10.1 4 4.5 4.5 0 0 0 8.8 1.5a3.9 3.9 0 1 0-5.5 5.5A4.5 4.5 0 0 0 5.8 8.3 4.5 4.5 0 0 0 3.3 9.6a3.9 3.9 0 1 0 5.5 5.5 4.5 4.5 0 0 0 1.3-2.5 4.5 4.5 0 0 0 1.3 2.5 3.9 3.9 0 1 0 5.5-5.5Z"/></svg><span>Energický</span></li>
+        </ul>
+      </article>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Další sekce doplníme následně -->
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+<script src="js/main.js?v=5" defer></script>
+</body>
+</html>

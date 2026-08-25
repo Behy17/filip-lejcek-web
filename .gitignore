@@ -1,0 +1,6 @@
+# Lokální dev nástroje / konfigurace preview serveru
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
