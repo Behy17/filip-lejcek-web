@@ -11,11 +11,6 @@
   var wm       = document.getElementById('wordmark');
   var wmInner  = wm && wm.querySelector('.wordmark__inner');
   var letters  = wmInner ? Array.prototype.slice.call(wmInner.children) : [];
-  var topbar   = document.getElementById('topbar');
-  var tbLogo   = topbar && topbar.querySelector('.topbar__logo');
-  // Odkaz má kvůli dotykovému cíli vlastní výplň — pro měření morphu
-  // potřebujeme čistý text, ne celý klikací box.
-  var tbLogoTx = tbLogo && (tbLogo.querySelector('span') || tbLogo);
 
   /* ── Fallback: bez GSAP zobrazíme vše staticky ───────────────── */
   if (typeof window.gsap === 'undefined') {
@@ -96,48 +91,13 @@
     return tl;
   }
 
-  /* ══ 4. Geometrie přechodu značka → logo v topbaru ══════════════
-     Změříme cílovou pozici loga v topbaru a dopočítáme scale/offset. */
-  function measureMorph() {
-    if (!wm || !wmInner || !tbLogo) return null;
-
-    // dočasně zrušíme transformy, aby měření sedělo
-    gsap.set(wm, { clearProps: 'transform' });
-    var tbTransform = topbar.style.transform;
-    var tbOpacity   = tbLogo.style.opacity;
-    topbar.style.transform = 'none';
-    tbLogo.style.opacity   = '0';
-
-    var from = wmInner.getBoundingClientRect();
-    var to   = tbLogoTx.getBoundingClientRect();
-
-    topbar.style.transform = tbTransform;
-    tbLogo.style.opacity   = tbOpacity;
-
-    if (!from.height || !to.height) return null;
-
-    return {
-      scale: to.height / from.height,
-      x:     to.left - from.left,
-      y:     to.top  - from.top
-    };
-  }
-
-  /* ══ 5. Scroll choreografie (jen desktop + povolený pohyb) ══════ */
+  /* ══ 4. Scroll choreografie (jen desktop + povolený pohyb) ══════ */
   function buildScroll() {
     if (!ST) return;
 
     var mm = gsap.matchMedia();
 
     mm.add('(min-width: 981px) and (prefers-reduced-motion: no-preference)', function () {
-
-      var morph = measureMorph();
-
-      /* Výchozí posun topbaru sázíme přes yPercent i v JS — ze stejného
-         důvodu jako u maskovaných řádků (GSAP by CSS hodnotu načetl v px). */
-      gsap.set(topbar, { yPercent: -101, y: 0 });
-      // dokud je topbar odsunutý mimo obraz, nesmí být dosažitelný tabulátorem
-      topbar.setAttribute('inert', '');
 
       /* 5.1 — navigace v hero mizí jako první */
       gsap.to('.hero__nav', {
@@ -179,38 +139,18 @@
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '46% top', scrub: .4 }
       });
 
-      /* 5.6 — obří značka se scvrkne přesně do loga v topbaru */
-      var wmTween;
-      if (morph) {
-        wmTween = gsap.to(wm, {
-          scale: morph.scale, x: morph.x, y: morph.y, ease: 'none',
-          scrollTrigger: {
-            trigger: '.hero', start: 'top top', end: '44% top',
-            scrub: .5, invalidateOnRefresh: true
-          }
-        });
-      }
-
-      /* 5.7 — předání štafety: značka mizí, topbar nastupuje */
-      var handoff = gsap.timeline({
+      /* 5.6 — obří značka zmizí, jakmile hero odscrollujeme */
+      var wmTween = gsap.to(wm, {
+        autoAlpha: 0, scale: .92, ease: 'none',
         scrollTrigger: {
-          trigger: '.hero', start: '45% top',
-          toggleActions: 'play none none reverse'
+          trigger: '.hero', start: '20% top', end: '42% top', scrub: true
         }
       });
-      handoff
-        .to(topbar, { yPercent: 0, duration: .45, ease: 'power2.out' }, 0)
-        .to(tbLogo, { opacity: 1, duration: .3, ease: 'power1.out' }, .06)
-        .to(wm,     { autoAlpha: 0, duration: .3, ease: 'power1.out' }, .06);
-
-      handoff.eventCallback('onStart',           function () { topbar.removeAttribute('inert'); });
-      handoff.eventCallback('onReverseComplete', function () { topbar.setAttribute('inert', ''); });
 
       /* úklid při změně breakpointu */
       return function () {
-        topbar.removeAttribute('inert');
         if (wmTween) wmTween.scrollTrigger && wmTween.scrollTrigger.kill();
-        gsap.set([wm, topbar, tbLogo, '.hero__center', '.hero__nav',
+        gsap.set([wm, '.hero__center', '.hero__nav',
                   '.cards-left', '.card--traits', '.hero__photo', '.hero__aurora'],
                  { clearProps: 'all' });
         gsap.set('.hero__bottom .ln__i', { yPercent: 0 });
@@ -220,9 +160,6 @@
     /* Mobil / omezený pohyb — obsah je staticky na místě */
     mm.add('(max-width: 980px), (prefers-reduced-motion: reduce)', function () {
       gsap.set('.hero__bottom .ln__i', { yPercent: 0 });
-      gsap.set(topbar, { clearProps: 'transform' });
-      gsap.set(tbLogo, { clearProps: 'opacity' });
-      topbar.removeAttribute('inert');
     });
   }
 

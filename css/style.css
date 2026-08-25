@@ -55,7 +55,6 @@
   --z-cards:    5;
   --z-copy:     6;
   --z-nav:      10;
-  --z-topbar:   100;
 }
 
 /* ── 2. Reset ─────────────────────────────────────────────────── */
@@ -489,55 +488,7 @@ a{ color:inherit; text-decoration:none; }
 .card--traits svg{ width:13px; height:13px; flex:none; opacity:.9; }
 
 /* ══════════════════════════════════════════════════════════════
-   6. Kompaktní topbar (po odscrollování hero)
-   ══════════════════════════════════════════════════════════════ */
-.topbar{
-  position:fixed; top:0; left:0; right:0;
-  z-index:var(--z-topbar);
-  display:flex; align-items:center; justify-content:space-between;
-  gap:var(--s-3);
-  padding:12px var(--pad);
-  padding-top:max(12px, env(safe-area-inset-top));
-  background:rgba(213,207,190,.82);
-  -webkit-backdrop-filter:blur(18px) saturate(1.15);
-  backdrop-filter:blur(18px) saturate(1.15);
-  border-bottom:1px solid rgba(28,30,23,.09);
-  will-change:transform;
-}
-.topbar__logo{
-  display:inline-flex; align-items:center;
-  min-height:44px;                /* dotykový cíl */
-  padding-right:6px;
-  font-family:var(--f-display);
-  font-size:clamp(15px,1.5vw,19px);
-  font-weight:700;
-  letter-spacing:-.028em;
-  line-height:.76;
-  color:var(--ink);
-}
-
-/* Výchozí skrytý stav jen na desktopu — jinde je topbar rovnou vidět */
-@media (min-width:981px){
-  .js .topbar{ transform:translate3d(0,-101%,0); }
-  .js .topbar__logo{ opacity:0; }   /* wordmark do něj „doletí“ */
-}
-.topbar__nav{
-  display:flex; align-items:center;
-  gap:clamp(12px,1.6vw,26px);
-}
-.topbar__nav > a:not(.btn){
-  display:inline-flex; align-items:center; justify-content:center;
-  min-height:44px; min-width:44px;   /* dotykový cíl */
-  font-size:14.5px;
-  font-weight:450;
-  color:var(--ink-soft);
-  padding:8px 2px;
-  transition:color var(--t-mid) var(--e-soft);
-}
-.topbar__nav > a:not(.btn):hover{ color:var(--olive); }
-
-/* ══════════════════════════════════════════════════════════════
-   7. Responzivita
+   6. Responzivita
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Notebooky / menší desktopy ───────────────────────────────── */
@@ -581,9 +532,7 @@ a{ color:inherit; text-decoration:none; }
   .hero__lede{ text-align:left; max-width:56ch; }
   .hero__center{ padding-bottom:var(--s-3); }
 
-  /* hero se nepřipíná — navigaci přebírá sticky topbar */
   .hero__nav{ display:none; }
-  .topbar{ position:sticky; }
 }
 
 /* ── Mobil (a úzký tablet) ────────────────────────────────────────
@@ -661,8 +610,6 @@ a{ color:inherit; text-decoration:none; }
   .hero__cards{ flex-direction:column; }
   .cards-left{ display:grid; grid-template-columns:1fr 1fr; }
   .card--traits ul{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-
-  .topbar__nav > a:not(.btn){ display:none; }
 }
 
 /* ── Telefony ─────────────────────────────────────────────────────
@@ -703,6 +650,4 @@ a{ color:inherit; text-decoration:none; }
   .wordmark__l,
   .ln__i{ transform:none !important; }
   .hero__aurora{ animation:none; }
-  .js .topbar{ transform:none; }
-  .js .topbar__logo{ opacity:1; }
 }

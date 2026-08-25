@@ -78,7 +78,7 @@ Všechno je přímo v `index.html`, žádné CMS:
 | Text vpravo dole | `.hero__lede` |
 | Čísla v kartách | `.card--wide`, `.card--tall` |
 | Vlastnosti | `.card--traits` |
-| Navigace | `.hero__nav` a `.topbar__nav` |
+| Navigace | `.hero__nav` |
 
 **Pozor u víceřádkových textů:** každý řádek musí zůstat obalený
 `<span class="ln"><span class="ln__i">…</span></span>`. Vnější `span` je maska,
@@ -96,8 +96,7 @@ rozhodnutí ve prospěch těsného stříhu, ne o chybu — pokud by se to
 v budoucnu mělo změnit, řešení je přidat `padding-top` (uvnitř
 clip-boxu, takže vytvoří skutečný prostor navíc bez zásahu do
 line-height ostatních písmen) a v `measureMorph()` v `main.js`
-kompenzovat posun `.wordmark__inner` od `transform-origin`, jinak
-scroll-morph do loga v topbaru přestane sedět.
+kompenzovat posun `.wordmark__inner` od `transform-origin`.
 
 ---
 
@@ -154,11 +153,11 @@ Scroll (jen desktop ≥ 981 px):
 | 6–26 % | spodní texty vyjedou pod masku |
 | 14–52 % | headline a CTA odplují |
 | 0–92 % | fotka parallax + ztmavení |
-| 0–88 % | **značka se scvrkne přesně do loga v topbaru** |
-| 92 % | předání štafety — topbar nastoupí, značka zmizí |
+| 20–42 % | značka zmizí (fade + jemné zmenšení) |
 
-Cílová geometrie loga se měří za běhu, takže morph sedí na pixel při
-libovolné šířce okna i po změně velikosti.
+Kompaktní lišta po odscrollování hero (dřívější `.topbar`) byla odstraněna —
+po scrollu pryč z hero sekce už na stránce není žádná navigace, dokud se
+uživatel nevrátí nahoru.
 
 Animují se **jen `transform` a `opacity`** — žádné layouty, žádný CLS.
 `will-change` se po dohrání intra uvolní.
@@ -177,7 +176,7 @@ nenačte GSAP) se web zobrazí staticky a kompletní.
 |---|---|
 | ≥ 1181 px | plný layout jako reference — karty lemují postavu, fotka jako absolutní vrstva vzadu |
 | 981–1180 px | karty se přesunou k okrajům |
-| ≤ 980 px | jednosloupcový layout: hero se nepřipíná, fotka jde **mimo absolutní vrstvu do běžného toku pod obsah**, headline ztmavne na béžové, karty do mřížky, navigaci přebírá sticky topbar, **pořadí obsahu je přeskládané (viz níže)** |
+| ≤ 980 px | jednosloupcový layout: hero se nepřipíná, fotka jde **mimo absolutní vrstvu do běžného toku pod obsah**, headline ztmavne na béžové, karty do mřížky, **pořadí obsahu je přeskládané (viz níže)** |
 | ≤ 720 px | dlouhý popisný odstavec (`.hero__lede`) se skrývá — zůstává jen krátký podpis |
 | ≤ 400 px | karta s vlastnostmi (`.card--traits`) přejde na jeden sloupec — stat karty (`.cards-left`) zůstávají 2sloupcové i tady |
 
