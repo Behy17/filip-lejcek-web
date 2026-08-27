@@ -14,16 +14,97 @@
 <meta property="og:image" content="img/og-image.jpg">
 <meta property="og:locale" content="cs_CZ">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="img/filip-lejcek.webp" type="image/webp" media="(min-width:981px)" fetchpriority="high">
 <link rel="preload" as="image" href="img/filip-lejcek-mobil.webp" type="image/webp" media="(max-width:980px)" fetchpriority="high">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-book.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-medium.woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css?v=36">
 </head>
 <body>
 
 <a class="skip-link" href="#hlavni-obsah">Přeskočit na hlavní obsah</a>
+
+<!-- ══════════════════════ LEVÁ LIŠTA (po hero) ══════════════════════ -->
+<aside class="rail" id="rail" aria-label="Navigace webu">
+  <div class="rail__inner">
+
+    <div class="rail__card rail__id">
+      <div class="rail__id-top">
+        <a class="rail__mark" href="#hero" aria-label="Filip Lejček — nahoru">FILIP LEJČEK</a>
+        <div class="rail__social">
+          <a href="https://www.instagram.com/filipkoozy/" aria-label="Instagram" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2.4" y="2.4" width="11.2" height="11.2" rx="3.4"/><circle cx="8" cy="8" r="2.8"/><circle cx="11.3" cy="4.7" r=".6" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.facebook.com/filip.lejcek/" aria-label="Facebook" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M9.2 14V8.8h1.8l.3-2.1H9.2V5.3c0-.6.2-1 1.1-1h1.1V2.4C12.1 2.4 11.4 2.3 10.6 2.3 8.9 2.3 7.8 3.3 7.8 5.1v1.6H6v2.1h1.8V14z"/></svg>
+          </a>
+        </div>
+      </div>
+      <span class="rail__role">profesionální moderátor</span>
+      <p class="rail__bio">Moderování firemních akcí, galavečerů, svateb a sportovních přenosů — příprava do detailu a jistota za mikrofonem.</p>
+    </div>
+
+    <div class="rail__card rail__stats">
+      <div class="rail__stat"><strong>150+</strong><span>odmoderovaných akcí</span></div>
+      <div class="rail__stat"><strong>8+</strong><span>let za mikrofonem</span></div>
+    </div>
+
+    <nav class="rail__card rail__nav" aria-label="Sekce">
+      <a href="#hero"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7 8 2l6 5M3.6 6v7.4h8.8V6"/></svg></span><span>domů</span></a>
+      <a href="#o-mne"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.4" r="2.6"/><path d="M3 13.6c0-3 2.5-4.6 5-4.6s5 1.6 5 4.6"/></svg></span><span>o mně</span></a>
+      <a href="#portfolio"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="12" height="8.4" rx="1.2"/><path d="M6 5V3.4h4V5"/></svg></span><span>portfolio</span></a>
+      <a href="#foto"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4.6" width="12" height="8.8" rx="1.6"/><circle cx="8" cy="9" r="2.6"/><path d="M5.6 4.6 6.6 3h2.8l1 1.6"/></svg></span><span>foto</span></a>
+      <a href="#video"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M6.6 5.5 11 8l-4.4 2.5Z"/></svg></span><span>video</span></a>
+      <a href="#reference"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 2 1.8 3.7 4 .6-2.9 2.8.7 4L8 11.9 4.4 13.8l.7-4L2.2 7l4-.6Z"/></svg></span><span>reference</span></a>
+      <a href="#kontakt"><span class="rail__nav-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.2"/><path d="M2.6 5 8 9l5.4-4"/></svg></span><span>kontakt</span></a>
+    </nav>
+
+    <!-- Mini pás log (jako .nav-comapny-wrap na heynesh.com) -->
+    <div class="rail__logos" aria-hidden="true">
+      <div class="rail__logos-row">
+        <div class="rail__logos-group">
+          <img src="img/logos/hitradio.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/hyundai.png"       alt="" loading="lazy" decoding="async">
+          <img src="img/logos/tipsport.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/ac-sparta.png"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/skoda.png"         alt="" loading="lazy" decoding="async">
+          <img src="img/logos/rytiri-kladno.png" alt="" loading="lazy" decoding="async">
+          <img src="img/logos/red-bull.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/livesport.png"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/hc-sparta.svg"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/sport-cz.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/nova-sport.png"    alt="" loading="lazy" decoding="async">
+        </div>
+        <div class="rail__logos-group">
+          <img src="img/logos/hitradio.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/hyundai.png"       alt="" loading="lazy" decoding="async">
+          <img src="img/logos/tipsport.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/ac-sparta.png"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/skoda.png"         alt="" loading="lazy" decoding="async">
+          <img src="img/logos/rytiri-kladno.png" alt="" loading="lazy" decoding="async">
+          <img src="img/logos/red-bull.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/livesport.png"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/hc-sparta.svg"     alt="" loading="lazy" decoding="async">
+          <img src="img/logos/sport-cz.png"      alt="" loading="lazy" decoding="async">
+          <img src="img/logos/nova-sport.png"    alt="" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </div>
+
+    <!-- e-mail: zástupná adresa, nahraď skutečnou (jen tady) -->
+    <button type="button" class="rail__email" aria-label="Zkopírovat e-mail do schránky">
+      <span class="rail__email-addr">info@filiplejcek.cz</span>
+      <svg class="rail__email-copy" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.6" y="4.6" width="7.9" height="7.9" rx="1.4"/><path d="M9.4 1.5H2.6a1 1 0 0 0-1 1v6.8"/></svg>
+      <span class="rail__email-tip" aria-hidden="true">
+        <svg class="rail__email-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 7.4 3 3 6-7"/></svg>
+        <span>Kopírovat e-mail</span>
+      </span>
+    </button>
+
+    <a class="rail__cta" href="#kontakt">Nezávazná poptávka</a>
+
+  </div>
+</aside>
 
 <main id="hlavni-obsah">
 
@@ -109,7 +190,7 @@
         </article>
 
         <article class="card card--tall" data-card>
-          <p class="card__txt"><strong>8</strong><span>let na pódiu</span></p>
+          <p class="card__txt"><strong>8+</strong><span>let na pódiu</span></p>
         </article>
       </div>
 
@@ -128,12 +209,195 @@
   </div>
 </section>
 
-<!-- Další sekce doplníme následně -->
+<!-- ══════════════════════ REFERENCE ══════════════════════ -->
+<section class="brands" id="reference" aria-label="Reference — značky, se kterými Filip Lejček spolupracoval">
+
+  <div class="brands__marquee" role="img"
+       aria-label="Loga značek, se kterými Filip Lejček spolupracoval: Hitrádio FM, Hyundai, Tipsport, AC Sparta Praha, Škoda Auto, Rytíři Kladno, Red Bull, Livesport, HC Sparta Praha, Sport.cz, Nova Sport.">
+    <div class="brands__row">
+
+      <div class="brands__group" aria-hidden="true">
+        <span class="brand"><img src="img/logos/hitradio.png"      alt="Hitrádio FM"      loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/hyundai.png"       alt="Hyundai"          loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/tipsport.png"      alt="Tipsport"         loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/ac-sparta.png"     alt="AC Sparta Praha"  loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/skoda.png"         alt="Škoda Auto"       loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/rytiri-kladno.png" alt="Rytíři Kladno"    loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/red-bull.png"      alt="Red Bull"         loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/livesport.png"     alt="Livesport"        loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/hc-sparta.svg"     alt="HC Sparta Praha"  loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/sport-cz.png"      alt="Sport.cz"         loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/nova-sport.png"    alt="Nova Sport"       loading="lazy" decoding="async"></span>
+      </div>
+
+      <div class="brands__group" aria-hidden="true">
+        <span class="brand"><img src="img/logos/hitradio.png"      alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/hyundai.png"       alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/tipsport.png"      alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/ac-sparta.png"     alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/skoda.png"         alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/rytiri-kladno.png" alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/red-bull.png"      alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/livesport.png"     alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/hc-sparta.svg"     alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/sport-cz.png"      alt="" loading="lazy" decoding="async"></span>
+        <span class="brand"><img src="img/logos/nova-sport.png"    alt="" loading="lazy" decoding="async"></span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ O MNĚ ══════════════════════ -->
+<section class="about" id="o-mne">
+  <div class="about__inner">
+
+    <div class="about__media">
+      <figure class="about__fig about__fig--a">
+        <picture>
+          <source srcset="img/about-1.webp" type="image/webp">
+          <img src="img/about-1.jpg" width="1000" height="1297"
+               alt="Filip Lejček s mikrofonem na trávníku stadionu AC Sparta Praha"
+               loading="lazy" decoding="async">
+        </picture>
+      </figure>
+      <figure class="about__fig about__fig--b">
+        <picture>
+          <source srcset="img/about-2.webp" type="image/webp">
+          <img src="img/about-2.jpg" width="1000" height="1235"
+               alt="Filip Lejček ve vysílacím studiu Hitrádia"
+               loading="lazy" decoding="async">
+        </picture>
+      </figure>
+    </div>
+
+    <div class="about__body">
+      <h2 class="about__title"><span class="about__title-i">Moderování, které dává vašemu eventu energii i&nbsp;řád</span></h2>
+
+      <div class="about__text">
+        <p>Jmenuji se Filip Lejček a moderování pro mě není jen práce – je to poslání. Už více než osm let provázím hosty firemními galavečery, plesy, sportovními akcemi i odbornými konferencemi.</p>
+        <p>Každé události přizpůsobím svůj styl – od profesionálního a reprezentativního projevu až po uvolněnou atmosféru plnou energie. Díky zkušenostem z kamery, živého vysílání i stovek akcí dokážu pohotově reagovat na změny, technické komplikace i nečekané situace.</p>
+        <p>Na každé spolupráci mi záleží. Pečlivě se seznámím s programem, hosty i cíli pořadatelů, aby moderování přirozeně podpořilo celkový charakter akce a zanechalo v hostech silný dojem.</p>
+        <p>Působím převážně v Praze a okolí, rád však přijedu moderovat kamkoli po celé České republice.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════ PORTFOLIO SLUŽEB ══════════════════════ -->
+<section class="services" id="portfolio">
+  <span class="services__seam" aria-hidden="true"></span>
+  <div class="services__inner">
+
+    <header class="services__intro">
+      <h2 class="services__head"><span class="services__head-i">Portfolio služeb</span></h2>
+      <p class="services__lead">Ke každému formátu přistupuji jinak — od reprezentativního projevu až po uvolněnou zábavu.</p>
+    </header>
+
+    <div class="services__timeline">
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>01</i></span>
+          <h3 class="services__title"><span>Firemní akce</span></h3>
+          <p class="services__desc">Konference, vánoční večírky, veletrhy, prezentace produktů, teambuildingy a slavnostní večery.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>02</i></span>
+          <h3 class="services__title"><span>Sportovní akce</span></h3>
+          <p class="services__desc">Moderování sportovních utkání, turnajů a doprovodných programů s důrazem na atmosféru.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>03</i></span>
+          <h3 class="services__title"><span>Společenské akce</span></h3>
+          <p class="services__desc">Plesy, galavečery a prestižní eventy, kde záleží na každém detailu i přesném načasování.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>04</i></span>
+          <h3 class="services__title"><span>Rádio a televize</span></h3>
+          <p class="services__desc">Citlivé moderování svatebního programu - od obřadu přes hostinu až po večerní zábavu.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>05</i></span>
+          <h3 class="services__title"><span>Výroba reklamních spotů</span></h3>
+          <p class="services__desc">Hlasová produkce a výroba reklamních spotů do rádia s vlastním studiovým zázemím.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>06</i></span>
+          <h3 class="services__title"><span>Svatební moderátor</span></h3>
+          <p class="services__desc">Citlivé moderování svatebního programu — od obřadu přes hostinu až po večerní zábavu.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>07</i></span>
+          <h3 class="services__title"><span>Kulturní akce</span></h3>
+          <p class="services__desc">Městské slavnosti, koncertní programy, festivaly, zahájení akcí a doprovodný program pro veřejnost.</p>
+        </div>
+      </article>
+
+      <article class="services__item">
+        <div class="services__card">
+          <span class="services__glow" aria-hidden="true"><i></i></span>
+          <span class="services__num"><i>08</i></span>
+          <h3 class="services__title"><span>Dětské akce</span></h3>
+          <p class="services__desc">Dětské narozeninové oslavy, městské i firemní dětské dny s programem šitým na míru.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PORTRÉT ══════════════════════ -->
+<section class="portrait" aria-label="Filip Lejček — portrét">
+  <div class="portrait__inner">
+    <figure class="portrait__fig">
+      <span class="portrait__aura"  aria-hidden="true"></span>
+      <span class="portrait__frame" aria-hidden="true"></span>
+      <div class="portrait__media">
+        <picture>
+          <source srcset="img/filip-portret.webp" type="image/webp">
+          <img src="img/filip-portret.jpg" width="1024" height="1024"
+               alt="Portrét moderátora Filipa Lejčka" loading="lazy" decoding="async">
+        </picture>
+        <span class="portrait__grain" aria-hidden="true"></span>
+        <span class="portrait__sheen" aria-hidden="true"></span>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- Další sekce (foto, video, kontakt) doplníme následně -->
 
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
-<script src="js/main.js?v=5" defer></script>
+<script src="js/main.js?v=30" defer></script>
 </body>
 </html>

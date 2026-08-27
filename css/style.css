@@ -4,6 +4,34 @@
    Paleta: béžová základna + olivový akcent
    ══════════════════════════════════════════════════════════════ */
 
+/* ── 0. Písmo ─────────────────────────────────────────────────────
+   PP Neue Montreal (Pangram Pangram) — shodné písmo jako referenční
+   web heynesh.com. Self-hostované z /fonts, žádný externí CDN.
+   Jedno písmo pro nadpisy i běžný text. Pokrývá kompletní českou
+   diakritiku (Č Ž Š Ř Ď Ť Ň Ů …).
+   Váhy: 400 Book (základ) · 500 Medium (nadpisy, tlačítka) · 700 Bold. */
+@font-face{
+  font-family:"PP Neue Montreal";
+  src:url("../fonts/pp-neue-montreal-book.woff2") format("woff2");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"PP Neue Montreal";
+  src:url("../fonts/pp-neue-montreal-medium.woff2") format("woff2");
+  font-weight:500;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"PP Neue Montreal";
+  src:url("../fonts/pp-neue-montreal-bold.woff2") format("woff2");
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
 /* ── 1. Design tokens ─────────────────────────────────────────── */
 :root{
   /* Barvy */
@@ -25,12 +53,18 @@
   --glass-bd:    rgba(248,247,243,.34);
   --glass-hi:    rgba(248,247,243,.10);
 
-  /* Typografie */
-  --f-display: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
-  --f-body:    "Inter", "Segoe UI", system-ui, sans-serif;
+  /* Typografie — jedno písmo (viz sekce 0). Dvě proměnné zůstávají
+     kvůli sémantice: kdyby nadpisy měly někdy dostat vlastní řez,
+     stačí přepsat --f-display. */
+  --f-display: "PP Neue Montreal", "Segoe UI", system-ui, sans-serif;
+  --f-body:    "PP Neue Montreal", "Segoe UI", system-ui, sans-serif;
 
   /* Prostor */
   --pad:  clamp(18px, 2.8vw, 44px);
+  /* Levý odstup obsahu od okraje. 0 dokud není lišta (< 1280 px);
+     na širším okně = šířka lišty + mezera (viz media dotaz u sekce 5.11).
+     Sekce, které nemají jít pod lištu, používají místo levého --pad tohle. */
+  --rail-space: var(--pad);
   --s-1:  clamp(6px, .8vw, 10px);
   --s-2:  clamp(10px, 1.2vw, 16px);
   --s-3:  clamp(16px, 2vw, 26px);
@@ -97,7 +131,7 @@ a{ color:inherit; text-decoration:none; }
   padding:12px 20px;
   background:var(--olive); color:var(--cream);
   border-radius:var(--r-md);
-  font-weight:600; font-size:15px;
+  font-weight:500; font-size:15px;
   transition:top var(--t-mid) var(--e-out);
 }
 .skip-link:focus-visible{ top:var(--pad); }
@@ -121,7 +155,7 @@ a{ color:inherit; text-decoration:none; }
   padding:var(--btn-py) var(--btn-px);
   font-family:var(--f-display);
   font-size:clamp(14px,1.12vw,15.5px);
-  font-weight:600;
+  font-weight:500;
   letter-spacing:-.005em;
   line-height:1.2;
   border-radius:var(--r-md);
@@ -301,7 +335,7 @@ a{ color:inherit; text-decoration:none; }
   padding:2px;
   font-family:var(--f-body);
   font-size:clamp(12.5px,1.05vw,15px);
-  font-weight:450;
+  font-weight:400;
   color:var(--ink);
   letter-spacing:.002em;
   position:relative;
@@ -488,6 +522,935 @@ a{ color:inherit; text-decoration:none; }
 .card--traits svg{ width:13px; height:13px; flex:none; opacity:.9; }
 
 /* ══════════════════════════════════════════════════════════════
+   5.9 REFERENCE — nekonečný pás log značek
+   Marquee pohyb podle heynesh.com: měkké okraje (mask-gradient),
+   svižné lineární tempo, pauza na hover, spotlight na najeté dlaždici.
+   Bez nadpisu — jen samotný pás. Loga jsou barevná rastrová
+   (z filiplejcek.lovable.app), proto sedí na krémových dlaždicích
+   a ve výchozím stavu jsou v odstínech šedi; hover je rozsvítí.
+   Vypnuto při reduced-motion (zbyde statická první skupina).
+   ══════════════════════════════════════════════════════════════ */
+.brands{
+  position:relative;
+  z-index:6;
+  padding:clamp(72px,11vh,132px) 0;
+  background:var(--bg);
+}
+
+/* Pás */
+.brands__marquee{
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
+}
+.brands__row{
+  display:flex;
+  width:max-content;
+  animation:brands-marquee 42s linear infinite;
+  will-change:transform;
+}
+.brands__marquee:hover .brands__row{ animation-play-state:paused; }
+
+.brands__group{
+  display:flex;
+  align-items:center;
+  gap:clamp(12px,1.4vw,18px);
+  padding-right:clamp(12px,1.4vw,18px);   /* mezera na švu opakování */
+  flex:0 0 auto;
+}
+
+@keyframes brands-marquee{
+  from{ transform:translate3d(0,0,0); }
+  to  { transform:translate3d(-50%,0,0); }
+}
+
+/* Jedna dlaždice — krémové pole. Šířka se řídí obsahem (široké wordmarky
+   dostanou širokou dlaždici, kompaktní znaky úzkou) při pevné výšce a
+   svislém rytmu — vypadá to organicky jako skutečná zeď log. Logo je
+   ve výchozím stavu v odstínech šedi a ztlumené; hover je rozsvítí,
+   dlaždici nadzvedne a přidá stín (spotlight), ostatní decentně ustoupí. */
+.brand{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:clamp(78px,9vw,108px);
+  min-width:clamp(116px,13vw,148px);
+  padding:0 clamp(24px,3vw,40px);
+  background:var(--cream);
+  border:1px solid rgba(28,30,23,.07);
+  border-radius:var(--r-md);
+  transition:transform .5s var(--e-out),
+             box-shadow .5s var(--e-soft),
+             opacity .5s var(--e-soft);
+}
+.brand img{
+  width:auto;
+  height:auto;
+  max-width:clamp(170px,20vw,248px);
+  max-height:clamp(34px,4vw,46px);
+  object-fit:contain;
+  filter:grayscale(1) contrast(1.05) opacity(.72);
+  transition:filter .5s var(--e-soft);
+}
+.brands__row:hover .brand{ opacity:.5; }                 /* ostatní ustoupí */
+.brands__row:hover .brand:hover{ opacity:1; }
+.brands__row .brand:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 32px rgba(28,30,23,.14);
+}
+.brands__row .brand:hover img{ filter:grayscale(0) contrast(1) opacity(1); }
+
+/* Fallback: dlaždice bez loga — jen název. Teď se nepoužívá (všech 11 má
+   logo), zůstává pro případ dočasně chybějícího assetu. */
+.brand--word span{
+  font-family:var(--f-display);
+  font-size:clamp(14px,1.5vw,17px);
+  font-weight:500;
+  letter-spacing:-.006em;
+  line-height:1.15;
+  text-align:center;
+  color:var(--ink);
+  opacity:.72;
+  transition:opacity .5s var(--e-soft);
+}
+.brands__row .brand--word:hover span{ opacity:1; }
+
+@media (prefers-reduced-motion:reduce){
+  .brands__row{ animation:none; }
+  .brands__group:nth-child(2){ display:none; }   /* statická jen první */
+  .brands__marquee{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5.10 O MNĚ
+   Dvousloupcový editorial: staggered dvojice fotek + text s pevným
+   měřítkem řádku. Nadpis „vyjede" zpod masky, odstavce a fotky
+   nabíhají při scrollu (JS: buildAbout v main.js). Fotky mají rám
+   z jemné světlé linky a hluboký měkký stín — „prémiový" dojem.
+   ══════════════════════════════════════════════════════════════ */
+.about{
+  position:relative;
+  z-index:6;
+  padding:clamp(84px,13vh,168px) 0;
+  background:var(--bg);   /* shodné s .brands — bez viditelného švu mezi sekcemi */
+}
+.about__inner{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 var(--pad);
+  display:grid;
+  grid-template-columns:minmax(0,1.22fr) minmax(0,0.86fr);
+  gap:clamp(28px,4.5vw,64px);
+  align-items:center;
+}
+
+/* ── Fotky ──────────────────────────────────────────────────────────
+   Větší, překrývající se dvojice: dominantní fig--a + menší fig--b,
+   která na ni s odsazením „pluje". Kontejner drží 3D perspektivu pro
+   pointer-parallax (JS). */
+.about__media{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  perspective:1200px;
+  transform-style:preserve-3d;
+}
+.about__fig{
+  position:relative;
+  margin:0;
+  overflow:hidden;
+  border-radius:var(--r-lg);
+  background:var(--bg-deep);
+  box-shadow:
+    0 40px 74px -24px rgba(28,30,23,.44),
+    0 12px 28px -14px rgba(28,30,23,.3);
+  will-change:transform;
+}
+.about__fig::after{               /* jemný světlý rám + vinětace */
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(248,247,243,.16),
+    inset 0 -70px 60px -50px rgba(28,30,23,.5);
+  pointer-events:none;
+}
+.about__fig picture{ display:block; width:100%; height:100%; }
+.about__fig img{
+  display:block;
+  width:100%; height:100%;
+  object-fit:cover;
+  transition:transform .9s var(--e-out);
+}
+.about__fig:hover img{ transform:scale(1.05); }
+
+.about__fig--a{
+  flex:0 0 63%;
+  aspect-ratio:4/5;
+}
+.about__fig--a img{ object-position:50% 12%; }   /* drží Filipův obličej v záběru */
+.about__fig--b{
+  flex:0 0 47%;
+  margin-left:-10%;
+  margin-top:clamp(52px,13vw,148px);
+  aspect-ratio:3/4;
+  z-index:2;
+  box-shadow:
+    0 50px 88px -26px rgba(28,30,23,.52),
+    0 16px 34px -14px rgba(28,30,23,.34);
+}
+
+/* Reveal maska fotek — obsah startuje schovaný pod spodní hranou */
+.js .about__fig picture{ transform:translate3d(0,101%,0); }
+
+/* ── Text ───────────────────────────────────────────────────────── */
+.about__body{
+  transform:translateY(clamp(-64px,-5vw,-28px));   /* jemné posazení výš */
+}
+.about__title{
+  overflow:hidden;                /* maska pro reveal */
+  font-family:var(--f-display);
+  font-size:clamp(1.7rem,3.4vw,2.8rem);
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.022em;
+  color:var(--ink);
+  text-wrap:balance;
+  max-width:20ch;
+}
+.about__title-i{ display:block; will-change:transform; }
+.js .about__title-i{ transform:translate3d(0,110%,0); }
+
+.about__text{
+  margin-top:clamp(20px,2.6vw,32px);
+  display:grid;
+  gap:clamp(11px,1.3vw,17px);
+  max-width:56ch;
+}
+.about__text p{
+  font-size:clamp(14px,1.05vw,15.5px);
+  line-height:1.72;
+  color:var(--ink-soft);
+}
+
+/* ── Reveal — počáteční stavy (JS je rozanimuje) ───────────────── */
+.js .about__text p{ opacity:0; }
+
+/* ══════════════════════════════════════════════════════════════
+   5.11 LEVÁ LIŠTA (rail)
+   Vzor podle heynesh.com: fixní svislá lišta u levého okraje, stack
+   matných „skleněných" panelů na béžové (identita + claim, čísla,
+   navigace) a dole plný CTA button. Po odscrollování ~42 % hero sjede
+   zleva dovnitř (buildRail() v js/main.js) a nahrazuje mizející hero
+   navigaci. Akcent = olivová (u heynesh žlutá). Jen desktop ≥ 1280 px
+   — pod tím pro ni není místo (viz posun .about__inner doprava níže).
+   ══════════════════════════════════════════════════════════════ */
+.rail{
+  position:fixed;
+  left:clamp(14px,1.5vw,22px);
+  top:0;
+  height:100svh;
+  width:clamp(190px,18.5vw,240px);
+  z-index:40;
+  display:none;                     /* zapíná se až v media dotazu níže */
+  padding:clamp(16px,2vh,24px) 0;
+  font-family:var(--f-body);
+}
+.rail__inner{
+  display:flex;
+  flex-direction:column;
+  gap:clamp(8px,.9vw,12px);
+  width:100%;
+  height:100%;
+}
+
+/* Skleněný panel — společný styl (jako .nav-*-bg na referenci):
+   teplé krémové sklo, jemný světlý obrys, malý rádius, bez stínu. */
+.rail__card{
+  background:rgba(240,237,228,.68);
+  -webkit-backdrop-filter:blur(15px) saturate(1.1);
+          backdrop-filter:blur(15px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:8px;
+}
+
+/* Identita — jako .nav-profile na heynesh.com: logo + sociální ikony
+   v horní řádce, pod tím krátký popis. */
+.rail__id{
+  display:flex; flex-direction:column; align-items:stretch;
+  gap:9px;
+  padding:13px 14px 14px;
+}
+.rail__id-top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:8px;
+}
+.rail__mark{
+  padding:5px 9px 4px;
+  background:var(--olive);
+  color:var(--cream);
+  border-radius:6px;
+  font-family:var(--f-display);
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.08em;
+  line-height:1;
+  transition:background-color var(--t-mid) var(--e-soft);
+}
+.rail__mark:hover{ background:var(--olive-dk); }
+.rail__social{ display:flex; gap:5px; flex:none; }
+.rail__social a{
+  display:grid; place-items:center;
+  width:22px; height:22px;
+  border-radius:6px;
+  background:rgba(28,30,23,.06);
+  color:var(--ink-soft);
+  transition:background-color var(--t-mid) var(--e-soft),
+             color var(--t-mid) var(--e-soft);
+}
+.rail__social a:hover{ background:var(--olive); color:var(--cream); }
+.rail__social svg{ width:13px; height:13px; }
+.rail__role{
+  font-size:9.5px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.rail__bio{
+  font-size:10.5px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+/* Čísla */
+.rail__stats{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:13px 14px;
+}
+.rail__stat strong{
+  display:block;
+  font-family:var(--f-display);
+  font-weight:700; font-size:19px; line-height:1;
+  color:var(--olive);
+}
+.rail__stat span{
+  display:block; margin-top:5px;
+  font-size:9.5px; line-height:1.32;
+  color:var(--ink-soft);
+}
+
+/* Navigace — karta se roztáhne na volnou výšku lišty (jako na
+   referenci) a položky se rovnoměrně rozprostřou. */
+.rail__nav{
+  position:relative;
+  flex:1 1 auto;
+  display:flex; flex-direction:column;
+  justify-content:space-between;
+  padding:10px 6px;
+  gap:2px;
+  margin-bottom:clamp(14px,1.8vw,22px);   /* odstup od pásu log dole */
+}
+/* Aktivní stav = jedna olivová „pilulka", která klouže mezi položkami
+   (JS: railNavMarker) — místo blikání pozadí u každého odkazu zvlášť. */
+.rail__nav-marker{
+  position:absolute;
+  left:0; top:0;
+  border-radius:7px;
+  background:var(--olive);
+  opacity:0;
+  pointer-events:none;
+  z-index:0;
+  will-change:transform,width,height;
+}
+.rail__nav a{
+  position:relative;
+  z-index:1;
+  display:flex; align-items:center; gap:8px;
+  padding:9px 8px;
+  border-radius:7px;
+  font-family:var(--f-display);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink);
+  transition:background-color var(--t-mid) var(--e-soft),
+             color var(--t-mid) var(--e-soft);
+}
+/* Ikonka v malém zaobleném „čipu" jako na referenci. */
+.rail__nav-ico{
+  display:grid; place-items:center;
+  width:24px; height:24px; flex:none;
+  border-radius:6px;
+  background:rgba(28,30,23,.06);
+  transition:background-color var(--t-mid) var(--e-soft);
+}
+.rail__nav a svg{
+  width:14px; height:14px; flex:none;
+  opacity:.55;
+  transition:opacity var(--t-mid) var(--e-soft);
+}
+.rail__nav a:hover{ background:rgba(28,30,23,.055); }
+.rail__nav a:hover .rail__nav-ico{ background:rgba(28,30,23,.1); }
+.rail__nav a:hover svg{ opacity:.85; }
+.rail__nav a.is-active{ color:var(--cream); }
+.rail__nav a.is-active:hover{ background:transparent; }
+.rail__nav a.is-active .rail__nav-ico{ background:rgba(255,255,255,.16); }
+.rail__nav a.is-active svg{ opacity:1; }
+/* Bez JS drží aktivní pilulku pozadí odkazu (fallback). */
+html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
+
+/* Mini pás log — jako .nav-comapny-wrap na heynesh.com: úzký proužek,
+   barevná loga, nekonečná smyčka, měkké okraje. Dekorativní
+   (aria-hidden) — přístupný seznam značek je v sekci Reference. */
+.rail__logos{
+  margin-top:auto;            /* pás + e-mail + CTA drží u spodní hrany lišty */
+  margin-bottom:36px;         /* volný pruh pod pásem pro tooltip „Kopírovat e-mail" */
+  overflow:hidden;
+  padding:4px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+}
+.rail__logos-row{
+  display:flex;
+  width:max-content;
+  animation:rail-logos 26s linear infinite;
+  will-change:transform;
+}
+.rail__logos-group{
+  display:flex; align-items:center;
+  gap:24px;
+  padding-right:24px;
+  flex:0 0 auto;
+}
+/* Loga v původních barvách, dostatečně velká, aby byly čitelné
+   i klubové znaky. */
+.rail__logos-group img{
+  height:19px; width:auto;
+  max-width:104px;
+  object-fit:contain;
+  flex:none;
+}
+/* Kompaktní/čtvercové znaky dostanou víc výšky, ať nejsou jen tečka */
+.rail__logos-group img[src*="ac-sparta"],
+.rail__logos-group img[src*="rytiri-kladno"],
+.rail__logos-group img[src*="hc-sparta"],
+.rail__logos-group img[src*="red-bull"]{ height:25px; }
+@keyframes rail-logos{
+  from{ transform:translate3d(0,0,0); }
+  to  { transform:translate3d(-50%,0,0); }
+}
+@media (prefers-reduced-motion:reduce){
+  .rail__logos-row{ animation:none; }
+  .rail__logos-group:nth-child(2){ display:none; }
+}
+
+/* E-mail pill — klik = kopírování do schránky, na hover „tooltip"
+   nad pilulkou. Chování jako .nav-email-item na heynesh.com
+   (JS: railEmailCopy). */
+.rail__email{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  width:100%;
+  padding:9px 34px;           /* místo pro ikonu vpravo, text zůstává na středu */
+  background:rgba(240,237,228,.68);
+  -webkit-backdrop-filter:blur(15px) saturate(1.1);
+          backdrop-filter:blur(15px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:8px;
+  cursor:pointer;
+  font-family:var(--f-body);
+  text-align:center;
+  transition:border-color var(--t-mid) var(--e-soft);
+}
+.rail__email:hover{ border-color:rgba(28,30,23,.16); }
+.rail__email:focus-visible{ outline:2px solid var(--olive); outline-offset:2px; }
+.rail__email-addr{
+  min-width:0;
+  font-family:var(--f-display);
+  font-size:12px;
+  font-weight:500;
+  color:var(--ink);
+  letter-spacing:.005em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.rail__email-copy{
+  position:absolute;
+  right:12px; top:50%;
+  transform:translateY(-50%);
+  width:13px; height:13px; flex:none;
+  color:var(--ink-soft);
+  transition:color var(--t-mid) var(--e-soft);
+}
+.rail__email:hover .rail__email-copy{ color:var(--olive); }
+
+.rail__email-tip{
+  position:absolute;
+  left:0; right:0; bottom:calc(100% + 8px);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:7px 10px;
+  background:rgba(240,237,228,.94);
+  -webkit-backdrop-filter:blur(15px);
+          backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:7px;
+  font-family:var(--f-display);
+  font-size:10px; font-weight:500;
+  letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink);
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity var(--t-mid) var(--e-soft);   /* CSS fallback bez JS */
+}
+.rail__email:hover .rail__email-tip,
+.rail__email:focus-visible .rail__email-tip{ opacity:1; }
+.rail__email-tip.is-copied{
+  background:var(--olive); color:var(--cream);
+  border-color:transparent;
+}
+/* check se ukáže až po zkopírování (JS); do té doby skrytý */
+.rail__email-check{ width:12px; height:12px; flex:none; display:none; }
+.rail__email-tip.is-copied .rail__email-check{ display:block; }
+
+/* CTA — hover = „roll" textu po slovech (JS: railCtaHover), stejně jako
+   [data-button-hover] na heynesh.com. Bez posunu/změny pozadí. */
+.rail__cta{
+  display:flex; align-items:center; justify-content:center;
+  padding:10px 14px;
+  background:var(--olive);
+  color:var(--cream);
+  border-radius:8px;
+  font-family:var(--f-display);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  box-shadow:0 2px 10px rgba(28,30,23,.14);
+  overflow:hidden;
+}
+.rail__cta:active{ transform:scale(.985); transition:transform var(--t-fast) var(--e-out); }
+
+/* Maska i slova mají stejnou výšku řádku (1.4) — dost místa pro čárky
+   nad velkými písmeny (NEZÁVAZNÁ), a yPercent 100 = přesně jedna
+   výška masky, takže „roll" pořád lícuje. */
+.rail__cta-mask{
+  position:relative;
+  display:block;
+  overflow:hidden;
+  line-height:1.4;
+  white-space:nowrap;
+}
+.rail__cta-row{ display:block; line-height:1.4; }
+.rail__cta-row--clone{ position:absolute; left:0; top:0; }
+.rail__cta-w{
+  display:inline-block;
+  line-height:1.4;
+  will-change:transform;
+}
+
+/* Bez JS (nebo dotykově) zůstane jen text v masce — statický, čitelný */
+.rail__cta-row--clone{ visibility:hidden; }
+.js .rail__cta-row--clone{ visibility:visible; }
+
+/* Výchozí skrytý stav — JS ji rozanimuje (autoAlpha + posun zleva) */
+.js .rail{ opacity:0; visibility:hidden; }
+
+/* ══════════════════════════════════════════════════════════════
+   5.12 PORTFOLIO SLUŽEB
+   Vzor animace podle „About me" na heynesh.com: svislá „scrollující
+   čára", která se dokresluje podle scrollu (scaleY, scrub), a služby
+   po stranách, které při najetí naběhnou (scale + fade, nadpis zpod
+   masky) a tečka na čáře „lupne". JS: buildServices() v main.js.
+   ══════════════════════════════════════════════════════════════ */
+/* Prémiový přechod z „O mně": Portfolio je vyvýšený panel, který
+   zaoblenou horní hranou „vyjíždí" přes konec předchozí sekce —
+   měkký stín nad hranou + světelný nádech na náběhu + olivový steh
+   ve švu (dokresluje se scrollem, JS: buildServices). */
+.services{
+  position:relative;
+  z-index:7;
+  margin-top:clamp(-104px,-11vh,-56px);
+  padding:clamp(104px,15vh,184px) 0 clamp(84px,13vh,168px);
+  background:var(--bg);
+  border-radius:clamp(30px,5vw,60px) clamp(30px,5vw,60px) 0 0;
+  overflow-x:clip;            /* dlaždice přijíždějí zpoza okraje */
+  box-shadow:
+    0 -34px 64px -34px rgba(28,30,23,.30),
+    0 -10px 24px -14px rgba(28,30,23,.18),
+    inset 0 1px 0 rgba(255,255,255,.65);
+}
+/* Jemný světelný nádech na horním náběhu panelu (rychle vyprchá). */
+.services::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0;
+  height:clamp(120px,18vh,220px);
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 100%);
+}
+/* Olivový „steh" překlenující šev mezi sekcemi. */
+.services__seam{
+  position:absolute;
+  left:50%; top:0;
+  width:2px; height:clamp(38px,7vh,74px);
+  transform:translate(-50%,-52%) scaleY(var(--seam,1));
+  transform-origin:center;
+  border-radius:2px;
+  background:linear-gradient(to bottom,
+    transparent 0%, var(--olive) 42%, var(--olive) 58%, transparent 100%);
+  opacity:.6;
+  pointer-events:none;
+  z-index:2;
+}
+.services__inner{
+  position:relative;
+  z-index:1;
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 var(--pad);
+}
+.services__intro{ margin-bottom:clamp(44px,7vh,88px); }
+.services__head{
+  overflow:hidden;
+  font-family:var(--f-display);
+  font-size:clamp(1.9rem,4.4vw,3.2rem);
+  font-weight:700;
+  line-height:1.06;
+  letter-spacing:-.024em;
+  color:var(--ink);
+}
+.services__head-i{ display:block; will-change:transform; }
+.js .services__head-i{ transform:translate3d(0,110%,0); }
+.services__lead{
+  margin-top:clamp(14px,2vw,20px);
+  max-width:46ch;
+  font-size:clamp(14px,1.05vw,15.5px);
+  line-height:1.65;
+  color:var(--ink-soft);
+}
+
+/* ── Časová osa služeb ─────────────────────────────────────────── */
+.services__timeline{ position:relative; }
+
+.services__item{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  min-height:clamp(168px,23vh,240px);
+}
+/* Dlaždice služby — matné „sklo" jako .about-card na heynesh.com:
+   krémové pozadí, jemný obrys, hluboký měkký stín, velké číslo nahoře.
+   Prémiové efekty: 3D náklon za kurzorem, putující odlesk, jednorázový
+   „sheen" při příchodu, rozsvícení akcentové linky. */
+.services__card{
+  --rx:0; --ry:0; --mx:50%; --my:50%;
+  position:relative;
+  display:flex; flex-direction:column;
+  gap:clamp(8px,1vw,13px);
+  width:min(100%, clamp(300px,34vw,428px));
+  padding:clamp(22px,2.6vw,38px) clamp(22px,2.8vw,40px);
+  background:rgba(240,237,228,.72);
+  -webkit-backdrop-filter:blur(16px) saturate(1.12);
+          backdrop-filter:blur(16px) saturate(1.12);
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:clamp(14px,1.8vw,22px);
+  box-shadow:
+    0 40px 70px -26px rgba(28,30,23,.4),
+    0 12px 26px -14px rgba(28,30,23,.24);
+  transform-origin:center;
+  transform:
+    perspective(950px)
+    rotateX(calc(var(--rx) * 1deg))
+    rotateY(calc(var(--ry) * 1deg));
+  will-change:transform;
+  transition:transform .6s var(--e-out), box-shadow .5s var(--e-soft);
+}
+/* Při aktivním sledování kurzoru řídí náklon JS (quickTo) → vypneme
+   CSS přechod transformu, ať to neplave „za" myší. */
+.services__card.is-live{ transition:box-shadow .5s var(--e-soft); }
+.services__card.is-live,
+.services__card:hover{
+  transform:
+    perspective(950px)
+    rotateX(calc(var(--rx) * 1deg))
+    rotateY(calc(var(--ry) * 1deg))
+    translateY(-6px);
+  box-shadow:
+    0 56px 92px -24px rgba(28,30,23,.5),
+    0 18px 38px -14px rgba(28,30,23,.32);
+}
+
+/* Putující odlesk + jednorázový „sheen" — clip uvnitř skla, ať nepřetéká
+   přes akcentovou linku, která visí vně dlaždice. */
+.services__glow{
+  position:absolute; inset:0;
+  border-radius:inherit;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
+}
+.services__glow::before{
+  content:"";
+  position:absolute; inset:0;
+  background:radial-gradient(220px circle at var(--mx) var(--my),
+    rgba(255,255,255,.55), rgba(255,255,255,0) 62%);
+  opacity:0;
+  transition:opacity .45s var(--e-soft);
+}
+.services__card:hover .services__glow::before,
+.services__card.is-live .services__glow::before{ opacity:1; }
+.services__glow i{
+  position:absolute; top:-30%; left:0;
+  width:55%; height:160%;
+  background:linear-gradient(100deg,
+    transparent 22%, rgba(255,255,255,.5) 50%, transparent 78%);
+  transform:translateX(-190%) rotate(3deg);
+  opacity:0;
+}
+.services__card.is-in .services__glow i{
+  animation:svc-sheen 1.15s var(--e-out) .18s forwards;
+}
+@keyframes svc-sheen{
+  0%   { transform:translateX(-190%) rotate(3deg); opacity:0; }
+  14%  { opacity:.9; }
+  70%  { opacity:.9; }
+  100% { transform:translateX(330%)  rotate(3deg); opacity:0; }
+}
+
+.services__card > .services__num,
+.services__card > .services__title,
+.services__card > .services__desc{ position:relative; z-index:1; }
+
+/* Svislá linka podél vnější hrany dlaždice — vlevo u levých, vpravo
+   u pravých. Jemná olivová, konce vyblednou; při příchodu „vyroste"
+   shora, při najetí kurzorem zesílí a rozsvítí se. */
+.services__card::before{
+  content:"";
+  position:absolute;
+  top:clamp(12px,2vw,24px); bottom:clamp(12px,2vw,24px);
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(to bottom,
+    transparent 0, var(--olive) 16%, var(--olive) 84%, transparent 100%);
+  opacity:.5;
+  transition:opacity .5s var(--e-soft), box-shadow .5s var(--e-soft), width .4s var(--e-out);
+}
+.js .services__card::before{
+  transform:scaleY(0);
+  transform-origin:top center;
+  opacity:0;
+  transition:transform .9s var(--e-out), opacity .6s var(--e-soft),
+             box-shadow .5s var(--e-soft), width .4s var(--e-out);
+}
+.js .services__card.is-in::before{ transform:scaleY(1); opacity:.5; }
+.services__card.is-in:hover::before,
+.services__card.is-in.is-live::before{
+  opacity:.95;
+  width:3px;
+  box-shadow:0 0 16px rgba(79,93,58,.45);
+}
+.services__item:nth-of-type(odd)  .services__card::before{ left:calc(-1 * clamp(13px,1.7vw,24px)); }
+.services__item:nth-of-type(even) .services__card::before{ right:calc(-1 * clamp(13px,1.7vw,24px)); }
+/* Liché služby jsou přisazené doprava (ke středu), sudé doleva. */
+.services__item:nth-of-type(odd) .services__card{
+  grid-column:1;
+  justify-self:end;
+}
+.services__item:nth-of-type(even) .services__card{
+  grid-column:2;
+  justify-self:start;
+}
+
+.services__num{
+  overflow:hidden;
+  font-family:var(--f-display);
+  font-size:clamp(2.1rem,3.6vw,3.1rem);
+  font-weight:700;
+  line-height:.9;
+  letter-spacing:-.03em;
+  color:var(--olive);
+  transition:text-shadow .5s var(--e-soft);
+}
+.services__num i{ display:block; font-style:normal; will-change:transform; }
+.js .services__num i{ transform:translate3d(0,115%,0); }
+.services__card:hover .services__num,
+.services__card.is-live .services__num{ text-shadow:0 10px 26px rgba(79,93,58,.3); }
+.services__title{
+  overflow:hidden;
+  font-family:var(--f-display);
+  font-size:clamp(1.15rem,1.9vw,1.5rem);
+  font-weight:600;
+  line-height:1.15;
+  letter-spacing:-.015em;
+  color:var(--ink);
+}
+.services__title span{ display:block; will-change:transform; }
+.services__desc{
+  font-size:clamp(13px,1vw,14.5px);
+  line-height:1.6;
+  color:var(--ink-soft);
+}
+
+/* Výchozí skrytý stav pro reveal (JS rozanimuje; bez JS je vše vidět) */
+.js .services__card{ opacity:0; }
+.js .services__desc{ opacity:0; }
+
+@media (prefers-reduced-motion:reduce){
+  .services__card{ transform:none; transition:none; }
+  .services__card.is-live,
+  .services__card:hover{ transform:translateY(-4px); }
+  .services__glow i{ animation:none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5.13 PORTRÉT — samostatná fotka pod Portfoliem
+   ══════════════════════════════════════════════════════════════ */
+.portrait{
+  position:relative;
+  z-index:6;
+  padding:clamp(40px,6vh,84px) 0 clamp(72px,12vh,152px);
+  background:var(--bg);
+  overflow-x:clip;           /* rám + záře nepřetečou vodorovně */
+}
+.portrait__inner{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 var(--pad);
+  display:flex;
+  justify-content:center;
+}
+.portrait__fig{
+  --rx:0; --ry:0; --mx:50%; --my:50%;
+  position:relative;
+  margin:0;
+  width:100%;
+  max-width:clamp(280px,40vw,440px);
+}
+
+/* Měkká olivová záře za fotkou — hloubka a barevná vazba na akcent. */
+.portrait__aura{
+  position:absolute; inset:-16% -14% -12%;
+  z-index:0;
+  border-radius:48% 52% 55% 45%;
+  background:radial-gradient(closest-side,
+    rgba(79,93,58,.32), rgba(79,93,58,0) 78%);
+  filter:blur(26px);
+  pointer-events:none;
+}
+
+/* Odsazený olivový rám za fotkou — editoriální „pasparta".
+   Posun řešíme přes inset (ne transform), ať ho GSAP při scale nepřepíše. */
+.portrait__frame{
+  --off:clamp(12px,2.4vw,22px);
+  position:absolute;
+  top:var(--off); left:var(--off);
+  right:calc(-1 * var(--off)); bottom:calc(-1 * var(--off));
+  z-index:0;
+  border:1.5px solid var(--olive);
+  border-radius:var(--r-lg);
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Vlastní médium — nese zaoblení, ořez, hloubkový stín a 3D náklon. */
+.portrait__media{
+  position:relative;
+  z-index:1;
+  overflow:hidden;
+  border-radius:var(--r-lg);
+  background:var(--bg-deep);
+  box-shadow:
+    0 54px 94px -28px rgba(28,30,23,.5),
+    0 20px 42px -18px rgba(28,30,23,.34),
+    inset 0 0 0 1px rgba(255,255,255,.22);
+  transform:
+    perspective(1000px)
+    rotateX(calc(var(--rx) * 1deg))
+    rotateY(calc(var(--ry) * 1deg));
+  transition:transform .6s var(--e-out), box-shadow .5s var(--e-soft);
+  will-change:transform;
+}
+.portrait__fig.is-live .portrait__media{ transition:box-shadow .5s var(--e-soft); }
+.portrait__fig:hover .portrait__media,
+.portrait__fig.is-live .portrait__media{
+  box-shadow:
+    0 64px 110px -26px rgba(28,30,23,.56),
+    0 24px 50px -18px rgba(28,30,23,.4),
+    inset 0 0 0 1px rgba(255,255,255,.3);
+}
+.portrait__fig picture{ display:block; }
+.portrait__fig img{
+  display:block;
+  width:100%; height:auto;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  filter:saturate(1.02) contrast(1.02);
+  transition:filter .8s var(--e-soft), transform .9s var(--e-out);
+}
+.portrait__fig:hover img{ filter:saturate(1.06) contrast(1.03); transform:scale(1.03); }
+
+/* Filmové zrno na fotce — stejná textura jako v hero. */
+.portrait__grain{
+  position:absolute; inset:0; z-index:2;
+  pointer-events:none;
+  opacity:.42;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+/* Světlo sledující kurzor po skle fotky. */
+.portrait__sheen{
+  position:absolute; inset:0; z-index:3;
+  pointer-events:none;
+  opacity:0;
+  mix-blend-mode:soft-light;
+  background:radial-gradient(280px circle at var(--mx) var(--my),
+    rgba(255,255,255,.42), rgba(255,255,255,0) 60%);
+  transition:opacity .5s var(--e-soft);
+}
+.portrait__fig:hover .portrait__sheen,
+.portrait__fig.is-live .portrait__sheen{ opacity:1; }
+
+.js .portrait__fig{ opacity:0; }   /* JS rozanimuje */
+
+@media (prefers-reduced-motion:reduce){
+  .portrait__media{ transform:none; }
+}
+
+@media (min-width:1280px){
+  .rail{ display:block; }
+
+  /* Jakmile je lišta na scéně, rezervujeme jí vlevo místo. Šířka lišty
+     (clamp 190–240) + její odsazení (clamp 14–22) + pohodlná mezera. */
+  :root{ --rail-space:clamp(292px,21vw,322px); }
+
+  /* O mně + Portfolio + portrét — obsah začíná až za lištou */
+  .about__inner,
+  .services__inner,
+  .portrait__inner{
+    max-width:1440px;
+    padding-left:var(--rail-space);
+  }
+
+  /* Pás log — vlevo přisvícený úsek pod lištou schová maska;
+     první plné logo je až za --rail-space. Vpravo pás dál „vytéká". */
+  .brands__marquee{
+    --brands-mask-l:calc(var(--rail-space) - 12px);
+    -webkit-mask-image:linear-gradient(90deg,
+      transparent 0, transparent var(--brands-mask-l),
+      #000 calc(var(--brands-mask-l) + 64px), #000 92%, transparent 100%);
+            mask-image:linear-gradient(90deg,
+      transparent 0, transparent var(--brands-mask-l),
+      #000 calc(var(--brands-mask-l) + 64px), #000 92%, transparent 100%);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    6. Responzivita
    ══════════════════════════════════════════════════════════════ */
 
@@ -626,6 +1589,60 @@ a{ color:inherit; text-decoration:none; }
   .card--traits ul{ grid-template-columns:1fr; }
 }
 
+/* ── Reference na užších displejích ───────────────────────────── */
+@media (max-width:600px){
+  .brands{ padding:clamp(64px,12vh,110px) 0; }
+  .brands__group{ gap:10px; padding-right:10px; }
+  .brand{ height:72px; min-width:100px; padding:0 20px; }
+  .brand img{ max-width:158px; max-height:32px; }
+  .brands__row{ animation-duration:33s; }
+}
+
+/* ── O mně: jednosloupcově, fotky nahoře ─────────────────────────
+   Nadpis dřív než fotky by na telefonu odsunul první vizuál moc
+   nízko; pořadí v DOM (media → body) tedy necháváme, na úzkém
+   gridu se fotky ocitnou nad textem samy. */
+@media (max-width:900px){
+  .about__inner{ grid-template-columns:1fr; gap:clamp(30px,7vw,46px); }
+  .about__media{
+    max-width:600px;
+    perspective:none;
+    gap:clamp(12px,2vw,20px);
+  }
+  .about__fig--a{ flex:1 1 0; }
+  .about__fig--b{ flex:1 1 0; margin-left:0; margin-top:clamp(24px,7vw,56px); }
+  .about__body{ transform:none; }   /* jednosloupcově bez posunu */
+  .about__title{ font-size:clamp(1.55rem,6vw,2.3rem); max-width:none; }
+  .about__text{ max-width:60ch; }
+}
+@media (max-width:480px){
+  .about{ padding:clamp(60px,12vh,96px) 0; }
+  .about__media{ gap:10px; }
+  .about__fig--b{ margin-top:clamp(20px,8vw,40px); }
+}
+
+/* ── Portfolio služeb: jednosloupcově, akcentová čára vlevo ──────── */
+@media (max-width:860px){
+  .services__item{
+    grid-template-columns:auto 1fr;
+    column-gap:clamp(18px,5vw,32px);
+    align-items:start;
+    min-height:0;
+    padding:clamp(20px,4vw,32px) 0;
+  }
+  .services__item:nth-of-type(odd) .services__card,
+  .services__item:nth-of-type(even) .services__card{
+    grid-column:2;
+    justify-self:stretch;
+    width:100%;
+    max-width:none;
+    transform-origin:left center;
+    padding:clamp(20px,5vw,28px);
+  }
+  .services__card::before{ left:-10px; right:auto; }   /* linka u všech vlevo */
+  .services__num{ font-size:clamp(1.9rem,9vw,2.6rem); }
+}
+
 /* ── Landscape na nízkých displejích ──────────────────────────── */
 /* Nad 980px se hero pořád připíná (position:sticky, 100svh) — na nízkém
    displeji na šířku by karty ukously moc místa. Pod 980px content plyne
@@ -636,9 +1653,63 @@ a{ color:inherit; text-decoration:none; }
 }
 
 /* ══════════════════════════════════════════════════════════════
+   7.x MIKROINTERAKCE — ruční detaily „za víc peněz"
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Doprovodný kurzor: tečka 1:1 + prstenec, který se zpožďuje.
+   Nad interaktivními prvky se prstenec nafoukne a změkne, při
+   stisku se stáhne. Jen desktop s přesným kurzorem. Element
+   vkládá JS (cursorCompanion), takže bez JS nikde nepřekáží. */
+.cursor{
+  position:fixed; left:0; top:0;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  mix-blend-mode:multiply;
+}
+.cursor__dot,
+.cursor__ring{
+  position:absolute; left:0; top:0;
+  border-radius:50%;
+}
+.cursor__dot{
+  width:6px; height:6px; margin:-3px;
+  background:var(--olive);
+}
+.cursor__ring{
+  width:34px; height:34px; margin:-17px;
+  border:1.5px solid rgba(79,93,58,.5);
+  transition:width .32s var(--e-out), height .32s var(--e-out),
+             margin .32s var(--e-out), background-color .32s var(--e-soft),
+             border-color .32s var(--e-soft);
+}
+.cursor.is-hover .cursor__ring{
+  width:54px; height:54px; margin:-27px;
+  background:rgba(79,93,58,.07);
+  border-color:rgba(79,93,58,.32);
+}
+.cursor.is-down .cursor__ring{
+  width:24px; height:24px; margin:-12px;
+  background:rgba(79,93,58,.12);
+}
+.cursor.is-hidden{ opacity:0 !important; }
+
+/* ── Stiskové „doražení" tlačítek (fyzická odezva). */
+.btn:active{ transform:scale(.97); transition:transform var(--t-fast) var(--e-out); }
+
+/* ── Počítadla čísel: než JS naběhne, ať neblikne 0 (drží finální
+   hodnotu z HTML; JS si ji přečte do data-atributu a rozběhne). */
+.stat-count[data-counting]{ font-variant-numeric:tabular-nums; }
+
+@media (hover:none),(pointer:coarse){
+  .cursor{ display:none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    8. Přístupnost — omezený pohyb
    ══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion:reduce){
+  .cursor{ display:none; }
   html{ scroll-behavior:auto; }
   *,*::before,*::after{
     animation-duration:.01ms !important;
