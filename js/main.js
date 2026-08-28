@@ -49,7 +49,7 @@
   /* ══ 2. Výchozí stavy pro intro ═════════════════════════════════ */
   var photo    = document.querySelector('.hero__photo');
   var navItems = document.querySelectorAll('.navgroup a, .navsep');
-  var ctaBtns  = document.querySelectorAll('.hero__cta .btn');
+  var ctaBtns  = document.querySelectorAll('.hero__cta .flow-btn');
   var cards    = document.querySelectorAll('[data-card]');
 
   /* Maskované řádky sázíme přes yPercent i v JS.
@@ -181,7 +181,7 @@
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    document.querySelectorAll('.hero__cta .btn').forEach(function (btn) {
+    document.querySelectorAll('.hero__cta .flow-btn').forEach(function (btn) {
       var qx = gsap.quickTo(btn, 'x', { duration: .45, ease: 'power3.out' });
       var qy = gsap.quickTo(btn, 'y', { duration: .45, ease: 'power3.out' });
 
@@ -720,35 +720,34 @@
 
   /* ══ 7f. Portrét pod Portfoliem — prémiový reveal + 3D náklon ═══
      Fotka naběhne zdola (fade + posun), vnitřní obraz se dojede
-     z mírného zoomu, za ní se „dokreslí" odsazený rám. Na desktopu
-     fotka reaguje jemným 3D náklonem na pohyb myši + odleskem. */
+     z mírného zoomu. Po hraně obíhá rotující „gradient bold" rám
+     (CSS). Na desktopu fotka reaguje jemným 3D náklonem + odleskem. */
   function buildPortrait() {
     var sec = document.querySelector('.portrait');
     if (!sec) return;
     var fig   = sec.querySelector('.portrait__fig');
     var media = sec.querySelector('.portrait__media');
     var img   = sec.querySelector('.portrait__fig img');
-    var frame = sec.querySelector('.portrait__frame');
+    var beam  = sec.querySelector('.portrait__beam');
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce || !ST) {
       gsap.set(fig, { opacity: 1, y: 0, scale: 1 });
       gsap.set(img, { scale: 1 });
-      if (frame) gsap.set(frame, { opacity: .55, scale: 1 });
       return;
     }
 
     gsap.set(fig, { opacity: 0, y: 44, scale: .94 });
     gsap.set(img, { scale: 1.12 });
-    if (frame) gsap.set(frame, { opacity: 0, scale: .82, transformOrigin: '100% 100%' });
+    if (beam) gsap.set(beam, { opacity: 0 });
 
     ST.create({
       trigger: sec, start: 'top 82%', once: true,
       onEnter: function () {
         gsap.timeline()
-          .to(fig,   { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out' }, 0)
-          .to(img,   { scale: 1, duration: 1.5, ease: 'expo.out' }, 0)
-          .to(frame, { opacity: .55, scale: 1, duration: 1.0, ease: 'expo.out' }, .28);
+          .to(fig,  { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out' }, 0)
+          .to(img,  { scale: 1, duration: 1.5, ease: 'expo.out' }, 0)
+          .to(beam, { opacity: 1, duration: 1.2, ease: 'power2.out' }, .5);
       }
     });
 
@@ -787,9 +786,686 @@
     });
   }
 
+  /* ══ 7g. Fotogalerie — „unfurling" panel + 3D parallax mřížka ═══
+     Podle 3d-parallax-unfurling-gallery (21st.dev), přepsáno do GSAP:
+     scroll nejdřív rozbalí tmavý zaoblený panel na celou plochu
+     (0 → 15 %), pak odrotuje 3D mřížku fotek do skoro roviny a
+     rozjede 4 sloupce různou rychlostí (15 → 100 %).
+     Jen desktop (≥ 901 px) mimo reduce-motion — jinak klidná mřížka. */
+  function buildGallery() {
+    var sec = document.querySelector('.gallery');
+    if (!sec) return;
+
+    var banner = sec.querySelector('.gallery__banner');
+    var matrix = sec.querySelector('.gallery__matrix');
+    var cols   = Array.prototype.slice.call(sec.querySelectorAll('.gallery__col'));
+    var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var desktop = window.matchMedia('(min-width: 901px)').matches;
+
+    if (!ST || reduce || !desktop) return;
+
+    /* Naklonuj obsah každého sloupce jednou, ať 3D mřížka drží výšku. */
+    cols.forEach(function (col) {
+      Array.prototype.slice.call(col.children).forEach(function (fig) {
+        col.appendChild(fig.cloneNode(true));
+      });
+    });
+
+    var tracks = [
+      { from: 0,   to: -40 },
+      { from: -40, to: 10  },
+      { from: 0,   to: -40 },
+      { from: -30, to: 20  }
+    ];
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sec,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    /* 1) Rozbalení panelu */
+    tl.to(banner, {
+      top: 0, right: 0, bottom: 0, left: 0,
+      borderRadius: 0, borderWidth: 0,
+      ease: 'none', duration: .15
+    }, 0);
+
+    /* 2) 3D odrotování mřížky */
+    tl.fromTo(matrix,
+      { rotationX: 25, rotationY: -45, rotation: 15, z: -800 },
+      { rotationX: 4, rotationY: -8, rotation: 2, z: 0, ease: 'none', duration: .85 }, .15);
+
+    /* 3) Paralaxa sloupců */
+    cols.forEach(function (col, i) {
+      var t = tracks[i % 4];
+      tl.fromTo(col, { yPercent: t.from, y: 0 },
+                     { yPercent: t.to, ease: 'none', duration: .85 }, .15);
+    });
+  }
+
+  /* ══ 7h. Lightbox — po kliknutí na fotku v galerii se zvětší ════
+     Sestaví se unikátní seznam fotek (klony v mřížce ignoruje),
+     overlay s tmavým pozadím, obrázek naskočí ze scale .92; šipky
+     + klávesy ←/→ listují, Esc / klik mimo / křížek zavře. */
+  function galleryLightbox() {
+    var sec = document.querySelector('.gallery');
+    if (!sec) return;
+    var matrix = sec.querySelector('.gallery__matrix');
+    var figs = Array.prototype.slice.call(sec.querySelectorAll('.gallery__fig'));
+    if (!matrix || !figs.length) return;
+
+    var seen = {}, photos = [];
+    figs.forEach(function (fig) {
+      var img = fig.querySelector('img');
+      var src = img && img.getAttribute('src');
+      if (!src || seen[src]) return;
+      seen[src] = true;
+      var srcEl = fig.querySelector('source');
+      photos.push({
+        jpg: src,
+        webp: srcEl ? srcEl.getAttribute('srcset') : null,
+        alt: (img.getAttribute('alt') || '')
+      });
+    });
+    if (!photos.length) return;
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var X  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    var LT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+    var RT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+
+    var lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('aria-hidden', 'true');
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Zvětšená fotka');
+    lb.innerHTML =
+      '<div class="lightbox__backdrop"></div>' +
+      '<button class="lightbox__close" type="button" aria-label="Zavřít">' + X + '</button>' +
+      '<button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Předchozí fotka">' + LT + '</button>' +
+      '<button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Další fotka">' + RT + '</button>' +
+      '<figure class="lightbox__stage"><picture><source class="lightbox__src" type="image/webp"><img class="lightbox__img" alt=""></picture></figure>' +
+      '<p class="lightbox__count"></p>';
+    document.body.appendChild(lb);
+
+    var backdrop = lb.querySelector('.lightbox__backdrop');
+    var closeBtn = lb.querySelector('.lightbox__close');
+    var navs     = lb.querySelectorAll('.lightbox__nav');
+    var stage    = lb.querySelector('.lightbox__stage');
+    var srcEl    = lb.querySelector('.lightbox__src');
+    var imgEl    = lb.querySelector('.lightbox__img');
+    var countEl  = lb.querySelector('.lightbox__count');
+    var idx = 0, open = false;
+
+    function render() {
+      var p = photos[idx];
+      if (p.webp) srcEl.setAttribute('srcset', p.webp); else srcEl.removeAttribute('srcset');
+      imgEl.setAttribute('src', p.jpg);
+      imgEl.setAttribute('alt', p.alt);
+      countEl.textContent = (idx + 1) + ' / ' + photos.length;
+    }
+    function show(i) {
+      idx = (i % photos.length + photos.length) % photos.length;
+      render();
+      if (open) {
+        if (!reduce) gsap.fromTo(stage, { opacity: .25, scale: .985 }, { opacity: 1, scale: 1, duration: .32, ease: 'power2.out' });
+        return;
+      }
+      open = true;
+      lb.classList.add('is-open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+      gsap.set(lb, { autoAlpha: 1 });
+      if (reduce) {
+        gsap.set([backdrop, stage, closeBtn, countEl], { opacity: 1 });
+        gsap.set(navs, { opacity: 1 });
+      } else {
+        gsap.fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration: .4, ease: 'power2.out' });
+        gsap.fromTo(stage, { autoAlpha: 0, scale: .92, y: 14 }, { autoAlpha: 1, scale: 1, y: 0, duration: .55, ease: 'expo.out' });
+        gsap.fromTo([closeBtn, countEl], { opacity: 0 }, { opacity: 1, duration: .35, delay: .12 });
+        gsap.fromTo(navs, { opacity: 0 }, { opacity: 1, duration: .35, delay: .12 });
+      }
+      closeBtn.focus();
+    }
+    function hide() {
+      if (!open) return;
+      open = false;
+      lb.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+      if (reduce) { gsap.set(lb, { autoAlpha: 0 }); lb.classList.remove('is-open'); return; }
+      gsap.to(stage, { autoAlpha: 0, scale: .95, y: 10, duration: .3, ease: 'power2.in' });
+      gsap.to(lb, { autoAlpha: 0, duration: .32, ease: 'power2.in',
+        onComplete: function () { lb.classList.remove('is-open'); } });
+    }
+
+    matrix.addEventListener('click', function (e) {
+      var fig = e.target.closest && e.target.closest('.gallery__fig');
+      if (!fig) return;
+      var img = fig.querySelector('img');
+      var src = img && img.getAttribute('src');
+      for (var i = 0; i < photos.length; i++) {
+        if (photos[i].jpg === src) { show(i); break; }
+      }
+    });
+    backdrop.addEventListener('click', hide);
+    closeBtn.addEventListener('click', hide);
+    navs[0].addEventListener('click', function () { show(idx - 1); });
+    navs[1].addEventListener('click', function () { show(idx + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (!open) return;
+      if (e.key === 'Escape') hide();
+      else if (e.key === 'ArrowLeft') show(idx - 1);
+      else if (e.key === 'ArrowRight') show(idx + 1);
+    });
+  }
+
+  /* ══ 7i. Video prezentace — tři přehrávače pod sebou ═══════════
+     Vzhled dle video-player (21st.dev / chetanverma16), přepsáno do
+     vanilla JS: play/pauza (klik na video i tlačítko), scrub lišta,
+     hlasitost + mute, rychlosti 0,5–2×. Ovládání se ukazuje při
+     najetí / při pauze / při fokusu. Spustí-li se jedno video,
+     ostatní se pauznou. Číslo + přehrávač naběhnou při scrollu. */
+  function clampPct(n) { return Math.min(100, Math.max(0, n)); }
+  function fmtTime(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ':' + ('0' + (s % 60)).slice(-2); }
+
+  function initVideoPlayer(wrap, onPlay) {
+    var video = wrap.querySelector('.vplayer__video');
+    var big   = wrap.querySelector('.vplayer__big');
+    var playB = wrap.querySelector('.vplayer__play');
+    var muteB = wrap.querySelector('.vplayer__mute');
+    var bar   = wrap.querySelector('.vplayer__bar');
+    var fill  = wrap.querySelector('.vplayer__fill');
+    var volB  = wrap.querySelector('.vplayer__vol');
+    var volF  = wrap.querySelector('.vplayer__vol-fill');
+    var curEl = wrap.querySelector('.vplayer__time--cur');
+    var durEl = wrap.querySelector('.vplayer__time--dur');
+    var speedB = Array.prototype.slice.call(wrap.querySelectorAll('.vplayer__speeds button'));
+
+    function setFill(p) { p = clampPct(p); fill.style.width = p + '%'; bar.setAttribute('aria-valuenow', Math.round(p)); }
+    function setVolFill(p) { p = clampPct(p); volF.style.width = p + '%'; volB.setAttribute('aria-valuenow', Math.round(p)); }
+
+    function toggle() { if (video.paused) { video.play().catch(function () {}); } else { video.pause(); } }
+    video.addEventListener('click', toggle);
+    big.addEventListener('click', toggle);
+    playB.addEventListener('click', toggle);
+    video.addEventListener('play', function () {
+      wrap.classList.add('is-playing');
+      if (onPlay) onPlay(video);
+    });
+    video.addEventListener('pause', function () { wrap.classList.remove('is-playing'); });
+    video.addEventListener('ended', function () { wrap.classList.remove('is-playing'); });
+
+    function syncDur() { if (isFinite(video.duration) && video.duration > 0) durEl.textContent = fmtTime(video.duration); }
+    video.addEventListener('loadedmetadata', syncDur);
+    video.addEventListener('durationchange', syncDur);
+    syncDur();
+    video.addEventListener('timeupdate', function () {
+      var d = video.duration || 0;
+      setFill(d ? (video.currentTime / d) * 100 : 0);
+      curEl.textContent = fmtTime(video.currentTime);
+    });
+
+    bar.addEventListener('click', function (e) {
+      if (!video.duration) return;
+      var r = bar.getBoundingClientRect();
+      var p = clampPct(((e.clientX - r.left) / r.width) * 100);
+      video.currentTime = (p / 100) * video.duration;
+      setFill(p);
+    });
+    bar.addEventListener('keydown', function (e) {
+      if (!video.duration) return;
+      if (e.key === 'ArrowRight') video.currentTime = Math.min(video.duration, video.currentTime + 5);
+      else if (e.key === 'ArrowLeft') video.currentTime = Math.max(0, video.currentTime - 5);
+    });
+
+    function setVol(v) {
+      v = Math.min(1, Math.max(0, v));
+      video.volume = v;
+      video.muted = v === 0;
+      setVolFill(v * 100);
+      wrap.classList.toggle('is-muted', video.muted || video.volume === 0);
+    }
+    volB.addEventListener('click', function (e) {
+      var r = volB.getBoundingClientRect();
+      setVol((e.clientX - r.left) / r.width);
+    });
+    volB.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') setVol(video.volume + .1);
+      else if (e.key === 'ArrowLeft') setVol(video.volume - .1);
+    });
+    muteB.addEventListener('click', function () {
+      video.muted = !video.muted;
+      wrap.classList.toggle('is-muted', video.muted);
+      setVolFill(video.muted ? 0 : video.volume * 100);
+    });
+    setVolFill(100);
+
+    speedB.forEach(function (b) {
+      b.addEventListener('click', function () {
+        video.playbackRate = parseFloat(b.getAttribute('data-speed'));
+        speedB.forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      });
+    });
+
+    return video;
+  }
+
+  function buildVideos() {
+    var sec = document.querySelector('.videos');
+    if (!sec) return;
+    var items = Array.prototype.slice.call(sec.querySelectorAll('.videos__item'));
+    if (!items.length) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var videos = [];
+    function pauseOthers(active) {
+      videos.forEach(function (v) { if (v !== active && !v.paused) v.pause(); });
+    }
+
+    items.forEach(function (item, idx) {
+      var wrap = item.querySelector('.vplayer');
+      var video = initVideoPlayer(wrap, pauseOthers);
+      videos.push(video);
+
+      if (!ST || reduce) { gsap.set(wrap, { opacity: 1, y: 0 }); return; }
+      gsap.set(wrap, { opacity: 0, y: 42 });
+      ST.create({
+        trigger: item, start: 'top 82%', once: true,
+        onEnter: function () {
+          gsap.to(wrap, { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: idx * 0.12 });
+        }
+      });
+    });
+  }
+
+  /* ══ 7j. Reference — kolotoč jedné recenze ════════════════════
+     Podle design-testimonial (21st.dev), přepsáno do vanilla JS:
+     jedna recenze naráz, auto-přepínání po 6 s + kruhová navigace.
+     Obří číslo bleeduje vlevo (parallax na myš, blur-in přechod),
+     citace se odkrývá po slovech, autor s narůstající linkou,
+     svislá progress linka. */
+  function buildTestimonials() {
+    var sec = document.querySelector('.testi');
+    if (!sec) return;
+
+    var items = Array.prototype.slice.call(sec.querySelectorAll('.testi__source > div')).map(function (d) {
+      return {
+        quote: d.textContent.trim(),
+        name: d.getAttribute('data-name') || '',
+        role: d.getAttribute('data-role') || '',
+        logo: d.getAttribute('data-logo') || ''
+      };
+    });
+    if (!items.length) return;
+
+    var idxEl     = sec.querySelector('.testi__index');
+    var fillEl    = sec.querySelector('.testi__progress-fill');
+    var badgeLogo = sec.querySelector('.testi__badge-logo');
+    var quoteEl = sec.querySelector('.testi__quote');
+    var lineEl  = sec.querySelector('.testi__author-line');
+    var nameEl  = sec.querySelector('.testi__author-name');
+    var roleEl  = sec.querySelector('.testi__author-role');
+    var prevB   = sec.querySelector('.testi__prev');
+    var nextB   = sec.querySelector('.testi__next');
+    var stage   = sec.querySelector('.testi__stage');
+    var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var i = 0;
+    var timer = null;
+    var animating = false;
+    var animated = !reduce && !!ST;
+
+    function splitQuote(txt) {
+      quoteEl.innerHTML = txt.split(/\s+/).map(function (w) { return '<span>' + w + '</span>'; }).join(' ');
+      return Array.prototype.slice.call(quoteEl.querySelectorAll('span'));
+    }
+
+    function fillPct() { return ((i + 1) / items.length) * 100 + '%'; }
+
+    function setBadge(t) {
+      if (!badgeLogo) return;
+      if (t.logo) { badgeLogo.src = t.logo; badgeLogo.alt = t.name; badgeLogo.style.display = ''; }
+      else { badgeLogo.removeAttribute('src'); badgeLogo.style.display = 'none'; }
+    }
+
+    function paintStatic() {
+      var t = items[i];
+      idxEl.textContent = ('0' + (i + 1)).slice(-2);
+      setBadge(t);
+      nameEl.textContent = t.name;
+      roleEl.textContent = t.role;
+      splitQuote(t.quote);
+      fillEl.style.height = fillPct();
+    }
+
+    if (reduce || !ST) {
+      paintStatic();
+      gsap.set([quoteEl, sec.querySelector('.testi__badge'), sec.querySelector('.testi__author')], { opacity: 1 });
+      gsap.set(lineEl, { scaleX: 1 });
+      wireNav();
+      return;
+    }
+
+    /* Přechod: krátký „ven", pak plná výměna obsahu a „dovnitř".
+       Výměnu i odemčení řídí prostý setTimeout (ne GSAP ticker),
+       aby se kolotoč nikdy nezasekl, i kdyby tweeny neběžely. */
+    function render(dir) {
+      animating = true;
+      var t = items[i];
+      var badge = sec.querySelector('.testi__badge');
+      var author = sec.querySelector('.testi__author');
+
+      gsap.to([badge, author], { opacity: 0, y: -10, duration: .22, ease: 'power2.in' });
+      gsap.to(quoteEl.children, { opacity: 0, y: -8, duration: .2, stagger: .004, ease: 'power2.in' });
+      gsap.to(idxEl, { opacity: 0, scale: 1.08, filter: 'blur(10px)', duration: .3, ease: 'power2.in' });
+
+      setTimeout(function () {
+        idxEl.textContent = ('0' + (i + 1)).slice(-2);
+        setBadge(t);
+        nameEl.textContent = t.name;
+        roleEl.textContent = t.role;
+        var words = splitQuote(t.quote);
+        gsap.set(quoteEl, { opacity: 1, y: 0 });
+        gsap.set(words, { opacity: 0, y: 10 });
+
+        gsap.fromTo(idxEl, { opacity: 0, scale: .86, filter: 'blur(10px)' },
+                           { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .55, ease: 'expo.out' });
+        gsap.fromTo(badge, { opacity: 0, x: dir < 0 ? 18 : -18 }, { opacity: 1, x: 0, duration: .4, ease: 'power3.out' });
+        gsap.to(words, { opacity: 1, y: 0, duration: .5, stagger: .014, ease: 'expo.out' });
+        gsap.fromTo(author, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .45, delay: .08, ease: 'power3.out' });
+        gsap.fromTo(lineEl, { scaleX: 0 }, { scaleX: 1, duration: .6, delay: .12, ease: 'expo.out' });
+        gsap.to(fillEl, { height: fillPct(), duration: .5, ease: 'expo.out' });
+        animating = false;
+      }, 240);
+    }
+
+    function go(n, manual) {
+      if (animating) return;
+      i = (i + n + items.length) % items.length;
+      if (animated) render(n < 0 ? -1 : 1);
+      else {
+        paintStatic();
+        gsap.set([quoteEl, sec.querySelector('.testi__badge'), sec.querySelector('.testi__author'), quoteEl.querySelectorAll('span')], { opacity: 1, y: 0 });
+        gsap.set(lineEl, { scaleX: 1 });
+      }
+      if (manual) restart();
+    }
+    function restart() {
+      if (timer) clearInterval(timer);
+      if (!reduce) timer = setInterval(function () { go(1, false); }, 6000);
+    }
+    function wireNav() {
+      prevB.addEventListener('click', function () { go(-1, true); });
+      nextB.addEventListener('click', function () { go(1, true); });
+      sec.addEventListener('mouseenter', function () { if (timer) clearInterval(timer); });
+      sec.addEventListener('mouseleave', restart);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { if (timer) clearInterval(timer); } else restart();
+      });
+    }
+
+    /* Parallax obřího čísla na pohyb myši (jen desktop, přesný kurzor) */
+    if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      var qx = gsap.quickTo(idxEl, '--px', { duration: .5, ease: 'power3' });
+      var qy = gsap.quickTo(idxEl, '--py', { duration: .5, ease: 'power3' });
+      stage.addEventListener('pointermove', function (e) {
+        var r = stage.getBoundingClientRect();
+        qx(((e.clientX - (r.left + r.width / 2)) / r.width) * 22);
+        qy(((e.clientY - (r.top + r.height / 2)) / r.height) * 16);
+      });
+      stage.addEventListener('pointerleave', function () { qx(0); qy(0); });
+    }
+
+    /* Výchozí stav — blockquote je vidět (opacity 1), skrytá jsou jen
+       jednotlivá slova; badge/autor naběhnou jako celek. */
+    paintStatic();
+    gsap.set([sec.querySelector('.testi__badge'), sec.querySelector('.testi__author')], { opacity: 0 });
+    gsap.set(quoteEl, { opacity: 1, y: 0 });
+    gsap.set(lineEl, { scaleX: 0 });
+    gsap.set(fillEl, { height: 0 });
+    gsap.set(quoteEl.querySelectorAll('span'), { opacity: 0, y: 10 });
+
+    wireNav();
+    ST.create({
+      trigger: sec, start: 'top 72%', once: true,
+      onEnter: function () {
+        var badge = sec.querySelector('.testi__badge');
+        var author = sec.querySelector('.testi__author');
+        var words = quoteEl.querySelectorAll('span');
+        gsap.timeline()
+          .fromTo(idxEl, { opacity: 0, scale: .86, filter: 'blur(10px)' },
+                         { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .7, ease: 'expo.out' }, 0)
+          .fromTo(badge, { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: .5, ease: 'power3.out' }, .1)
+          .to(words, { opacity: 1, y: 0, duration: .5, stagger: .014, ease: 'expo.out' }, .2)
+          .fromTo(author, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .3)
+          .fromTo(lineEl, { scaleX: 0 }, { scaleX: 1, duration: .6, ease: 'expo.out' }, .45)
+          .to(fillEl, { height: fillPct(), duration: .6, ease: 'expo.out' }, .3)
+          .add(restart);
+      }
+    });
+  }
+
+  /* ══ 7k. Kontakt — formulář (contact-card) + prémiové mikrointerakce
+     Bez backendu: validace + sestavení mailto odkazu, honeypot.
+     Reveal: karta nabíhá, „+" rohy „lupnou" z rotace, nadpis zpod
+     masky, kontaktní čipy popnou, pole se staggerem. Interakce:
+     podtržení pole se kreslí při fokusu, tlačítko má světelný přeběh
+     a po odeslání šipka → fajfka s „lupnutím". Karta má jemné světlo
+     u kurzoru. */
+  function buildContact() {
+    var sec = document.querySelector('.contact');
+    if (!sec) return;
+    var form    = sec.querySelector('.contact__form');
+    var card    = sec.querySelector('.contact__card');
+    var glow    = sec.querySelector('.contact__glow');
+    var titleI  = sec.querySelector('.contact__title span');
+    var lead    = sec.querySelector('.contact__lead');
+    var corners = Array.prototype.slice.call(sec.querySelectorAll('.contact__plus'));
+    var icos    = Array.prototype.slice.call(sec.querySelectorAll('.contact__ico'));
+    var infoTx  = Array.prototype.slice.call(sec.querySelectorAll('.contact__item > div'));
+    var fields  = Array.prototype.slice.call(sec.querySelectorAll('.contact__field, .contact__submit, .contact__consent'));
+    var note    = sec.querySelector('.contact__note');
+    var btn     = sec.querySelector('.contact__submit');
+    var btnTxt  = btn.querySelector('.flow-btn__txt');
+    var hp      = form.querySelector('.contact__hp');
+    var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var nameEl  = form.querySelector('#cf-name');
+    var mailEl  = form.querySelector('#cf-email');
+    var phoneEl = form.querySelector('#cf-phone');
+    var msgEl   = form.querySelector('#cf-msg');
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var sentTimer = null;
+
+    function setNote(txt, cls) {
+      note.textContent = txt || '';
+      note.className = 'contact__note' + (txt ? ' is-shown' : '') + (cls ? ' ' + cls : '');
+    }
+    function mark(el, bad) { el.classList.toggle('is-invalid', !!bad); }
+
+    [nameEl, mailEl, phoneEl, msgEl].forEach(function (el) {
+      el.addEventListener('input', function () {
+        mark(el, false);
+        if (note.classList.contains('is-err')) setNote('');
+      });
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (hp.value) { setNote('Děkuji, zpráva byla odeslána.', 'is-ok'); form.reset(); return; }
+
+      var badName = !nameEl.value.trim();
+      var badMail = !EMAIL_RE.test(mailEl.value.trim());
+      var badMsg  = !msgEl.value.trim();
+      mark(nameEl, badName);
+      mark(mailEl, badMail);
+      mark(msgEl, badMsg);
+      if (badName || badMail || badMsg) {
+        setNote('Zkontrolujte prosím vyznačená pole.', 'is-err');
+        var bad = form.querySelector('.is-invalid');
+        if (bad) bad.focus();
+        return;
+      }
+
+      var subject = 'Poptávka moderování — ' + nameEl.value.trim();
+      var body =
+        'Jméno: ' + nameEl.value.trim() + '\n' +
+        'E-mail: ' + mailEl.value.trim() + '\n' +
+        (phoneEl.value.trim() ? 'Telefon: ' + phoneEl.value.trim() + '\n' : '') +
+        '\n' + msgEl.value.trim() + '\n';
+
+      setNote('Otevírám váš e-mailový klient…', 'is-ok');
+      btn.classList.remove('is-sent');
+      void btn.offsetWidth;                 // reflow, ať „lupne" i podruhé
+      btnTxt.textContent = 'Odesláno';
+      btn.classList.add('is-sent');
+      clearTimeout(sentTimer);
+      sentTimer = setTimeout(function () {
+        btn.classList.remove('is-sent');
+        btnTxt.textContent = 'Odeslat poptávku';
+      }, 3200);
+
+      window.location.href = 'mailto:info@filiplejcek.cz'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+    });
+
+    /* Světlo u kurzoru po kartě (jen desktop s přesným kurzorem). */
+    if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        glow.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        glow.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      });
+    }
+
+    if (!ST || reduce) {
+      gsap.set(titleI, { yPercent: 0, y: 0 });
+      gsap.set([card, lead].concat(corners, icos, infoTx, fields), { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 });
+      return;
+    }
+
+    gsap.set(titleI, { yPercent: 120, y: 0 });
+    gsap.set(card, { opacity: 0, y: 40 });
+    gsap.set(corners, { opacity: 0, scale: 0, rotate: -90, transformOrigin: '50% 50%' });
+    gsap.set(lead, { opacity: 0, y: 12 });
+    gsap.set(icos, { opacity: 0, scale: .5, rotate: -12 });
+    gsap.set(infoTx, { opacity: 0, x: -10 });
+    gsap.set(fields, { opacity: 0, y: 16 });
+
+    ST.create({
+      trigger: sec, start: 'top 78%', once: true,
+      onEnter: function () {
+        gsap.timeline({ defaults: { ease: 'expo.out' } })
+          .to(card, { opacity: 1, y: 0, duration: 1 }, 0)
+          .to(corners, { opacity: 1, scale: 1, rotate: 0, duration: .7, stagger: .07, ease: 'back.out(2)' }, .1)
+          .to(titleI, { yPercent: 0, duration: .9, ease: 'power3.out' }, .18)
+          .to(lead, { opacity: 1, y: 0, duration: .6 }, .34)
+          .to(icos, { opacity: 1, scale: 1, rotate: 0, duration: .55, stagger: .08, ease: 'back.out(2.2)' }, .4)
+          .to(infoTx, { opacity: 1, x: 0, duration: .5, stagger: .08 }, .46)
+          .to(fields, { opacity: 1, y: 0, duration: .6, stagger: .07 }, .4);
+      }
+    });
+  }
+
+  /* ══ 7l. Patička — footer-section ════════════════════════════
+     4 sloupce (sekce, kontakt, sociální sítě) + rychlý e-mail →
+     mailto. Rok se dopočítá. Sloupce naběhnou při vjezdu. */
+  function buildFooter() {
+    var footer = document.querySelector('.footer');
+    if (!footer) return;
+    var cols   = Array.prototype.slice.call(footer.querySelectorAll('.footer__col'));
+    var yearEl = footer.querySelector('.footer__year');
+    var news   = footer.querySelector('.footer__news');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    if (news) {
+      var input   = news.querySelector('input');
+      var sendBtn = news.querySelector('.flow-btn');
+      var sendTxt = sendBtn && sendBtn.querySelector('.flow-btn__txt');
+      var sendTimer;
+      var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      news.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var v = input.value.trim();
+        if (!RE.test(v)) { input.classList.add('is-invalid'); input.focus(); return; }
+        input.classList.remove('is-invalid');
+        if (sendBtn) {
+          sendBtn.classList.remove('is-sent');
+          void sendBtn.offsetWidth;            // reflow, ať „lupne" i podruhé
+          if (sendTxt) sendTxt.textContent = 'Odesláno';
+          sendBtn.classList.add('is-sent');
+          clearTimeout(sendTimer);
+          sendTimer = setTimeout(function () {
+            sendBtn.classList.remove('is-sent');
+            if (sendTxt) sendTxt.textContent = 'Odeslat';
+          }, 3200);
+        }
+        window.location.href = 'mailto:info@filiplejcek.cz'
+          + '?subject=' + encodeURIComponent('Mám zájem o spolupráci')
+          + '&body=' + encodeURIComponent('Můj e-mail: ' + v + '\n\n');
+      });
+      input.addEventListener('input', function () { input.classList.remove('is-invalid'); });
+    }
+
+    if (!ST || reduce) { gsap.set(cols, { opacity: 1, y: 0 }); return; }
+    gsap.set(cols, { opacity: 0, y: 24 });
+    ST.create({
+      trigger: footer, start: 'top 88%', once: true,
+      onEnter: function () {
+        gsap.to(cols, { opacity: 1, y: 0, duration: .7, stagger: .1, ease: 'expo.out' });
+      }
+    });
+  }
+
+  /* ══ 7m. Mobilní menu (overlay z hero lišty) ══════════════════ */
+  function mobileMenu() {
+    var btn = document.querySelector('.hero__bar-menu');
+    var nav = document.getElementById('mnav');
+    if (!btn || !nav) return;
+    var closeB = nav.querySelector('.mnav__close');
+    var links  = nav.querySelectorAll('a');
+    var openTimer;
+
+    function open() {
+      clearTimeout(openTimer);
+      nav.hidden = false;
+      void nav.offsetWidth;                       // reflow → přechod opacity naskočí
+      nav.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      document.documentElement.style.overflow = 'hidden';
+      if (closeB) closeB.focus();
+    }
+    function close() {
+      nav.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      document.documentElement.style.overflow = '';
+      openTimer = setTimeout(function () { nav.hidden = true; }, 320);
+      btn.focus();
+    }
+
+    btn.addEventListener('click', open);
+    if (closeB) closeB.addEventListener('click', close);
+    Array.prototype.forEach.call(links, function (a) {
+      a.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) close();
+    });
+  }
+
   /* ══ 7. Start ═══════════════════════════════════════════════════ */
   function init() {
     fitWordmark();
+    mobileMenu();
 
     var built = false;
     function build() {
@@ -804,6 +1480,12 @@
       buildRail();
       buildServices();
       buildPortrait();
+      buildGallery();
+      galleryLightbox();
+      buildVideos();
+      buildTestimonials();
+      buildContact();
+      buildFooter();
       if (ST) ST.refresh();
     }
 

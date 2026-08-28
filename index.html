@@ -14,11 +14,11 @@
 <meta property="og:image" content="img/og-image.jpg">
 <meta property="og:locale" content="cs_CZ">
 
-<link rel="preload" as="image" href="img/filip-lejcek.webp" type="image/webp" media="(min-width:981px)" fetchpriority="high">
-<link rel="preload" as="image" href="img/filip-lejcek-mobil.webp" type="image/webp" media="(max-width:980px)" fetchpriority="high">
+<link rel="preload" as="image" href="img/filip-lejcek.webp?v=2" type="image/webp" media="(min-width:981px)" fetchpriority="high">
+<link rel="preload" as="image" href="img/filip-lejcek-mobil.webp?v=2" type="image/webp" media="(max-width:980px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-book.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-medium.woff2" crossorigin>
-<link rel="stylesheet" href="css/style.css?v=36">
+<link rel="stylesheet" href="css/style.css?v=70">
 </head>
 <body>
 
@@ -61,7 +61,8 @@
 
     <!-- Mini pás log (jako .nav-comapny-wrap na heynesh.com) -->
     <div class="rail__logos" aria-hidden="true">
-      <div class="rail__logos-row">
+      <div class="rail__logos-track">
+       <div class="rail__logos-row">
         <div class="rail__logos-group">
           <img src="img/logos/hitradio.png"      alt="" loading="lazy" decoding="async">
           <img src="img/logos/hyundai.png"       alt="" loading="lazy" decoding="async">
@@ -88,6 +89,7 @@
           <img src="img/logos/sport-cz.png"      alt="" loading="lazy" decoding="async">
           <img src="img/logos/nova-sport.png"    alt="" loading="lazy" decoding="async">
         </div>
+       </div>
       </div>
     </div>
 
@@ -118,14 +120,14 @@
     <!-- Vrstva 2 — fotografie moderátora (výřez bez pozadí) -->
     <div class="hero__photo-layer" aria-hidden="true">
       <picture>
-        <!-- na telefonu užší portrétní výřez (hlava po kolena) -->
-        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.webp"
-                type="image/webp" width="535" height="760">
-        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.png"
-                type="image/png" width="535" height="760">
-        <source srcset="img/filip-lejcek.webp" type="image/webp" width="538" height="1178">
-        <img class="hero__photo" src="img/filip-lejcek.png"
-             width="538" height="1178"
+        <!-- výřez bez pozadí, po pas; menší soubor pro telefony -->
+        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.webp?v=2"
+                type="image/webp" width="788" height="950">
+        <source media="(max-width:980px)" srcset="img/filip-lejcek-mobil.png?v=2"
+                type="image/png" width="788" height="950">
+        <source srcset="img/filip-lejcek.webp?v=2" type="image/webp" width="1244" height="1500">
+        <img class="hero__photo" src="img/filip-lejcek.png?v=2"
+             width="1244" height="1500"
              alt="" fetchpriority="high" decoding="async">
       </picture>
     </div>
@@ -135,6 +137,15 @@
 
     <!-- Vrstva 4 — obsah -->
     <div class="hero__top">
+      <!-- Horní lišta (jen mobil) -->
+      <div class="hero__bar">
+        <a class="hero__bar-brand" href="#hero">Filip Lejček</a>
+        <a class="hero__bar-cta" href="#kontakt">Poptávka</a>
+        <button class="hero__bar-menu" type="button" aria-label="Otevřít menu" aria-expanded="false" aria-controls="mnav">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.8"/><rect x="11" y="2" width="7" height="7" rx="1.8"/><rect x="2" y="11" width="7" height="7" rx="1.8"/><rect x="11" y="11" width="7" height="7" rx="1.8"/></svg>
+        </button>
+      </div>
+
       <h1 class="wordmark" id="wordmark">
         <span class="wordmark__inner" aria-hidden="true"><span class="wordmark__l">L</span><span class="wordmark__l">E</span><span class="wordmark__l">J</span><span class="wordmark__l">Č</span><span class="wordmark__l">E</span><span class="wordmark__l">K</span></span>
         <span class="u-sr">Filip Lejček — profesionální moderátor</span>
@@ -168,10 +179,18 @@
         <span class="ln"><span class="ln__i">pozornost.</span></span>
       </p>
       <div class="hero__cta">
-        <a class="btn btn--primary" href="#kontakt">
-          Nezávazná poptávka
+        <a class="flow-btn" href="#kontakt">
+          <svg class="flow-btn__arr flow-btn__arr--l" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <span class="flow-btn__txt">Nezávazná poptávka</span>
+          <span class="flow-btn__circle" aria-hidden="true"></span>
+          <svg class="flow-btn__arr flow-btn__arr--r" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </a>
-        <a class="btn btn--ghost" href="#o-mne">O mně</a>
+        <a class="flow-btn" href="#o-mne">
+          <svg class="flow-btn__arr flow-btn__arr--l" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <span class="flow-btn__txt">O mně</span>
+          <span class="flow-btn__circle" aria-hidden="true"></span>
+          <svg class="flow-btn__arr flow-btn__arr--r" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
       </div>
     </div>
 
@@ -186,6 +205,7 @@
 
       <div class="cards-left">
         <article class="card card--wide" data-card>
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/></svg></span>
           <p class="card__txt"><strong>150+</strong><span>odmoderovaných akcí</span></p>
         </article>
 
@@ -209,8 +229,30 @@
   </div>
 </section>
 
-<!-- ══════════════════════ REFERENCE ══════════════════════ -->
-<section class="brands" id="reference" aria-label="Reference — značky, se kterými Filip Lejček spolupracoval">
+<!-- Mobilní menu (otevírá tlačítko v hero liště) -->
+<div class="mnav" id="mnav" hidden>
+  <div class="mnav__panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <button class="mnav__close" type="button" aria-label="Zavřít menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <nav class="mnav__links" aria-label="Hlavní navigace">
+      <a href="#hero">Domů</a>
+      <a href="#o-mne">O mně</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#foto">Fotogalerie</a>
+      <a href="#video">Video</a>
+      <a href="#reference">Reference</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="mnav__foot">
+      <a href="https://www.instagram.com/filipkoozy/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/filip.lejcek/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ ZNAČKY (nekonečný pás log) ══════════════════════ -->
+<section class="brands" aria-label="Značky, se kterými Filip Lejček spolupracoval">
 
   <div class="brands__marquee" role="img"
        aria-label="Loga značek, se kterými Filip Lejček spolupracoval: Hitrádio FM, Hyundai, Tipsport, AC Sparta Praha, Škoda Auto, Rytíři Kladno, Red Bull, Livesport, HC Sparta Praha, Sport.cz, Nova Sport.">
@@ -377,8 +419,7 @@
 <section class="portrait" aria-label="Filip Lejček — portrét">
   <div class="portrait__inner">
     <figure class="portrait__fig">
-      <span class="portrait__aura"  aria-hidden="true"></span>
-      <span class="portrait__frame" aria-hidden="true"></span>
+      <span class="portrait__aura" aria-hidden="true"></span>
       <div class="portrait__media">
         <picture>
           <source srcset="img/filip-portret.webp" type="image/webp">
@@ -387,17 +428,354 @@
         </picture>
         <span class="portrait__grain" aria-hidden="true"></span>
         <span class="portrait__sheen" aria-hidden="true"></span>
+        <span class="portrait__beam"  aria-hidden="true"></span>
       </div>
     </figure>
   </div>
 </section>
 
-<!-- Další sekce (foto, video, kontakt) doplníme následně -->
+<!-- ══════════════════════ FOTOGALERIE ══════════════════════ -->
+<section class="gallery" id="foto" aria-label="Fotogalerie">
+  <div class="gallery__pin">
+    <div class="gallery__banner">
+
+      <div class="gallery__stage">
+        <div class="gallery__matrix">
+
+          <div class="gallery__col" data-col="1">
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-01.webp" type="image/webp"><img src="img/gallery/foto-01.jpg" alt="Filip Lejček moderuje galavečer na jevišti" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-05.webp" type="image/webp"><img src="img/gallery/foto-05.jpg" alt="Filip Lejček ve studiu Nova Sport" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-09.webp" type="image/webp"><img src="img/gallery/foto-09.jpg" alt="Filip Lejček na Sparta Business Clubu" loading="lazy" decoding="async"></picture></figure>
+          </div>
+
+          <div class="gallery__col" data-col="2">
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-02.webp" type="image/webp"><img src="img/gallery/foto-02.jpg" alt="Filip Lejček moderuje hokej v Kometa aréně" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-06.webp" type="image/webp"><img src="img/gallery/foto-06.jpg" alt="Filip Lejček v O2 areně" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-10.webp" type="image/webp"><img src="img/gallery/foto-10.jpg" alt="Filip Lejček moderuje Sparta Business Club" loading="lazy" decoding="async"></picture></figure>
+          </div>
+
+          <div class="gallery__col" data-col="3">
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-03.webp" type="image/webp"><img src="img/gallery/foto-03.jpg" alt="Filip Lejček u brány Ligy mistrů" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-07.webp" type="image/webp"><img src="img/gallery/foto-07.jpg" alt="Filip Lejček na akci Red Bull Flick" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-11.webp" type="image/webp"><img src="img/gallery/foto-11.jpg" alt="Filip Lejček s mikrofonem na stadionu Sparty" loading="lazy" decoding="async"></picture></figure>
+          </div>
+
+          <div class="gallery__col" data-col="4">
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-04.webp" type="image/webp"><img src="img/gallery/foto-04.jpg" alt="Filip Lejček ve studiu Chance Národní ligy" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-08.webp" type="image/webp"><img src="img/gallery/foto-08.jpg" alt="Filip Lejček moderuje akci Škoda Auto Nadační fond" loading="lazy" decoding="async"></picture></figure>
+            <figure class="gallery__fig"><picture><source srcset="img/gallery/foto-12.webp" type="image/webp"><img src="img/gallery/foto-12.jpg" alt="Filip Lejček při moderování akce" loading="lazy" decoding="async"></picture></figure>
+          </div>
+
+        </div>
+        <div class="gallery__vignette" aria-hidden="true"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ VIDEO PREZENTACE ══════════════════════ -->
+<section class="videos" id="video" aria-label="Video prezentace z moderování">
+  <div class="videos__inner">
+
+    <article class="videos__item">
+      <div class="vplayer" data-vplayer>
+        <video class="vplayer__video" preload="metadata" playsinline src="video/video-1.mp4#t=0.1"></video>
+        <button class="vplayer__big" type="button" aria-label="Přehrát">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="vplayer__controls">
+          <div class="vplayer__scrub">
+            <span class="vplayer__time vplayer__time--cur">0:00</span>
+            <div class="vplayer__bar" role="slider" tabindex="0" aria-label="Pozice ve videu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="vplayer__fill"></div></div>
+            <span class="vplayer__time vplayer__time--dur">0:00</span>
+          </div>
+          <div class="vplayer__row">
+            <div class="vplayer__left">
+              <button class="vplayer__btn vplayer__play" type="button" aria-label="Přehrát / pauza">
+                <svg class="vplayer__i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="vplayer__i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+              </button>
+              <button class="vplayer__btn vplayer__mute" type="button" aria-label="Ztlumit / obnovit zvuk">
+                <svg class="vplayer__i-vol" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+                <svg class="vplayer__i-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+              </button>
+              <div class="vplayer__vol" role="slider" tabindex="0" aria-label="Hlasitost" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="vplayer__vol-fill"></div></div>
+            </div>
+            <div class="vplayer__speeds">
+              <button type="button" data-speed="0.5">0,5×</button>
+              <button type="button" data-speed="1" class="is-active">1×</button>
+              <button type="button" data-speed="1.5">1,5×</button>
+              <button type="button" data-speed="2">2×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="videos__item">
+      <div class="vplayer" data-vplayer>
+        <video class="vplayer__video" preload="metadata" playsinline src="video/video-2.mp4#t=0.1"></video>
+        <button class="vplayer__big" type="button" aria-label="Přehrát">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="vplayer__controls">
+          <div class="vplayer__scrub">
+            <span class="vplayer__time vplayer__time--cur">0:00</span>
+            <div class="vplayer__bar" role="slider" tabindex="0" aria-label="Pozice ve videu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="vplayer__fill"></div></div>
+            <span class="vplayer__time vplayer__time--dur">0:00</span>
+          </div>
+          <div class="vplayer__row">
+            <div class="vplayer__left">
+              <button class="vplayer__btn vplayer__play" type="button" aria-label="Přehrát / pauza">
+                <svg class="vplayer__i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="vplayer__i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+              </button>
+              <button class="vplayer__btn vplayer__mute" type="button" aria-label="Ztlumit / obnovit zvuk">
+                <svg class="vplayer__i-vol" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+                <svg class="vplayer__i-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+              </button>
+              <div class="vplayer__vol" role="slider" tabindex="0" aria-label="Hlasitost" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="vplayer__vol-fill"></div></div>
+            </div>
+            <div class="vplayer__speeds">
+              <button type="button" data-speed="0.5">0,5×</button>
+              <button type="button" data-speed="1" class="is-active">1×</button>
+              <button type="button" data-speed="1.5">1,5×</button>
+              <button type="button" data-speed="2">2×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="videos__item">
+      <div class="vplayer" data-vplayer>
+        <video class="vplayer__video" preload="metadata" playsinline src="video/video-3.mp4#t=0.1"></video>
+        <button class="vplayer__big" type="button" aria-label="Přehrát">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="vplayer__controls">
+          <div class="vplayer__scrub">
+            <span class="vplayer__time vplayer__time--cur">0:00</span>
+            <div class="vplayer__bar" role="slider" tabindex="0" aria-label="Pozice ve videu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="vplayer__fill"></div></div>
+            <span class="vplayer__time vplayer__time--dur">0:00</span>
+          </div>
+          <div class="vplayer__row">
+            <div class="vplayer__left">
+              <button class="vplayer__btn vplayer__play" type="button" aria-label="Přehrát / pauza">
+                <svg class="vplayer__i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="vplayer__i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+              </button>
+              <button class="vplayer__btn vplayer__mute" type="button" aria-label="Ztlumit / obnovit zvuk">
+                <svg class="vplayer__i-vol" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+                <svg class="vplayer__i-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+              </button>
+              <div class="vplayer__vol" role="slider" tabindex="0" aria-label="Hlasitost" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="vplayer__vol-fill"></div></div>
+            </div>
+            <div class="vplayer__speeds">
+              <button type="button" data-speed="0.5">0,5×</button>
+              <button type="button" data-speed="1" class="is-active">1×</button>
+              <button type="button" data-speed="1.5">1,5×</button>
+              <button type="button" data-speed="2">2×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ══════════════════════ REFERENCE (recenze zákazníků) ══════════════════════ -->
+<section class="testi" id="reference" aria-label="Reference zákazníků" data-testi>
+
+  <!-- Zdroj dat — čte JS, na stránce skryté. Pořadí = pořadí v kolotoči. -->
+  <div class="testi__source" hidden>
+    <div data-name="Škoda Auto" data-role="Firemní akce" data-logo="img/logos/skoda.png">„Spolupráce s Filipem Lejčkem byla od začátku velmi profesionální. Oceňujeme jeho přirozený projev, výbornou přípravu a schopnost citlivě reagovat na atmosféru celé akce. Dokázal udržet plynulý průběh programu, pracovat s publikem a zároveň zachovat reprezentativní úroveň odpovídající charakteru firemní události. Filip působil jistě, kultivovaně a spolehlivě, což výrazně přispělo k celkově pozitivnímu dojmu z akce."</div>
+    <div data-name="AC Sparta Praha" data-role="Sportovní události" data-logo="img/logos/ac-sparta.png">„Filip Lejček se při moderování projevil jako spolehlivý a pohotový profesionál. Velmi dobře zvládl komunikaci s publikem, dynamiku programu i nenucené propojení sportovní atmosféry s reprezentativním vystupováním. Jeho moderátorský styl je přirozený, energický a zároveň dostatečně kultivovaný, což je pro akce spojené se značkou našeho klubu důležité. Spolupráci hodnotíme velmi pozitivně a oceňujeme zejména jeho připravenost, flexibilitu a jistotu v projevu."</div>
+  </div>
+
+  <div class="testi__stage">
+    <span class="testi__index" aria-hidden="true">01</span>
+
+    <div class="testi__main">
+      <div class="testi__aside" aria-hidden="true">
+        <span class="testi__vlabel">Reference</span>
+        <div class="testi__progress"><span class="testi__progress-fill"></span></div>
+      </div>
+
+      <div class="testi__content">
+        <p class="testi__badge"><img class="testi__badge-logo" src="img/logos/skoda.png" alt="Škoda Auto" width="150" height="26" decoding="async"></p>
+
+        <blockquote class="testi__quote"></blockquote>
+
+        <div class="testi__foot">
+          <div class="testi__author">
+            <span class="testi__author-line" aria-hidden="true"></span>
+            <div>
+              <p class="testi__author-name">Škoda Auto</p>
+              <p class="testi__author-role">Firemní akce</p>
+            </div>
+          </div>
+
+          <div class="testi__nav">
+            <button class="testi__nav-btn testi__prev" type="button" aria-label="Předchozí reference">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 12 6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="testi__nav-btn testi__next" type="button" aria-label="Další reference">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ KONTAKT ══════════════════════ -->
+<section class="contact" id="kontakt" aria-label="Kontakt">
+  <div class="contact__inner">
+    <div class="contact__card">
+      <span class="contact__glow" aria-hidden="true"></span>
+      <span class="contact__plus contact__plus--tl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 5v14M5 12h14"/></svg></span>
+      <span class="contact__plus contact__plus--tr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 5v14M5 12h14"/></svg></span>
+      <span class="contact__plus contact__plus--bl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 5v14M5 12h14"/></svg></span>
+      <span class="contact__plus contact__plus--br" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 5v14M5 12h14"/></svg></span>
+
+      <div class="contact__intro">
+        <h2 class="contact__title"><span>Napište mi</span></h2>
+        <p class="contact__lead">Máte dotaz nebo poptáváte termín? Vyplňte formulář — ozvu se zpravidla do jednoho pracovního dne.</p>
+
+        <div class="contact__info">
+          <div class="contact__item">
+            <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6 8.5-6"/></svg></span>
+            <div>
+              <p class="contact__item-label">E-mail</p>
+              <p class="contact__item-value"><a href="mailto:info@filiplejcek.cz">info@filiplejcek.cz</a></p>
+            </div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c0 9 6 15 15 15l1.5-3.5-4-2-1.8 1.8a12 12 0 0 1-4.8-4.8L7.7 9.5l-2-4L4 5Z"/></svg></span>
+            <div>
+              <p class="contact__item-label">Telefon</p>
+              <p class="contact__item-value"><a href="tel:+420603424059">+420 603 424 059</a></p>
+            </div>
+          </div>
+          <div class="contact__item contact__item--wide">
+            <span class="contact__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+            <div>
+              <p class="contact__item-label">Působnost</p>
+              <p class="contact__item-value">Praha a celá Česká republika</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__form-wrap">
+        <form class="contact__form" method="post" action="mailto:info@filiplejcek.cz" enctype="text/plain" novalidate>
+          <p class="contact__field">
+            <label for="cf-name">Jméno</label>
+            <input id="cf-name" name="jmeno" type="text" autocomplete="name" required>
+          </p>
+          <p class="contact__field">
+            <label for="cf-email">E-mail</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required>
+          </p>
+          <p class="contact__field">
+            <label for="cf-phone">Telefon <span class="contact__opt">(nepovinné)</span></label>
+            <input id="cf-phone" name="telefon" type="tel" autocomplete="tel">
+          </p>
+          <p class="contact__field">
+            <label for="cf-msg">Zpráva</label>
+            <textarea id="cf-msg" name="zprava" rows="4" required></textarea>
+          </p>
+          <input class="contact__hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="contact__submit flow-btn" type="submit">
+            <svg class="flow-btn__arr flow-btn__arr--l" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            <span class="flow-btn__txt">Odeslat poptávku</span>
+            <span class="flow-btn__circle" aria-hidden="true"></span>
+            <svg class="flow-btn__arr flow-btn__arr--r" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            <svg class="flow-btn__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.5 3.5L13 4"/></svg>
+          </button>
+          <p class="contact__note" role="status" aria-live="polite"></p>
+          <p class="contact__consent">Odesláním formuláře berete na vědomí <a href="zasady-ochrany-osobnich-udaju.html">zásady zpracování osobních údajů</a>.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
+<!-- ══════════════════════ PATIČKA ══════════════════════ -->
+<footer class="footer" aria-label="Patička webu">
+  <div class="footer__inner">
+    <div class="footer__grid">
+
+      <div class="footer__col footer__col--lead">
+        <span class="footer__glow" aria-hidden="true"></span>
+        <h2 class="footer__title">Zůstaňme ve spojení</h2>
+        <p class="footer__lead">Nechte mi na sebe e-mail a ozvu se vám co nejdřív. Rád si poslechnu, co chystáte, a probereme termín i podobu akce.</p>
+        <form class="footer__news" novalidate>
+          <input type="email" name="email" placeholder="Váš e-mail" autocomplete="email" aria-label="Váš e-mail" required>
+          <button class="footer__send flow-btn" type="submit">
+            <svg class="flow-btn__arr flow-btn__arr--l" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            <span class="flow-btn__txt">Odeslat</span>
+            <span class="flow-btn__circle" aria-hidden="true"></span>
+            <svg class="flow-btn__arr flow-btn__arr--r" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            <svg class="flow-btn__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.5 3.5L13 4"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="footer__col">
+        <h3 class="footer__head">Sekce</h3>
+        <nav class="footer__links" aria-label="Odkazy v patičce">
+          <a href="#hero">Domů</a>
+          <a href="#o-mne">O mně</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#foto">Fotogalerie</a>
+          <a href="#video">Video</a>
+          <a href="#reference">Reference</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+      </div>
+
+      <div class="footer__col">
+        <h3 class="footer__head">Kontakt</h3>
+        <address class="footer__addr">
+          <a href="mailto:info@filiplejcek.cz">info@filiplejcek.cz</a><br>
+          <a href="tel:+420603424059">+420 603 424 059</a><br>
+          Praha a celá Česká republika
+        </address>
+      </div>
+
+      <div class="footer__col">
+        <h3 class="footer__head">Sledujte mě</h3>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/filipkoozy/" target="_blank" rel="noopener" aria-label="Instagram" data-tip="Instagram">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2.4" y="2.4" width="11.2" height="11.2" rx="3.4"/><circle cx="8" cy="8" r="2.8"/><circle cx="11.3" cy="4.7" r=".6" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.facebook.com/filip.lejcek/" target="_blank" rel="noopener" aria-label="Facebook" data-tip="Facebook">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M9.2 14V8.8h1.8l.3-2.1H9.2V5.3c0-.6.2-1 1.1-1h1.1V2.4C12.1 2.4 11.4 2.3 10.6 2.3 8.9 2.3 7.8 3.3 7.8 5.1v1.6H6v2.1h1.8V14z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">© <span class="footer__year">2026</span> Filip Lejček · Všechna práva vyhrazena.</p>
+      <p class="footer__credit">Web vytvořil <a href="https://www.web-pilot.cz" target="_blank" rel="noopener">WebPilot</a></p>
+      <nav class="footer__legal" aria-label="Právní odkazy">
+        <a href="zasady-ochrany-osobnich-udaju.html">Zásady zpracování osobních údajů</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
-<script src="js/main.js?v=30" defer></script>
+<script src="js/main.js?v=55" defer></script>
 </body>
 </html>

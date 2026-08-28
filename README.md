@@ -8,7 +8,7 @@ css/style.css         design tokeny + layout + responzivita
 js/main.js            GSAP intro + scroll choreografie + reveal sekcí + lišta
 fonts/                PP Neue Montreal (Book / Medium / Bold), self-host
 img/filip-lejcek.*    hlavní hero fotka (WebP + PNG fallback)
-img/filip-lejcek-mobil.*  portrétní výřez pro telefony
+img/filip-lejcek-mobil.*  tentýž výřez po pas, menší soubor pro telefony
 img/about-1.*         O mně — Filip na stadionu Sparty (WebP + JPG)
 img/about-2.*         O mně — Filip ve studiu Hitrádia (WebP + JPG)
 img/logos/            loga značek pro pás v sekci Reference
@@ -31,16 +31,28 @@ zvyš číslo, ať je jasné, že jde o nový obsah.
 
 ## 1. Fotka
 
-Hotová. Ze zdrojového reportážního záběru je vyřezaný Filip i s barovou židlí,
-druhá osoba odstraněná.
+Hotová. Ze stadionového reportážního záběru (Filip sedí, mluví do mikrofonu,
+za ním rozostřené hlediště) je vyříznutá postava po pas, pozadí odstraněné.
 
 | Soubor | Rozměr | Kde se použije |
 |---|---|---|
-| `img/filip-lejcek.webp` (82 kB) | 538×1178 | desktop a tablet — celá postava na židli |
-| `img/filip-lejcek-mobil.webp` (53 kB) | 535×760 | ≤ 720 px — portrétní výřez hlava–kolena |
+| `img/filip-lejcek.webp` (183 kB) | 1244×1500 | ≥ 981 px — výřez po pas, bez pozadí |
+| `img/filip-lejcek-mobil.webp` (87 kB) | 788×950 | ≤ 980 px — tentýž výřez, menší soubor |
 
 PNG varianty jsou fallback pro prohlížeče bez WebP. Správnou verzi vybírá
-`<picture>` přes `media`, přednačítá se jen ta relevantní.
+`<picture>` přes `media`, přednačítá se jen ta relevantní. URL nesou
+`?v=2` — bez toho prohlížeče držely starý (jinak pojmenovaný) výřez z cache.
+
+**Kompozice na ≥ 981 px** (jako [heynesh.com](https://heynesh.com) —
+velký portrét po pas): rozměr sedí na `<picture>` (`position:absolute`,
+`left:50%`, `bottom:calc(var(--pad) * -1)`,
+`height:clamp(640px, 104vh, 1120px)`, `aspect-ratio:1244/1500`,
+`translateX(-50%)`), takže postava je kotvená ke spodní hraně, klín
+„vytéká" pod fold a ořízne ho `overflow:hidden` na `.hero__sticky`.
+Rozměr je záměrně mimo `.hero__photo` (`<img>`), aby zůstaly netknuté
+GSAP transformace (reveal, `scale`, parallax). Blok je uvozený
+`@media (min-width:981px)`; mobil používá tentýž výřez v běžném toku
+(`.hero__photo-layer` má `aspect-ratio:788/950`).
 
 Výřez je reprodukovatelný:
 
@@ -48,23 +60,22 @@ Výřez je reprodukovatelný:
 python tools/vyrez-filip.py "C:/cesta/ke/zdroji.jpeg"
 ```
 
-Skript odstraní pozadí modelem `isnet-general-use` (jako jediný zachová židli —
-`u2net_human_seg` ji odmaže a Filip pak visí v prázdnu), odmaže druhou osobu
-ruční polyčárou a vyexportuje obě varianty. Souvislé komponenty ani eroze
-druhou osobu neoddělí — její koleno se Filipova stehna dotýká v pásu y 700–830
-příliš širokým mostem, proto je hranice odečtená z masky ručně
-(`HRANICE_X` / `HRANICE_Y` v hlavičce skriptu).
+Skript odstraní pozadí modelem `isnet-general-use` s alpha mattingem,
+nechá jen největší souvislou komponentu (spadne tmavý stolek v rozích),
+lehce stáhne alpha kanál proti světlému lemu z bílého trička a hlediště,
+ořízne těsně na obsah + přidá průhledné nadhlaví a vyexportuje obě
+velikosti. Klíčové konstanty jsou v hlavičce skriptu
+(`CILOVA_VYSKA`, `MOBIL_VYSKA`, `OKRAJ`, `NADHLAVI`).
 
 Vyžaduje jednorázově:
 
 ```bash
-pip install rembg onnxruntime scipy
+pip install rembg onnxruntime pillow scipy
 ```
 
-**Rozlišení:** zdroj má 1066×1600, po ořezu zbylo 538×1178. Na displeji
-1440×900 se fotka vykresluje 411×900, tedy se zmenšením na 0,76 — ostré.
-Na retina displejích už se ale mírně dopočítává. Pokud existuje originál
-ve vyšším rozlišení, stačí ho prohnat stejným skriptem.
+**Rozlišení:** zdroj má 1634×1840, po ořezu (obsah + nadhlaví) 1244×1500.
+Na běžném desktopu se výřez vykresluje ~700–760 px na šířku, na retině
+je rezerva. Vyšší originál stačí prohnat stejným skriptem.
 
 
 ---
@@ -77,12 +88,14 @@ Všechno je přímo v `index.html`, žádné CMS:
 |---|---|
 | Obří značka `LEJČEK` | `.wordmark__inner` — každé písmeno vlastní `<span>` (kvůli animaci) |
 | Headline | `.hero__headline` — každý řádek vlastní `<span class="ln">` |
-| Tlačítka | `.hero__cta` |
+| Tlačítka | `.hero__cta` — obě jsou `.flow-btn` (text ve `.flow-btn__txt`) |
 | Text vlevo dole | `.hero__kicker` |
 | Text vpravo dole | `.hero__lede` |
 | Čísla v kartách | `.card--wide`, `.card--tall` |
 | Vlastnosti | `.card--traits` |
-| Navigace | `.hero__nav` |
+| Navigace (desktop) | `.hero__nav` |
+| Horní lišta (mobil) | `.hero__bar` — značka, CTA „Poptávka", tlačítko menu |
+| Mobilní menu | `#mnav` (`.mnav__links`) |
 
 **Pozor u víceřádkových textů:** každý řádek musí zůstat obalený
 `<span class="ln"><span class="ln__i">…</span></span>`. Vnější `span` je maska,
@@ -138,10 +151,14 @@ Dvě místa měla původně nedostatečný kontrast a byla opravena:
   stojí vedle fotky na světlé béžové, takže krémový text na světlém skle
   vycházel na kontrast ~1,5:1 (prakticky nečitelné). Sklo je teď tmavé
   (`rgba(28,30,23,.65)`), funguje spolehlivě bez ohledu na pozadí.
-- **Sekundární tlačítko** (`.btn--ghost`) mělo světlý tón (10 % bílá) a
-  spoléhalo na tmavý scrim za fotkou. V místě, kam padá (mimo Filipovu
-  siluetu), byl scrim slabý a kontrast klesal k ~3,9:1. Tlačítko má teď
-  tmavý skleněný tón (34 % černá) stejné rodiny jako karty.
+- **Hero CTA tlačítka** jsou teď obě `.flow-btn` (stejná animace jako CTA
+  v kontaktu a patičce — na hover z obrysu vyroste olivový kruh, text se
+  posune, šipky se prohodí, rohy na 12 px). Nad fotkou (`@media
+  (min-width:981px)`) mají krémový text, světlý obrys a jemné tmavé sklo
+  (`rgba(20,22,17,.30)` + blur), ať drží kontrast i bez hoveru; na mobilu
+  (béžová, tmavý text) používají základní styl `.flow-btn`. Magnetický
+  efekt (`magneticCta()`) na nich zůstává. Staré třídy `.btn` /
+  `.btn--primary` / `.btn--ghost` už web nepoužívá.
 
 ---
 
@@ -184,49 +201,57 @@ nenačte GSAP) se web zobrazí staticky a kompletní.
 
 | Šířka | Chování |
 |---|---|
-| ≥ 1181 px | plný layout jako reference — karty lemují postavu, fotka jako absolutní vrstva vzadu |
-| 981–1180 px | karty se přesunou k okrajům |
-| ≤ 980 px | jednosloupcový layout: hero se nepřipíná, fotka jde **mimo absolutní vrstvu do běžného toku pod obsah**, headline ztmavne na béžové, karty do mřížky, **pořadí obsahu je přeskládané (viz níže)** |
-| ≤ 720 px | dlouhý popisný odstavec (`.hero__lede`) se skrývá — zůstává jen krátký podpis |
-| ≤ 400 px | karta s vlastnostmi (`.card--traits`) přejde na jeden sloupec — stat karty (`.cards-left`) zůstávají 2sloupcové i tady |
+| ≥ 981 px | plný layout jako reference — stat karty (`.cards-left`) u levého okraje, `.card--traits` u pravého, mimo tělo postavy; fotka jako absolutní vrstva vzadu; hero se připíná (`position:sticky`, 100 svh) |
+| 981–1180 px | karty ještě těsněji k okrajům (`var(--pad)`) |
+| ≤ 980 px | **mobilní hero podle reference** — viz níže |
 
-**Proč hranice 980, ne 720:** nad 720 px se fotka dřív pořád chovala jako
-full-bleed vrstva přes celou (mnohem vyšší, protože obsah je poskládaný
-pod sebe) hero sekci na tabletu. Spodní text tak místy padal přímo na
-Filipovo tmavé sako — ink text na ink fotce, kontrast ~1,1:1. Sjednocením
-hranice na 980 px (stejně jako už dřív používal `main.js` pro scroll
-choreografii) fotka na tabletu skončí mimo tok textu, stejně jako na
-mobilu.
+### Mobilní hero (≤ 980 px)
 
-**Pořadí obsahu na ≤ 980 px (`order` v [css/style.css:611](css/style.css:611)):**
-značka → headline/CTA → krátký podpis → **fotka** → karty. Původně ležela
-fotka (přes `order:99`) až za dvěma odstavci textu a třemi kartami — na
-375px displeji to bylo 930 px scrollu, přes celou obrazovku, než byl
-Filip vůbec vidět. Karty jsou doplňkové (čísla, osobnostní přívlastky),
-klidně počkají za fotkou; fotka je hlavní důvod důvěry a měla by se
-objevit v první obrazovce. Po přeskládání a skrytí dlouhého odstavce na
-telefonech (viz níže) je fotka na 375×812 vidět na y=470 — bez scrollu.
+Přestavěno na **jednu obrazovku, vše absolutně** (jako mobilní heynesh),
+`display:block` na `.hero__sticky`, `height:100svh` (`min 600` / `max 940`),
+`overflow:hidden`. Rozvržení shora dolů:
 
-**Dlouhý popisný odstavec zmizí na telefonech, ne na tabletu:** tablet
-(721–980 px) má na pět řádků textu dost místa a zůstává beze změny; na
-užším telefonu by ale jen oddaloval fotku a přidával skenování navíc.
-Krátký podpis („Profesionální moderátor. To je Filip Lejček.“) nese tu
-samou informaci v jedné větě a zůstává vždy.
+1. **Horní lišta** `.hero__bar` (`z-index:--z-nav`) — značka „Filip Lejček"
+   (tmavá pilulka), CTA „Poptávka" (olivová pilulka, `margin-left:auto`),
+   tlačítko menu `.hero__bar-menu` (mřížka 2×2). Desktop lišta je
+   `display:none`, `.hero__nav` naopak jen na desktopu.
+2. **Wordmark** `.wordmark` absolutně nahoře, `color:var(--olive)`, `z-index`
+   pod fotkou (`--z-wordmark:2 < --z-photo:3`) — vykoukne jen horních ~45 %.
+3. **Fotka** `.hero__photo-layer` absolutně přes celou plochu
+   (`top:clamp(88px,17.5vh,142px)` → spodní hrana), `object-fit:cover`,
+   silnější spodní scrim kvůli bílému headline.
+4. **Karta vlastností** `.card--traits` — absolutně vlevo přes fotku,
+   `ul` jednosloupcově. **Stat „8+"** `.card--tall` — absolutně vpravo.
+   Karty jsou tmavé sklo (`rgba(16,18,12,.44)` + blur, cream text),
+   ikonky `--olive-lt`. Wrappery `.hero__cards` / `.cards-left` jsou
+   `position:static` / `display:contents`, děti se pozicují samostatně
+   vůči `.hero__sticky`.
+5. **Headline** `.hero__center` absolutně v dolní třetině přes fotku,
+   `color:var(--cream)` + text-shadow (`justify-self:stretch` kvůli
+   základnímu `justify-self:center`). `.hero__cta` je `display:none`
+   (CTA je v liště). `.hero__bottom` (podpis + odstavec) taky skryté —
+   referenční mobilní layout je nemá.
+6. **Stat „150+"** `.card--wide` absolutně vlevo dole, s ikonkou mikrofonu
+   (`.card--wide .card__ico`, na desktopu `display:none`).
 
-Ošetřeno i landscape na nízkých displejích a `env(safe-area-inset-*)`
-kvůli výřezu a gesture baru.
+**Mobilní menu** `#mnav` (`div.mnav` za hero v DOM): fixní overlay přes
+celou plochu, béžové pozadí, velké odkazy na sekce + Instagram/Facebook.
+Otevírá `mobileMenu()` v `main.js` — `hidden` toggle + `.is-open`
+(fade), zámek scrollu (`documentElement.style.overflow`), zavření
+křížkem / Esc / kliknutím na odkaz. Na desktopu `display:none`.
+
+Ošetřeno `env(safe-area-inset-*)` (lišta, spodní karta, panel menu).
+Reduced-motion: `min-height:100svh` drží výšku i s `height:auto`.
 
 ---
 
-## 6. Sekce Reference (`#reference`)
+## 6. Pás log značek (`.brands`, bez kotvy)
 
-Nekonečný pás log značek pod hero. Pohybová řeč podle
-[heynesh.com](https://heynesh.com): štítek „Reference" najíždí šířkou
-z 0 (`expo.inOut`), nadpis po řádcích zpod masky, pás decentně nafade
-(vše přes ScrollTrigger v `buildBrands()` v `js/main.js`). Samotný
-marquee jede v CSS (`@keyframes brands-marquee`, `translateX 0 → -50 %`,
-52 s lineárně), pauza na hover, měkké okraje maskou, spotlight na najeté
-dlaždici.
+Nekonečný pás log značek pod hero. **Sekce nemá `id`** — kotva
+`#reference` teď míří na recenze (viz sekce 12). Marquee jede v CSS
+(`@keyframes brands-marquee`, `translateX 0 → -50 %`, 52 s lineárně),
+pauza na hover, měkké okraje maskou, spotlight na najeté dlaždici; pás
+decentně nafade při vjezdu do viewportu (`buildBrands()` v `js/main.js`).
 
 Loga jsou v `img/logos/` – 10× barevné rastrové PNG stažené z rozpracované
 verze `filiplejcek.lovable.app` a zmenšené (dlouhá hrana ≤ 560 px), plus
@@ -351,19 +376,202 @@ doleva, vše jednosloupcově. Na `≥ 1280 px` `.services__inner` používá
 > službou 06 (svatba) — vypadá to na omylem zkopírovaný text. Uprav
 > `.services__desc` u 4. `<article>` v [index.html](index.html).
 
-## 10. Co zbývá
+## 10. Fotogalerie (`#foto`)
+
+Podle komponenty **3d-parallax-unfurling-gallery** (21st.dev), přepsáno
+z Reactu/framer-motion do GSAP. Sekce je vysoká `520vh`, vnitřek
+přišpendlený přes CSS `position: sticky` (`.gallery__pin`). Scrubovaná
+timeline (`buildGallery()` v `js/main.js`):
+
+1. **Rozbalení panelu** (0 → 15 %): tmavý zaoblený panel `.gallery__banner`
+   se z odsazení `9vh / 5vw` a rádiusu roztáhne na celou plochu
+   (`top/left/right/bottom → 0`, `border-radius → 0`, `border → 0`).
+2. **3D mřížka** (15 → 100 %): `.gallery__matrix` (`transform-style:
+   preserve-3d`, `perspective` na `.gallery__stage`) odrotuje z
+   `rotateX 25° / rotateY -45° / rotateZ 15° / translateZ -800` do skoro
+   roviny (`4° / -8° / 2° / 0`).
+3. **Paralaxa sloupců**: 4 sloupce jedou různou rychlostí (`yPercent`
+   -40…+20). JS obsah každého sloupce jednou naklonuje, ať 3D mřížka
+   drží výšku.
+
+Titulek `.gallery__title` vyjede zpod masky a při rozjezdu mřížky zmizí.
+
+Pod **900 px** a při `prefers-reduced-motion` → klidná mřížka bez pinu
+a 3D: 2 sloupce (`display: contents` na `.gallery__col`), pod 520 px
+1 sloupec, tmavé pozadí `#141410`.
+
+**Lightbox** (`galleryLightbox()` v `js/main.js`): klik na fotku ji
+zvětší v překryvu. Seznam se dedupuje podle `src`, takže klonované
+dlaždice míří na správnou fotku (12 unikátních). Listování šipkami
+i klávesami ←/→ (s přetočením), zavření křížkem / klikem mimo / Esc,
+zámek scrollu (`html { overflow: hidden }`) po dobu otevření. Styly
+`.lightbox*` v [css/style.css](css/style.css).
+
+**Fotky:** `img/gallery/foto-01…12.{jpg,webp}` — 12 skutečných fotek
+(zdroj `C:\Users\studio\Desktop\Filip Lejček fotky`, zmenšeno na dlouhou
+hranu 1280 px, `.webp` + `.jpg` progressive). Rozdělení do sloupců:
+sl. 1 = 01/05/09, sl. 2 = 02/06/10, sl. 3 = 03/07/11, sl. 4 = 04/08/12.
+Přidání další fotky = nový pár `foto-NN.{jpg,webp}` + `<figure>` do
+příslušného `.gallery__col` (JS si sloupce sám naklonuje na výšku).
+
+## 11. Video prezentace (`#video`)
+
+Podle komponenty **video-player** (21st.dev / chetanverma16), přepsáno
+z Reactu/framer-motion do vanilla JS (`buildVideos()` +
+`initVideoPlayer()` v `js/main.js`). **Tři přehrávače (`.vplayer`)
+vedle sebe** — `.videos__inner` je `display:grid;
+grid-template-columns:repeat(3,1fr)`, pod 720 px se skládají pod sebe
+(`1fr`). Bez čísel a linek (dřív `.videos__head` — odstraněno).
+
+- **Ovládání** (`.vplayer__controls`): scrub lišta (klik = seek,
+  ←/→ = ±5 s), play/pauza (klik na video / velké „play" uprostřed /
+  tlačítko), mute + lišta hlasitosti, rychlosti 0,5 / 1 / 1,5 / 2×.
+  Na myši se panel ukazuje při najetí / při pauze / při fokusu, na
+  dotyku je vždy vidět. V řadě jsou přehrávače úzké, takže
+  `@media (min-width:721px)` panel zkompaktní (menší mezery, užší
+  hlasitost, menší časy).
+- **Jen jedno naráz**: spuštění jednoho přehrávače pauzne ostatní.
+- `#t=0.1` ve `src` vykreslí první snímek jako poster
+  (`preload="metadata"`).
+- Reveal přehrávačů přes ScrollTrigger per `.videos__item`
+  (`expo.out`, stagger `idx * 0.12 s`).
+
+**Formát přehrávače:** svislý (telefon), jednotný `aspect-ratio:1/2`
+na všech třech (kvůli srovnaným výškám v řadě) + `.vplayer__video`
+`object-fit:cover`, takže **žádné černé pruhy** (ani CSS pillarbox
+u svislých videí, ani „zapečený" pruh z video-1, což je 16:9 soubor
+se svislým obsahem pillarboxovaným natvrdo v pixelech — `1/2` ořez ho
+odřízne). `background` je `var(--bg)`, aby krátký výpadek při načítání
+ladil s pozadím. Videa 2 a 3 jsou nativně svislá (540×960 / 464×832),
+`1/2` je oproti jejich poměru ořízne shora/zdola o ~5 %.
+
+**Videa:** `video/video-1…3.mp4` (zdroj `Desktop\show-1/5/6.mp4`,
+zkopírováno beze změny — bez ffmpeg; ~5 / 8,5 / 12 MB, `moov` atom
+vepředu, takže se dají streamovat progresivně). Video-1 je 1280×720,
+videa 2–3 svislá.
+
+> ⚠️ Perkládání ve videu (seek na nenačtenou část) potřebuje HTTP
+> **Range** requesty — Python `http.server` v náhledu je neumí, na
+> reálném hostingu (Vercel/Netlify/nginx…) to funguje samo.
+
+> 💡 Pokud bude vadit objem, dej videům `preload="none"` (přijdeš o
+> poster snímek a délku do prvního přehrání) nebo je protáhni ffmpegem
+> (H.264 720p, CRF ~24, `-movflags +faststart`).
+
+## 12. Reference — kolotoč recenzí (`#reference`)
+
+Podle komponenty **design-testimonial** (21st.dev), přepsáno do vanilla
+JS (`buildTestimonials()` v `js/main.js`). Jedna recenze naráz,
+**auto-přepínání po 6 s** + kruhová navigace; pauza na hover a při
+skryté záložce.
+
+- **Obří světlé číslo** (`01` / `02`) bleeduje přes levý okraj,
+  `parallax` na pohyb myši (`--px/--py` přes `gsap.quickTo`), při
+  přepnutí `blur-in` (`scale + filter: blur`).
+- Vlevo svislý label „Reference" (`writing-mode: vertical-rl`) +
+  **progress linka**, jejíž výplň roste podle indexu.
+- Uprostřed: nahoře **logo klienta** (`.testi__badge-logo`,
+  `object-fit:contain`) — mění se podle recenze z atributu `data-logo`
+  na zdrojovém `<div>`. Wordmark (Škoda) má výšku ~26 px; čtvercové
+  znaky dostávají přes `[src*="ac-sparta"]` výšku ~52 px, ať mají
+  podobnou optickou váhu. **Citace odkrývaná po slovech**
+  (`stagger .014`, `expo.out`), autor s **narůstající linkou**
+  (`scaleX 0 → 1`). `setBadge()` přepíná `src` + `alt`; když recenze
+  `data-logo` nemá, `<img>` se schová.
+- Kruhová **navigace se sunoucí výplní** (`::before` `translateX`),
+  šipka zbělá na hoveru.
+
+Data recenzí jsou v `.testi__source` (skrytý `<div hidden>`), JS je
+čte do pole — **úprava textu / přidání recenze / změna loga = jen tam**
+(`data-name`, `data-role`, `data-logo`). Loga jsou v `img/logos/`
+(Škoda `skoda.png`, AC Sparta `ac-sparta.png`). Přechod i odemčení
+řídí `setTimeout`, takže se kolotoč nezasekne.
+`prefers-reduced-motion` → bez auto-přepínání; nav funguje okamžitým
+překreslením.
+
+> Kotva `#reference` se přesunula sem — sekce s pásem log (`.brands`)
+> už `id` nemá.
+
+## 13. Kontakt — formulář (`#kontakt`)
+
+Podle komponenty **contact-card** (21st.dev), přepsáno do vanilla JS
+(`buildContact()` v `js/main.js`). Ostrá karta (`var(--cream)`, bez
+zaoblení) s „+" značkami v rozích; vlevo nadpis + text + kontaktní
+údaje (e-mail, telefon, působnost — každý s ikonou v čipu), vpravo na
+jemně odlišeném podkladu formulář (jméno, e-mail, telefon, zpráva,
+odeslat). Pod 900 px jednosloupcově (dělící linka se překlopí na
+`border-top`).
+
+**Odesílání bez backendu:** JS po validaci sestaví `mailto:` odkaz
+(`subject` = „Poptávka moderování — {jméno}", `body` = pole + zpráva)
+a otevře e-mailový klient. Fallback bez JS: `<form action="mailto:…"
+method="post" enctype="text/plain">`. Honeypot `_gotcha` proti spamu
+(vyplněné pole → tichá „úspěšná" hláška, nic se neodešle). Validace:
+jméno + zpráva neprázdné, e-mail podle regexu; chybná pole dostanou
+`.is-invalid`, hláška v `.contact__note` (`role="status"`).
+
+**Prémiové mikrointerakce:** při vjezdu do viewportu „+" rohy „lupnou"
+z rotace (`back.out`), kontaktní čipy popnou, nadpis zpod masky, pole
+se staggerem. Fokus pole = olivové **podtržení se nakreslí**
+(`::after`, `scaleX 0→1`) + label zezelená a rozšíří `letter-spacing`;
+chyba přepne podtržení na červené (`:has(.is-invalid)`). Tlačítko je
+**„flow-button"** (21st.dev): pilulka s obrysem → na hoveru z ní
+vyroste olivový kruh (`scale(30)`), text se posune, jedna šipka odjede
+vpravo a druhá přijede zleva, rohy se stáhnou na 12 px; po odeslání
+`.is-sent` = olivová výplň + „Odesláno" + fajfka + `box-shadow`
+„lupnutí" (3,2 s). Mechanika je ve sdílené třídě **`.flow-btn`**
+(používá ji i CTA v patičce). Karta má jemné **světlo u kurzoru**
+(`.contact__glow`, `--mx/--my`). Vše přes GSAP / CSS, respektuje
+`prefers-reduced-motion`.
+
+> ⚠️ Pro reálné nasazení zvaž napojení na **Formspree**
+> (`action="https://formspree.io/f/ID"`, `method="POST"`) nebo
+> **Netlify Forms** (`data-netlify="true"` + skryté `form-name`) —
+> pak stačí v `buildContact()` vypnout `e.preventDefault()` / mailto
+> větev.
+
+## 14. Patička (`.footer`)
+
+Podle komponenty **footer-section** (21st.dev), přepsáno do vanilla JS
+(`buildFooter()`). Tmavá (`var(--ink)`, cream text), 4 sloupce
+(`@media ≤900 px` 2, `≤560 px` 1):
+
+1. **Zůstaňme ve spojení** — text + rychlé pole na e-mail a pod ním
+   **stejné „flow-button" CTA jako v kontaktu** (`.footer__send.flow-btn`,
+   tmavá varianta) → po validaci sestaví `mailto:` s předmětem
+   „Mám zájem o spolupráci" a tlačítko přepne na `.is-sent`
+   (olivová výplň + „Odesláno" + fajfka, 3,2 s); rozmazaný olivový
+   „glow" blob za sloupcem.
+2. **Sekce** — odkazy na všechny kotvy webu.
+3. **Kontakt** — `<address>` s e-mailem, telefonem a působností.
+4. **Sledujte mě** — Instagram + Facebook v kruhových tlačítkách
+   s CSS tooltipem (`::after`, `data-tip`).
+
+Spodní pruh: `© {rok} Filip Lejček` (rok se dopočítá z `Date`) +
+odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
+(ScrollTrigger, stagger). `.footer__inner` na `≥1280 px` používá
+`var(--rail-space)`, ať obsah nezmizí za lištou.
+
+> **Vynecháno z předlohy:** přepínač světlý/tmavý režim (web má
+> pevný design). Odkaz „Zásady zpracování osobních údajů" je
+> `href="#"` — doplň stránku / text (GDPR, formulář sbírá osobní údaje).
+
+## 15. Co zbývá
 
 - [x] Hero fotka (desktop + mobilní varianta)
-- [x] Sekce Reference (pás log)
+- [x] Pás log značek
 - [x] Sekce O mně
 - [x] Levá lišta (po hero)
 - [x] Portfolio služeb
+- [x] Fotogalerie (efekt + 12 fotek hotové)
+- [x] Video prezentace (přehrávač + 3 videa)
+- [x] Reference — recenze (Škoda Auto, AC Sparta Praha)
+- [x] Kontaktní formulář (mailto, bez backendu)
+- [x] Patička
+- [ ] Doplnit stránku/text „Zásady zpracování osobních údajů"
 - [ ] Opravit popis služby 04 (viz výše)
 - [ ] Potvrdit čísla — `150+ akcí` a `8 let` jsou zástupné (hero karty i lišta)
 - [ ] Doplnit `img/og-image.jpg` (1200×630) pro sdílení na sociálních sítích
-- [ ] Navazující sekce (foto, video, kontakt) — u každé použít vlevo
-  `var(--rail-space)` místo `--pad` kvůli liště (viz sekce 8)
 
-Kotvy v navigaci (`#o-mne`, `#portfolio`, `#foto`, `#video`, `#reference`,
-`#kontakt`) čekají — `#reference`, `#o-mne` a `#portfolio` jsou hotové;
-lišta na ně odkazuje už teď.
+Všechny kotvy v navigaci (`#o-mne`, `#portfolio`, `#foto`, `#video`,
+`#reference`, `#kontakt`) jsou hotové.
