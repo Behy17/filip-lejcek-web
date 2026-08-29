@@ -2642,30 +2642,33 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .hero__cards{ position:static; display:block; margin:0; inset:auto; }
   .cards-left{ display:contents; }
 
-  /* "8+" karta v pravém horním rohu FOTKY (ne přes wordmark nad ní) —
-     top je odvozený od stejného výrazu jako .hero__photo-layer, ať
-     vždy začíná těsně pod okrajem fotky, na jakékoliv výšce okna. */
+  /* Styl a schodovité rozmístění podle heynesh.com/ (mobilní hero):
+     jednosloupcová traits karta + menší stat karta, mírně posazené
+     do schodů. Na heynesh.com jsou vedle sebe vlevo/vpravo, ale
+     Filipova fotka má obličej posazený jinak (víc doleva/doprostřed)
+     — vlevo by traits karta zajela přes oči. Obě karty proto zůstávají
+     na pravé straně, kde je fotka bez obličeje i bez gestikulující
+     ruky (viz .card--tall komentář výš v souboru), jen naskládané
+     schodovitě pod sebou stejně jako v referenci. */
   .card--tall{
     position:absolute;
     right:var(--pad); left:auto;
     top:calc(clamp(88px,17.5vh,142px) + 14px);
     margin:0;
     z-index:var(--z-cards);
-    width:min(58vw,222px);
-    padding:clamp(12px,3vw,18px) clamp(14px,3.6vw,20px);
+    width:min(34vw,130px);
+    padding:clamp(11px,3vw,15px);
   }
 
-  /* Traits karta samostatně, menší, v úrovni srdce postavy — pod
-     rameny, nad headline blokem (viz .hero__center bottom). */
   .card--traits{
     position:absolute;
-    right:var(--pad); left:auto;
-    top:clamp(360px,45vh,420px);
+    right:calc(var(--pad) + 4.5vw); left:auto;
+    top:calc(clamp(88px,17.5vh,142px) + 86px);
     z-index:var(--z-cards);
-    width:min(46vw,178px);
-    padding:clamp(10px,2.4vw,13px) clamp(11px,2.8vw,14px);
+    width:min(37vw,140px);
+    padding:clamp(11px,3vw,15px);
   }
-  .card--traits ul{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(5px,1.6vw,8px) clamp(8px,2.6vw,13px); }
+  .card--traits ul{ grid-template-columns:1fr; gap:clamp(6px,1.6vw,9px); }
   .card--traits li{ font-size:clamp(11px,2.9vw,12.5px); gap:7px; }
   .card--traits svg{ width:11px; height:11px; }
 
