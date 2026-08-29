@@ -2642,13 +2642,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .hero__cards{ position:static; display:block; margin:0; inset:auto; }
   .cards-left{ display:contents; }
 
-  /* Obě karty (traits + "8+") tvoří jeden úhledný, kompaktní blok
-     v pravém horním rohu FOTKY (ne přes wordmark nad ní) — nad jeho
-     ramenem, mimo obličej i gestikulující ruku dole. top je odvozený
-     od stejného výrazu jako .hero__photo-layer, ať blok vždy začíná
-     těsně pod okrajem fotky, na jakékoliv výšce okna. Traits je
-     dvousloupcový (ne 5 řádků pod sebou), ať blok nezabere přes půl
-     fotky. Sjednocená šířka obou karet, ať to působí jako jeden celek. */
+  /* "8+" karta v pravém horním rohu FOTKY (ne přes wordmark nad ní) —
+     top je odvozený od stejného výrazu jako .hero__photo-layer, ať
+     vždy začíná těsně pod okrajem fotky, na jakékoliv výšce okna. */
   .card--tall{
     position:absolute;
     right:var(--pad); left:auto;
@@ -2659,16 +2655,19 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     padding:clamp(12px,3vw,18px) clamp(14px,3.6vw,20px);
   }
 
+  /* Traits karta samostatně, menší, v úrovni srdce postavy — pod
+     rameny, nad headline blokem (viz .hero__center bottom). */
   .card--traits{
     position:absolute;
     right:var(--pad); left:auto;
-    top:calc(clamp(88px,17.5vh,142px) + 90px);
+    top:clamp(360px,45vh,420px);
     z-index:var(--z-cards);
-    width:min(58vw,222px);
-    padding:clamp(12px,2.6vw,15px) clamp(13px,3.2vw,17px);
+    width:min(46vw,178px);
+    padding:clamp(10px,2.4vw,13px) clamp(11px,2.8vw,14px);
   }
-  .card--traits ul{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(6px,1.8vw,9px) clamp(10px,3vw,16px); }
-  .card--traits li{ font-size:clamp(12px,3.2vw,13.5px); }
+  .card--traits ul{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(5px,1.6vw,8px) clamp(8px,2.6vw,13px); }
+  .card--traits li{ font-size:clamp(11px,2.9vw,12.5px); gap:7px; }
+  .card--traits svg{ width:11px; height:11px; }
 
   .card--wide{
     position:absolute;
@@ -2773,10 +2772,6 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    samou informaci v jedné větě. */
 @media (max-width:720px){
   .hero__lede{ display:none; }
-}
-
-@media (max-width:400px){
-  .card--traits ul{ grid-template-columns:1fr; }
 }
 
 /* ── Reference na užších displejích ───────────────────────────── */
