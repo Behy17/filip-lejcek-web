@@ -552,7 +552,11 @@ a{ color:inherit; text-decoration:none; }
 
 .cards-left{
   position:absolute;
-  left:clamp(var(--pad), 3.5vw, 92px); right:auto; top:60%;
+  left:clamp(var(--pad), 3.5vw, 92px); right:auto;
+  /* svisle na střed mezi spodkem "domů•o mně•portfolio" (.hero__nav)
+     a vrškem "Profesionální moderátor…" (.hero__kicker) — přeměřeno
+     na 1280×900: (356+821)/2=588.5, výška bloku 187 -> top 495 = 55% */
+  top:55%;
   display:grid; gap:clamp(10px,1.2vw,16px);
   justify-items:start;
 }
