@@ -2792,10 +2792,12 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     padding:clamp(11px,3vw,15px);
   }
 
+  /* Traits karta samostatně, v úrovni srdce postavy — pod rameny,
+     nad headline blokem, mimo obličej i gestikulující ruku. */
   .card--traits{
     position:absolute;
     right:calc(var(--pad) + 4.5vw); left:auto;
-    top:calc(clamp(88px,17.5vh,142px) + 86px);
+    top:clamp(360px,45vh,420px);
     z-index:var(--z-cards);
     width:min(37vw,140px);
     padding:clamp(11px,3vw,15px);
