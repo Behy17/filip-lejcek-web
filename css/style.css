@@ -2727,7 +2727,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     display:block;
     position:absolute;
     left:var(--pad);
-    top:calc(env(safe-area-inset-top) + 9px);
+    top:calc(env(safe-area-inset-top) + 28px);  /* +19px ≈ 0,5cm doladění na přání */
     z-index:var(--z-nav);
   }
   .hero__bar{
