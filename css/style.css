@@ -2782,10 +2782,13 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      na pravé straně, kde je fotka bez obličeje i bez gestikulující
      ruky (viz .card--tall komentář výš v souboru), jen naskládané
      schodovitě pod sebou stejně jako v referenci. */
+  /* Posazená těsně nad traits kartu (níž, viz .card--traits) —
+     spodek cca 0,5cm (19px) nad jejím vrškem; -64px ≈ vlastní
+     výška téhle karty. */
   .card--tall{
     position:absolute;
     right:var(--pad); left:auto;
-    top:calc(clamp(88px,17.5vh,142px) + 14px);
+    top:calc(clamp(360px,45vh,420px) - 64px);
     margin:0;
     z-index:var(--z-cards);
     width:min(34vw,130px);
