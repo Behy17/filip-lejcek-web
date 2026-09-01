@@ -2755,19 +2755,19 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   }
   .hero__bar-menu svg{ width:17px; height:17px; }
 
-  /* Wordmark za fotkou (jen horní část vykoukne) */
+  /* Wordmark za fotkou (jen horní část vykoukne). Sjednoceno
+     s desktopem (viz @media min-width:981px výš) — stejný poměr
+     prostoru pro háček (.205×wm-size) i line-height:1 místo starého
+     .76, ať je krok písma na mobilu i desktopu vizuálně stejný,
+     jen o kousek výš, ať to působí sevřeněji/prémiověji. */
   .wordmark{
     position:absolute;
     left:var(--pad); right:var(--pad);
-    /* posunuto výš oproti dřívějšímu 58–104px — kompenzuje nový
-       padding-top (místo pro háček) a vizuálně to dá textu víc
-       vzduchu nad fotkou */
-    top:clamp(34px,9vh,80px);
+    top:clamp(28px,7.5vh,68px);
     z-index:var(--z-wordmark);
     color:var(--olive);
-    /* jen na mobilu chceme celý háček nad Č ("LEJČEK") — na desktopu
-       zůstává záměrně useknutý ("LEJCEK"), viz základní pravidlo výš */
-    padding-top:calc(var(--wm-size, 25vw) * .26);
+    line-height:1;
+    padding-top:calc(var(--wm-size, 25vw) * .205);
   }
 
   /* Plovoucí karty — děti pozicujeme samostatně, wrappery rozpustíme */
