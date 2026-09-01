@@ -338,7 +338,7 @@ a{ color:inherit; text-decoration:none; }
      skutečného screenshotu vykreslené stránky (ne teoretických
      font-metrik — ty se u tohoto webfontu neshodovaly se skutečným
      renderem). */
-  transform:translateY(calc(var(--wm-size, 25vw) * .04));
+  transform:translateY(calc(var(--wm-size, 25vw) * .04 + 11px));  /* +11px ≈ 0,3cm doladění na přání */
 }
 .hero__brand-pre__i{
   display:block;
