@@ -334,11 +334,11 @@ a{ color:inherit; text-decoration:none; }
      aby „FILIP" opticky začínalo na svislém tahu „L", ne u hrany boxu */
   margin:0 0 clamp(2px,0.5vw,7px) calc(var(--wm-size, 25vw) * .058);
   /* posunout „FILIP" do středové úrovně háčku nad „Č" — bez vlivu na
-     pozici wordmarku (proto transform, ne margin). Změřeno přímo na
-     vykresleném písmu (canvas ink-scan „Č" vs. cap-height „K"):
-     střed háčku sedí ~.017×--wm-size NAD přirozenou pozicí štítku,
-     ne pod ní. */
-  transform:translateY(calc(var(--wm-size, 25vw) * -.017));
+     pozici wordmarku (proto transform, ne margin). Kalibrováno podle
+     skutečného screenshotu vykreslené stránky (ne teoretických
+     font-metrik — ty se u tohoto webfontu neshodovaly se skutečným
+     renderem). */
+  transform:translateY(calc(var(--wm-size, 25vw) * .03));
 }
 .hero__brand-pre__i{
   display:block;
