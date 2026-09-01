@@ -6,6 +6,7 @@ Statický web, žádný build. Nahraje se kamkoliv (Vercel, Netlify, FTP, subdom
 index.html            levá lišta + hero + Reference (pás log) + O mně
 css/style.css         design tokeny + layout + responzivita
 js/main.js            GSAP intro + scroll choreografie + reveal sekcí + lišta
+js/vendor/            GSAP 3.13.0 + ScrollTrigger, self-host (dřív cdnjs)
 fonts/                PP Neue Montreal (Book / Medium / Bold), self-host
 img/filip-lejcek.*    hlavní hero fotka (WebP + PNG fallback)
 img/filip-lejcek-mobil.*  tentýž výřez po pas, menší soubor pro telefony
@@ -36,8 +37,8 @@ za ním rozostřené hlediště) je vyříznutá postava po pas, pozadí odstran
 
 | Soubor | Rozměr | Kde se použije |
 |---|---|---|
-| `img/filip-lejcek.webp` (183 kB) | 1244×1500 | ≥ 981 px — výřez po pas, bez pozadí |
-| `img/filip-lejcek-mobil.webp` (87 kB) | 788×950 | ≤ 980 px — tentýž výřez, menší soubor |
+| `img/filip-lejcek.webp` (127 kB) | 1244×1500 | ≥ 981 px — výřez po pas, bez pozadí |
+| `img/filip-lejcek-mobil.webp` (60 kB) | 788×950 | ≤ 980 px — tentýž výřez, menší soubor |
 
 PNG varianty jsou fallback pro prohlížeče bez WebP. Správnou verzi vybírá
 `<picture>` přes `media`, přednačítá se jen ta relevantní. URL nesou
@@ -46,13 +47,31 @@ PNG varianty jsou fallback pro prohlížeče bez WebP. Správnou verzi vybírá
 **Kompozice na ≥ 981 px** (jako [heynesh.com](https://heynesh.com) —
 velký portrét po pas): rozměr sedí na `<picture>` (`position:absolute`,
 `left:50%`, `bottom:calc(var(--pad) * -1)`,
-`height:clamp(640px, 104vh, 1120px)`, `aspect-ratio:1244/1500`,
-`translateX(-50%)`), takže postava je kotvená ke spodní hraně, klín
-„vytéká" pod fold a ořízne ho `overflow:hidden` na `.hero__sticky`.
+`height:clamp(640px, 104vh, 1120px)`, `aspect-ratio:1244/1500`),
+takže postava je kotvená ke spodní hraně, klín „vytéká" pod fold
+a ořízne ho `overflow:hidden` na `.hero__sticky`.
 Rozměr je záměrně mimo `.hero__photo` (`<img>`), aby zůstaly netknuté
 GSAP transformace (reveal, `scale`, parallax). Blok je uvozený
 `@media (min-width:981px)`; mobil používá tentýž výřez v běžném toku
 (`.hero__photo-layer` má `aspect-ratio:788/950`).
+
+**Čitelnost „J" ve wordmarku.** Postava (hlava) padne v základní pozici
+přesně přes písmeno „J" — bylo skoro neviditelné. Řeší to dvojice:
+1. `transform:translateX(-50%) translateX(clamp(58px, 120px - 3.2vw, 90px))`
+   na `<picture>` — hlava je ve výřezu ~90 px vlevo od svého středu
+   (gestikuluje pravá ruka → bbox širší doprava), posun ji vrátí nad
+   střed viewportu, takže hlava sjede z „J" do mezery mezi „J" a „Č".
+   Inverzní `vw` = na užších oknech (kde je „J" schovanější a místa míň)
+   posun větší.
+2. `.wordmark__l:nth-child(4){ margin-left:.32em }` (jen `@media ≥981 px`)
+   — mezera před „Č". `fitWordmark()` ji měří a o její šířku písmena
+   zmenší, takže „LEJČEK" pořád bleeduje přes celou šířku, jen se čte
+   jako „LEJ · ČEK" s postavou v mezeře (kryje se se slabičným předělem
+   Lej-ček). Mezera zároveň drží „Č" vpravo od hlavy, aby ji posun
+   fotky nezaboxoval.
+
+   Výsledek: „J" je z ~0 % vidět na ~50 % (užší okna) až ~85 % (≥1440 px),
+   „Č" nese háček + pravá část. Fotky se nedotýká žádné písmeno.
 
 Výřez je reprodukovatelný:
 
@@ -87,6 +106,7 @@ Všechno je přímo v `index.html`, žádné CMS:
 | Co | Kde |
 |---|---|
 | Obří značka `LEJČEK` | `.wordmark__inner` — každé písmeno vlastní `<span>` (kvůli animaci) |
+| Malý štítek „FILIP" nad „LEJČEK", zarovnaný na „L" (jen desktop) | `.hero__brand-pre` > `.hero__brand-pre__i` |
 | Headline | `.hero__headline` — každý řádek vlastní `<span class="ln">` |
 | Tlačítka | `.hero__cta` — obě jsou `.flow-btn` (text ve `.flow-btn__txt`) |
 | Text vlevo dole | `.hero__kicker` |
@@ -104,16 +124,57 @@ vnitřní se animuje — bez toho text nenajede.
 Značka se sází automaticky na přesnou šířku kontejneru (`fitWordmark()`
 v `main.js`), takže jde změnit počet písmen bez ručního dolaďování velikosti.
 
-**Diakritika (Č, Ž, Š, Ř, Ď, Ť, Ň):** záměrně useknutá. `.wordmark` má
-těsný `line-height:.76` (tight display crop) kvůli tomu, jak vypadá velká
-značka — háček nad velkými písmeny (sahá ~0,22 em nad kapitálku) se do
-tak těsného řádku nevejde a `overflow:hidden` (maska pro reveal animaci)
-ho ořízne. „LEJČEK" se tak zobrazuje vizuálně jako „LEJCEK". Jde o vědomé
-rozhodnutí ve prospěch těsného stříhu, ne o chybu — pokud by se to
-v budoucnu mělo změnit, řešení je přidat `padding-top` (uvnitř
-clip-boxu, takže vytvoří skutečný prostor navíc bez zásahu do
-line-height ostatních písmen) a v `measureMorph()` v `main.js`
-kompenzovat posun `.wordmark__inner` od `transform-origin`.
+**Diakritika (háček nad Č):** základní `.wordmark` má těsný
+`line-height:.76` + `overflow:hidden` (maska pro reveal) — háček nad
+velkými písmeny (sahá ~0,2 em nad kapitálku) se do tak těsného řádku
+nevejde a ořízne se. Proto:
+
+- **Desktop (`@media min-width:981px`):** `line-height:1` +
+  `padding-top: var(--wm-size) * .205` (jen tak akorát prostor pro
+  háček uvnitř clip-boxu) + `margin-top: var(--wm-size) * -.185` /
+  `margin-bottom: * -.15`. Sekce má minimální horní padding
+  (`.hero__sticky{ padding-top: clamp(2px,.5vh,8px) }`), takže „LEJČEK"
+  sedí co nejvýš — horní řada písmen je pár px od horní hrany a špička
+  háčku nad Č se jí dotýká (ořez ~5 px, prakticky nepostřehnutelné).
+
+  `fitWordmark()` nastavuje `--wm-size` i na `.hero__brand` (nejen na
+  `#wordmark`), ať z něj štítek „FILIP" počítá své offsety.
+  Výš už značka nejde, aniž by se háček ořízl výrazně.
+- **Mobil (`@media max-width:980px`):** vlastní `padding-top:
+  var(--wm-size) * .26` + `top` posunutý výš; „FILIP" je skryté
+  (na mobilu je značka v horní liště). `.hero__brand` má `display:contents`,
+  aby nerozbil absolutní pozici wordmarku.
+
+### Malý štítek „FILIP" nad „LEJČEK" (`.hero__brand-pre`)
+
+Jen desktop. Vodorovný, bold, `letter-spacing:.24em`,
+`font-size:clamp(16px,1.55vw,23px)`. V **běžném toku** nad wordmarkem
+(je první dítě `.hero__brand`, před `<h1 class="wordmark">`), takže
+sedí těsně nad „LEJČEK". Zarovnání:
+
+- **vodorovně** `margin-left: calc(var(--wm-size) * .058)` = levý
+  side-bearing velkého „L", aby „FILIP" opticky začínalo na svislém
+  tahu „L", ne u hrany boxu;
+- **svisle** `transform: translateY(calc(var(--wm-size) * .04))` —
+  posazené do úrovně háčku nad „Č" (transform, ne margin, aby to
+  neposunulo wordmark);
+- `margin-bottom: clamp(2px,0.5vw,7px)` drží malý odstup od wordmarku.
+
+`fitWordmark()` nastavuje `--wm-size` i na `.hero__brand`, aby z něj
+štítek počítal offsety.
+
+- **Reveal v intru:** `.hero__brand-pre` má `overflow:hidden` (maska),
+  vnitřní `.hero__brand-pre__i` sjede shora (`yPercent -105 → 0`,
+  `expo.out`, čas `.4` timeline — hned po rozběhu písmen wordmarku).
+  `.js .hero__brand-pre__i{ transform:translate3d(0,-105%,0) }` drží
+  skrytý stav před JS; `reduce` větev i no-JS ho nechají viditelný.
+- **Se scrollem** mizí (fade) zároveň s wordmarkem — vlastní tween
+  v kroku 5.6 `buildScroll()` (`autoAlpha:0`, **bez** `scale`, ať
+  štítku zůstane CSS `transform` s posunem na háček); je i v úklidovém
+  `clearProps` seznamu.
+
+Hodnoty jsou ratio z `--wm-size` (počítá `fitWordmark()`), takže
+škálují s velikostí značky.
 
 ---
 
@@ -242,6 +303,28 @@ křížkem / Esc / kliknutím na odkaz. Na desktopu `display:none`.
 
 Ošetřeno `env(safe-area-inset-*)` (lišta, spodní karta, panel menu).
 Reduced-motion: `min-height:100svh` drží výšku i s `height:auto`.
+
+### Mobilní průchod (`@media max-width:600px`, CSS sekce „6b")
+
+Samostatný blok jen pro telefony (tablet 601–980 px zůstává beze změny).
+Cíl: kratší scroll, plynulejší vykreslení.
+
+- **Kratší scroll** — celková výška stránky ~14 700 → ~10 000 px (−31 %):
+  - **Fotogalerie** držena na **2 sloupce** i na telefonu (smazané
+    pravidlo `@media max-width:520px { grid-template-columns:1fr }`) —
+    1 sloupec = 12 fotek na celou šířku ≈ 5000 px scrollu → teď ~1400.
+  - Svislé mezery sekcí (`.brands/.about/.services/.portrait/.cta/
+    .videos/.contact/.footer`) z `clamp(…13vh…168px)` na
+    `clamp(…9vh…~80px)` — každá dvojice sekcí ušetří ~120–150 px.
+- **Méně dekorace, která na malé ploše hlavně zdržuje kompozitor:**
+  `.hero__grain` skryté, `.hero__aurora` bez animace (statický blur),
+  `.portrait__beam` (rotující konický okraj) + `.portrait__sheen` skryté,
+  `.testi__index` (obří vybledlé číslo) skryté, `.contact__plus` rohové
+  „+" skryté, `.footer__glow` skryté.
+- **Menší akcentová typografie:** `.services__num`
+  `clamp(1.35rem,7vw,1.85rem)`, těsnější `.services__card` / `.services__item`.
+- Menší mezery `.videos__inner` a `.footer__grid`.
+- Rozvržení hero sekce se **nemění** (má vlastní blok výš).
 
 ---
 
@@ -376,6 +459,24 @@ doleva, vše jednosloupcově. Na `≥ 1280 px` `.services__inner` používá
 > službou 06 (svatba) — vypadá to na omylem zkopírovaný text. Uprav
 > `.services__desc` u 4. `<article>` v [index.html](index.html).
 
+## 9b. Výzva k akci (`.cta`, bez kotvy)
+
+Kompaktní CTA pás **mezi profilovou fotkou (`.portrait`) a Fotogalerií**
+— vychází z „CTA section" (21st.dev), přepsáno do palety webu.
+`background:var(--bg)` (bezešvě navazuje na Portrét i Fotogalerii),
+nahoře i dole vlasová dělící linka (`.cta::before` / `::after`, gradient
+do ztracena), měkký olivový glow za textem (`.cta__glow`, `blur(46px)`,
+`z-index:-1`). Obsah: olivová krátká čárka `.cta__accent` → nadpis
+„Naplánujme vaši akci." (jeden řádek `.ln` / `.ln__i`, „vyjede"
+zpod masky) → dvě věty `.cta__lead` → tlačítko `.cta__btn.flow-btn`
+(sdílená „flow" pilulka jako kontakt/patička) s `href="#kontakt"`.
+
+Reveal: `buildCta()` v `main.js` (volá se v `build()` hned po
+`buildPortrait`) — ScrollTrigger `top 80%`, once: `scaleX` čárky,
+`yPercent` řádků nadpisu, fade+rise lead a tlačítka. Reduced-motion /
+bez ST → vše rovnou viditelné. Na `≥ 1280 px` `.cta__inner` respektuje
+`--rail-space` (obsah začíná za lištou).
+
 ## 10. Fotogalerie (`#foto`)
 
 Podle komponenty **3d-parallax-unfurling-gallery** (21st.dev), přepsáno
@@ -431,8 +532,12 @@ grid-template-columns:repeat(3,1fr)`, pod 720 px se skládají pod sebe
   `@media (min-width:721px)` panel zkompaktní (menší mezery, užší
   hlasitost, menší časy).
 - **Jen jedno naráz**: spuštění jednoho přehrávače pauzne ostatní.
-- `#t=0.1` ve `src` vykreslí první snímek jako poster
-  (`preload="metadata"`).
+- `preload="none"` (kvůli rychlosti načtení stránky — 3 videa mají
+  dohromady ~25 MB a sekce je hluboko pod foldem). Do prvního kliknutí
+  se tedy nestahuje nic; místo poster snímku drží plochu velké „play"
+  tlačítko (`.vplayer__big`) nad `var(--bg)`. Po kliknutí `video.play()`
+  spustí načítání a `loadedmetadata` doplní délku. `#t=0.1` ve `src`
+  zůstává — poster snímek naskočí, jakmile se metadata jednou načtou.
 - Reveal přehrávačů přes ScrollTrigger per `.videos__item`
   (`expo.out`, stagger `idx * 0.12 s`).
 
@@ -454,8 +559,9 @@ videa 2–3 svislá.
 > **Range** requesty — Python `http.server` v náhledu je neumí, na
 > reálném hostingu (Vercel/Netlify/nginx…) to funguje samo.
 
-> 💡 Pokud bude vadit objem, dej videům `preload="none"` (přijdeš o
-> poster snímek a délku do prvního přehrání) nebo je protáhni ffmpegem
+> 💡 Videa jsou `preload="none"` (viz výše). Pokud chceš poster snímek
+> hned a zároveň malý přenos, vygeneruj ffmpegem první snímek jako JPG
+> a dej ho do `poster="…"`. Pro menší soubory je protáhni ffmpegem
 > (H.264 720p, CRF ~24, `-movflags +faststart`).
 
 ## 12. Reference — kolotoč recenzí (`#reference`)
@@ -568,10 +674,83 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
 - [x] Reference — recenze (Škoda Auto, AC Sparta Praha)
 - [x] Kontaktní formulář (mailto, bez backendu)
 - [x] Patička
-- [ ] Doplnit stránku/text „Zásady zpracování osobních údajů"
+- [ ] GDPR stránka existuje, ale doplnit `[IČO]`, `[sídlo / adresa]`,
+      `[datum účinnosti]` + nechat právně ověřit
 - [ ] Opravit popis služby 04 (viz výše)
 - [ ] Potvrdit čísla — `150+ akcí` a `8 let` jsou zástupné (hero karty i lišta)
 - [ ] Doplnit `img/og-image.jpg` (1200×630) pro sdílení na sociálních sítích
+- [ ] Ověřit doménu — audit (sekce 16) předpokládá `https://filiplejcek.cz/`
+      (`canonical`, `og:url`, `robots.txt`, `sitemap.xml`, JSON-LD). Když bude
+      jiná, přepiš ji na těch 5 místech.
 
 Všechny kotvy v navigaci (`#o-mne`, `#portfolio`, `#foto`, `#video`,
 `#reference`, `#kontakt`) jsou hotové.
+
+## 16. SEO / přístupnost / výkon (Lighthouse průchod)
+
+Průchod „bez změny designu" — přidané jen věci, které se neprojeví
+vizuálně:
+
+- **`width` + `height` na všech `<img>`** v pásu log (`.brands` i
+  `.rail__logos`) a ve fotogalerii — dřív chyběly u 56 obrázků, což
+  Lighthouse hlásil jako riziko **CLS**. Rendrovanou velikost dál
+  určuje výhradně CSS (`object-fit`, pevné výšky), atributy jen
+  rezervují poměr stran. Rozměry odpovídají skutečným souborům
+  (`tools/` — přečteno přes PIL).
+- **`<head>`:** `rel="canonical"`, `og:url`, `og:site_name`,
+  `twitter:card` (+ title/description/image), `meta author`,
+  `meta robots`. `og:image` je teď absolutní URL.
+- **JSON-LD** `Person` (`@type`, jméno, role, město Praha, `sameAs`
+  na Instagram/Facebook) — samostatný `<script type="application/ld+json">`
+  na konci `<head>`.
+- **`robots.txt`** (+ odkaz na sitemap) a **`sitemap.xml`** (jen
+  homepage; GDPR stránka je `noindex`, do sitemapy nepatří).
+- GDPR stránka dostala vlastní `canonical`.
+
+### 16b. Rychlost načítání (druhý průchod)
+
+Cíl: co nejmenší kritická cesta, opět bez zásahu do designu.
+
+- **Loga značek: 302 kB → 62 kB.** `img/logos/*.png` byly uložené
+  jako plné RGBA PNG (ac-sparta 43 kB, red-bull i Rytíři po 55 kB) —
+  přitom se zobrazují ~40 px vysoké a defaultně `grayscale`.
+  Přeuložené na 256barevnou paletu (Pillow `quantize`, u přechodových
+  log Floyd–Steinberg dither), rozměry beze změny. MAE na displejové
+  velikosti < 3/255, tj. opticky nerozeznatelné. Loga se načítají
+  hned pod foldem, takže je to nejcitelnější úspora.
+- **GSAP je teď self-hostovaný** (`js/vendor/gsap.min.js` +
+  `ScrollTrigger.min.js`, verze 3.13.0) místo `cdnjs.cloudflare.com`.
+  Odpadá DNS + TLS + spojení na cizí origin (na mobilu klidně
+  100–300 ms) a dva cross-origin requesty; proto zmizel i
+  `preconnect`/`dns-prefetch`. Aktualizace = stáhnout nové verze ze
+  stejného CDN do `js/vendor/` a přepsat `?v=` v `index.html`.
+- **Přednačítá se i `pp-neue-montreal-bold.woff2`.** Obří wordmark
+  („LEJČEK") je 700 — dřív se ten font objevil až po parsování CSS.
+  Teď startuje spolu s Book/Medium → LCP text vykreslí dřív.
+- **Videa `preload="none"`** (viz sekce 11) — z počátečního načtení
+  zmizelo ~180 kB metadat + 3 requesty (+ přestal spam `ERR_ABORTED`
+  z rušených Range requestů).
+- **Hero fotka** `filip-lejcek.webp` 186 → 127 kB (q80),
+  `-mobil.webp` 87 → 60 kB. Vizuálně shodné (ověřeno), retuš odlesku
+  brýlí zachovaná.
+- **O mně:** `about-1.webp` 273 → 162 kB (zdroj zmenšen 1000→760 px,
+  q70; je to hodně detailní záběr davu, proto pořád největší fotka),
+  `about-2.webp` 124 → 76 kB (→ 860 px, q74). JPG fallbacky taky.
+  Zobrazují se ~260–350 px široké, takže i po zmenšení zbývá rezerva
+  pro retina.
+
+**Pozn.:** Python `http.server` v náhledu **negzipuje** — `style.css`
+(108 kB) i `main.js` (66 kB) se posílají syrové. Na reálném hostingu
+(Vercel/Netlify/nginx/Apache) se textové soubory brotli/gzip komprimují
+automaticky (CSS → ~18 kB), proto se zdrojové soubory neminifikovaly
+(žádný build step). Pomalé načítání v lokálním náhledu je částečně
+tímhle.
+
+Co se **neřešilo** (byla by to změna designu / rizik): kontrast
+světlých textů v patičce (`.footer__credit`, `.footer__copy` na olivové),
+objem `will-change` (záměrná optimalizace animací), `srcset`/`sizes`
+na fotkách (širší refaktor markupu). Fonty už mají `font-display:swap`,
+hero obrázek `fetchpriority="high"` + `preload`, formulářová pole mají
+`<label>`, honeypot je mimo a11y strom (`aria-hidden` + off-screen),
+všech 5 `<nav>` má unikátní `aria-label`, jeden `<h1>`, pořadí nadpisů
+bez skoků, `lang="cs"`, skip-link.

@@ -275,7 +275,12 @@ a{ color:inherit; text-decoration:none; }
     width:auto;
     height:clamp(640px, 104vh, 1120px);
     aspect-ratio:1244 / 1500;
-    transform:translateX(-50%);
+    /* Ve výřezu má postava hlavu ~90 px vlevo od svého středu (pravá ruka
+       gestikuluje → bbox je širší doprava). Posun doprava ji vrátí nad
+       střed viewportu — hlava tím sjede z písmene „J" do mezery „J | Č"
+       (viz .wordmark__l:nth-child(4) níž). Užší okno = „J" víc schované →
+       potřebuje větší posun, proto inverzní vw. */
+    transform:translateX(-50%) translateX(clamp(58px, 120px - 3.2vw, 90px));
   }
   .hero__photo{ object-position:bottom center; }
 }
@@ -313,6 +318,34 @@ a{ color:inherit; text-decoration:none; }
 /* Horní lišta — jen mobil (viz @media níže), na desktopu skrytá */
 .hero__bar{ display:none; }
 
+/* Malý štítek „FILIP" nad obří „LEJČEK" (jen desktop), v běžném toku
+   nad wordmarkem uvnitř .hero__brand. Zarovnaný na svislý tah „L". */
+.hero__brand{ z-index:var(--z-wordmark); }
+.hero__brand-pre{
+  overflow:hidden;                            /* maska pro reveal */
+  font-family:var(--f-display);
+  font-weight:700;
+  font-size:clamp(16px,1.55vw,23px);
+  line-height:1;                              /* těsné — zvětšení fontu neposune wordmark */
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--ink);
+  /* margin-left = levý side-bearing velkého „L" (≈ .058em z --wm-size),
+     aby „FILIP" opticky začínalo na svislém tahu „L", ne u hrany boxu */
+  margin:0 0 clamp(2px,0.5vw,7px) calc(var(--wm-size, 25vw) * .058);
+  /* posunout „FILIP" do středové úrovně háčku nad „Č" — bez vlivu na
+     pozici wordmarku (proto transform, ne margin). Změřeno přímo na
+     vykresleném písmu (canvas ink-scan „Č" vs. cap-height „K"):
+     střed háčku sedí ~.017×--wm-size NAD přirozenou pozicí štítku,
+     ne pod ní. */
+  transform:translateY(calc(var(--wm-size, 25vw) * -.017));
+}
+.hero__brand-pre__i{
+  display:block;
+  will-change:transform;
+}
+.js .hero__brand-pre__i{ transform:translate3d(0,-105%,0); }  /* skryté před JS; sjede shora */
+
 /* Obří typografická značka */
 .wordmark{
   z-index:var(--z-wordmark);
@@ -321,8 +354,7 @@ a{ color:inherit; text-decoration:none; }
   line-height:.76;
   letter-spacing:-.028em;
   color:var(--ink);
-  overflow:hidden;                /* maska pro reveal — na desktopu záměrně
-                                      ořízne háček nad Č ("LEJCEK"), viz mobil */
+  overflow:hidden;                /* maska pro reveal */
   padding-bottom:.04em;
   transform-origin:left top;
   will-change:transform, opacity;
@@ -338,6 +370,29 @@ a{ color:inherit; text-decoration:none; }
   will-change:transform;
 }
 .js .wordmark__l{ transform:translate3d(0,110%,0); }
+
+/* Desktop: háček nad Č se dřív ořízl (těsný line-height + overflow maska)
+   a „LEJČEK" vypadalo jako „LEJCEK". Přidáme prostor uvnitř clip-boxu
+   (padding-top) a částečně kompenzujeme posun dolů (margin-top).
+   Mobil má vlastní řešení (viz @media max-width:980px). */
+@media (min-width:981px){
+  /* wordmark co nejvýš — malý horní padding sekce + agresivnější
+     záporný margin-top wordmarku (padding-top drží prostor pro háček,
+     který sedí těsně pod horní hranou stránky) */
+  .hero__sticky{ padding-top:clamp(2px,0.5vh,8px); }
+  .wordmark{
+    line-height:1;
+    padding-top:calc(var(--wm-size, 25vw) * .205);   /* prostor pro háček nad Č — jen tak akorát */
+    margin-top:calc(var(--wm-size, 25vw) * -.185);   /* wordmark až k horní hraně stránky */
+    margin-bottom:calc(var(--wm-size, 25vw) * -.15);   /* stáhnout navigaci blíž (line-height přidalo vzduch pod textem) */
+  }
+  /* Mezera „J | Č" — postava (posunutá doprava, viz .hero__photo-layer
+     picture) stojí v tomhle okně, ne přes „J". fitWordmark() měří i tuhle
+     mezeru a o její šířku písmena zmenší, takže „LEJČEK" pořád bleeduje
+     přes celou šířku, jen se čte jako „LEJ · ČEK" s postavou uprostřed
+     (což je i slabičný předěl Lej-ček). Hodnota v em = poměr k --wm-size. */
+  .wordmark__l:nth-child(4){ margin-left:.32em; }
+}
 
 /* Navigace v hero */
 .hero__nav{
@@ -1597,9 +1652,8 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .gallery__fig{ width:auto; height:auto; aspect-ratio:4/5; }
   .gallery__vignette{ display:none; }
 }
-@media (max-width:520px){
-  .gallery__matrix{ grid-template-columns:1fr; }
-}
+/* i na telefonu držíme 2 sloupce — jeden sloupec = 12 fotek na celou
+   šířku ≈ 5000 px scrollu (viz mobilní průchod, sekce 6b) */
 .gallery__fig{ cursor:pointer; }
 
 /* ── Lightbox — zvětšení fotky po kliknutí (JS: galleryLightbox). */
@@ -1855,7 +1909,78 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.16 REFERENCE — kolotoč jedné recenze (design-testimonial, 21st.dev)
+   5.13b VÝZVA K AKCI — kompaktní CTA pás mezi Portrétem a Fotogalerií
+   Vychází z „CTA section" (21st.dev), přizpůsobeno paletě webu:
+   vzdušný centrovaný blok, měkký olivový glow, nadpis „vyjede"
+   zpod masky, tlačítko je sdílené .flow-btn (jako kontakt/patička).
+   ══════════════════════════════════════════════════════════════ */
+.cta{
+  position:relative;
+  z-index:6;
+  padding:clamp(76px,13vh,150px) 0;
+  background:var(--bg);
+  overflow:hidden;
+}
+.cta::before,
+.cta::after{
+  content:"";
+  position:absolute; left:50%;
+  width:min(560px,80vw); height:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg, transparent, rgba(28,30,23,.14), transparent);
+}
+.cta::before{ top:0; }
+.cta::after{ bottom:0; }
+.cta__inner{
+  position:relative;
+  max-width:660px;
+  margin:0 auto;
+  padding:0 var(--pad);
+  display:flex; flex-direction:column; align-items:center;
+  gap:clamp(16px,2.4vw,26px);
+  text-align:center;
+}
+.cta__glow{
+  position:absolute; z-index:-1;
+  left:50%; top:46%;
+  width:min(760px,94vw); height:min(360px,54vw);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(58% 58% at 50% 50%,
+    rgba(139,154,107,.22) 0%, rgba(139,154,107,0) 70%);
+  filter:blur(46px);
+  pointer-events:none;
+}
+.cta__accent{
+  width:46px; height:2px;
+  border-radius:2px;
+  background:var(--olive);
+  transform-origin:center;
+}
+.cta__title{
+  font-family:var(--f-display);
+  font-weight:700;
+  font-size:clamp(1.9rem,5vw,3.3rem);
+  line-height:1.05;
+  letter-spacing:-.026em;
+  color:var(--ink);
+  text-wrap:balance;
+}
+.cta__title .ln{
+  display:block; overflow:hidden;
+  padding-bottom:.08em; margin-bottom:-.08em;
+}
+.cta__lead{
+  max-width:44ch;
+  font-size:clamp(14.5px,1.15vw,16.5px);
+  line-height:1.65;
+  color:var(--ink-soft);
+}
+.js .cta__lead{ opacity:0; }
+.cta__btn{ margin-top:clamp(4px,1vw,10px); }
+.js .cta__btn{ opacity:0; }
+
+
    Přizpůsobeno paletě webu. Obří světlé číslo bleeduje vlevo (parallax
    na myš, blur-in přechod), vlevo svislý label „Reference" + progress
    linka, uprostřed badge + citace (reveal po slovech) + autor
@@ -2503,11 +2628,12 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      (clamp 190–240) + její odsazení (clamp 14–22) + pohodlná mezera. */
   :root{ --rail-space:clamp(292px,21vw,322px); }
 
-  /* O mně + Portfolio + portrét + video + reference — obsah začíná za lištou */
+  /* O mně + Portfolio + portrét + video + výzva + reference — obsah začíná za lištou */
   .about__inner,
   .services__inner,
   .portrait__inner,
   .videos__inner,
+  .cta__inner,
   .testi__stage,
   .contact__inner,
   .footer__inner{
@@ -2588,6 +2714,8 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   /* Horní lišta */
   .hero__top{ position:static; display:block; }
   .hero__nav{ display:none; }
+  .hero__brand-pre{ display:none; }   /* „FILIP" jen na desktopu; na mobilu je v liště */
+  .hero__brand{ display:contents; }   /* wrapper nesmí rozbít absolutní pozici wordmarku */
   .hero__bar{
     display:flex; align-items:center; gap:8px;
     position:absolute;
@@ -2841,57 +2969,58 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
+   6b. MOBILNÍ PRŮCHOD (≤ 600 px)
+   Cíl: kratší scroll (menší svislé mezery, 2sloupcová galerie),
+   plynulejší vykreslení (méně animované/blendované dekorace),
+   menší akcentová typografie. Nesahá na rozvržení hero sekce.
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width:600px){
+
+  /* Svislé mezery sekcí — clamp(…13vh…) přidával ~200 px mrtvého
+     scrollu mezi každou dvojicí sekcí. */
+  .brands  { padding-top:clamp(44px,8vh,66px);  padding-bottom:clamp(44px,8vh,66px); }
+  .about   { padding-top:clamp(52px,9vh,78px);  padding-bottom:clamp(52px,9vh,78px); }
+  .services{ padding-bottom:clamp(48px,8vh,72px); }
+  .portrait{ padding-top:clamp(28px,5vh,44px);  padding-bottom:clamp(48px,8vh,72px); }
+  .cta     { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(52px,9vh,80px); }
+  .videos  { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(52px,9vh,80px); }
+  .contact { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(56px,9vh,84px); }
+  .footer  { padding-top:clamp(48px,8vh,68px); }
+
+  /* Dekorace, která na malé ploše hlavně zatěžuje vykreslení. */
+  .hero__aurora   { animation:none; }              /* rozmazaný blob nech statický */
+  .hero__grain    { display:none; }                /* full-screen overlay vrstva */
+  .portrait__beam { display:none; }                /* rotující konický okraj (anim) */
+  .portrait__sheen{ display:none; }
+  .testi__index   { display:none; }                /* obří vybledlé číslo, teklo z okraje */
+  .contact__plus  { display:none; }                /* rohové „+" značky karty */
+  .footer__glow   { display:none; }                /* 4× rozmazaný olivový blob */
+
+  /* Portfolio — menší olivové číslo, těsnější karty. */
+  .services__num  { font-size:clamp(1.35rem,7vw,1.85rem); }
+  .services__item { padding:clamp(15px,3.4vw,22px) 0; }
+  .services__item:nth-of-type(odd) .services__card,
+  .services__item:nth-of-type(even) .services__card{ padding:clamp(16px,4vw,22px); }
+
+  /* Fotogalerie — 2 sloupce i na telefonu. */
+  .gallery__matrix{ grid-template-columns:repeat(2,1fr); }
+  .gallery{ padding-top:clamp(44px,8vh,64px); padding-bottom:clamp(52px,9vh,72px); }
+
+  /* Video — 3 svislé přehrávače pod sebou; menší mezera. */
+  .videos__inner{ gap:clamp(20px,4vw,30px); }
+
+  /* Patička — 4 sloupce pod sebou; těsnější rozestupy. */
+  .footer__grid{ gap:clamp(20px,4vw,28px); }
+  .footer__links a{ padding:4px 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    7.x MIKROINTERAKCE — ruční detaily „za víc peněz"
    ══════════════════════════════════════════════════════════════ */
-
-/* ── Doprovodný kurzor: tečka 1:1 + prstenec, který se zpožďuje.
-   Nad interaktivními prvky se prstenec nafoukne a změkne, při
-   stisku se stáhne. Jen desktop s přesným kurzorem. Element
-   vkládá JS (cursorCompanion), takže bez JS nikde nepřekáží. */
-.cursor{
-  position:fixed; left:0; top:0;
-  z-index:9999;
-  pointer-events:none;
-  opacity:0;
-  mix-blend-mode:multiply;
-}
-.cursor__dot,
-.cursor__ring{
-  position:absolute; left:0; top:0;
-  border-radius:50%;
-}
-.cursor__dot{
-  width:6px; height:6px; margin:-3px;
-  background:var(--olive);
-}
-.cursor__ring{
-  width:34px; height:34px; margin:-17px;
-  border:1.5px solid rgba(79,93,58,.5);
-  transition:width .32s var(--e-out), height .32s var(--e-out),
-             margin .32s var(--e-out), background-color .32s var(--e-soft),
-             border-color .32s var(--e-soft);
-}
-.cursor.is-hover .cursor__ring{
-  width:54px; height:54px; margin:-27px;
-  background:rgba(79,93,58,.07);
-  border-color:rgba(79,93,58,.32);
-}
-.cursor.is-down .cursor__ring{
-  width:24px; height:24px; margin:-12px;
-  background:rgba(79,93,58,.12);
-}
-.cursor.is-hidden{ opacity:0 !important; }
-
-/* ── Stiskové „doražení" tlačítek (fyzická odezva). */
-.btn:active{ transform:scale(.97); transition:transform var(--t-fast) var(--e-out); }
 
 /* ── Počítadla čísel: než JS naběhne, ať neblikne 0 (drží finální
    hodnotu z HTML; JS si ji přečte do data-atributu a rozběhne). */
 .stat-count[data-counting]{ font-variant-numeric:tabular-nums; }
-
-@media (hover:none),(pointer:coarse){
-  .cursor{ display:none; }
-}
 
 /* ══════════════════════════════════════════════════════════════
    6. PRÁVNÍ STRÁNKA (GDPR) — samostatné .html, jen typografie
@@ -2982,7 +3111,6 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    8. Přístupnost — omezený pohyb
    ══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion:reduce){
-  .cursor{ display:none; }
   html{ scroll-behavior:auto; }
   *,*::before,*::after{
     animation-duration:.01ms !important;

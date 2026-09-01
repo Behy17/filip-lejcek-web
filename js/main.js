@@ -42,7 +42,11 @@
 
     if (natural > 0) {
       var avail = wm.clientWidth;
-      wm.style.setProperty('--wm-size', ((avail / natural) * REF).toFixed(2) + 'px');
+      var size = ((avail / natural) * REF).toFixed(2) + 'px';
+      wm.style.setProperty('--wm-size', size);
+      /* i na wrapper — aby ho zdědilo malé „FILIP" (.hero__brand-pre)
+         a mohlo se opticky zarovnat na levý tah „L" */
+      if (wm.parentElement) wm.parentElement.style.setProperty('--wm-size', size);
     }
   }
 
@@ -55,8 +59,9 @@
   /* Maskované řádky sázíme přes yPercent i v JS.
      CSS drží translate3d(0,110%,0) jen kvůli prvnímu vykreslení — GSAP by ho
      načetl jako pixelové „y“ a tween na yPercent by pak neměl co animovat. */
-  gsap.set('.wordmark__l', { yPercent: 110, y: 0 });
-  gsap.set('.ln__i',       { yPercent: 110, y: 0 });
+  gsap.set('.wordmark__l',      { yPercent: 110, y: 0 });
+  gsap.set('.ln__i',            { yPercent: 110, y: 0 });
+  gsap.set('.hero__brand-pre__i', { yPercent: -105, y: 0 });   /* svislý štítek „FILIP" — sjede shora */
 
   gsap.set(photo,    { opacity: 0, scale: 1.06, transformOrigin: '50% 90%' });
   gsap.set(navItems, { opacity: 0, y: 12 });
@@ -81,7 +86,7 @@
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce) {
-      gsap.set('.wordmark__l, .ln__i', { yPercent: 0 });
+      gsap.set('.wordmark__l, .ln__i, .hero__brand-pre__i', { yPercent: 0 });
       gsap.set([photo, navItems, ctaBtns, cards], { opacity: 1, scale: 1, y: 0 });
       return null;
     }
@@ -90,6 +95,7 @@
 
     tl.to('.wordmark__l',              { yPercent: 0, duration: 1.15, stagger: .055 }, .05)
       .to(photo,                       { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' }, .10)
+      .to('.hero__brand-pre__i',       { yPercent: 0, duration: .9, ease: 'expo.out' }, .4)
       .to('.hero__headline .ln__i',    { yPercent: 0, duration: 1.0, stagger: .08 }, .48)
       .to(navItems,                    { opacity: 1, y: 0, duration: .7, stagger: .03 }, .58)
       .to(ctaBtns,                     { opacity: 1, y: 0, duration: .75, stagger: .07 }, .88)
@@ -97,7 +103,7 @@
       .to('.hero__bottom .ln__i',      { yPercent: 0, duration: .85, stagger: .05 }, 1.0)
       .add(function () {
         // uvolníme kompozitní vrstvy, jakmile intro dohraje
-        gsap.set('.wordmark__l, .hero__headline .ln__i, .hero__photo',
+        gsap.set('.wordmark__l, .hero__brand-pre__i, .hero__headline .ln__i, .hero__photo',
                  { willChange: 'auto' });
       });
 
@@ -152,18 +158,21 @@
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '46% top', scrub: .4 }
       });
 
-      /* 5.6 — obří značka zmizí, jakmile hero odscrollujeme */
+      /* 5.6 — obří značka + malý štítek „FILIP" zmizí, jakmile hero odscrollujeme.
+         Štítek jen fade (bez scale), ať mu zůstane CSS transform (posun na háček). */
       var wmTween = gsap.to(wm, {
         autoAlpha: 0, scale: .92, ease: 'none',
-        scrollTrigger: {
-          trigger: '.hero', start: '20% top', end: '42% top', scrub: true
-        }
+        scrollTrigger: { trigger: '.hero', start: '20% top', end: '42% top', scrub: true }
+      });
+      gsap.to('.hero__brand-pre', {
+        autoAlpha: 0, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: '20% top', end: '42% top', scrub: true }
       });
 
       /* úklid při změně breakpointu */
       return function () {
         if (wmTween) wmTween.scrollTrigger && wmTween.scrollTrigger.kill();
-        gsap.set([wm, '.hero__center', '.hero__nav',
+        gsap.set([wm, '.hero__brand-pre', '.hero__center', '.hero__nav',
                   '.cards-left', '.card--traits', '.hero__photo', '.hero__aurora'],
                  { clearProps: 'all' });
         gsap.set('.hero__bottom .ln__i', { yPercent: 0 });
@@ -192,43 +201,6 @@
       });
       btn.addEventListener('pointerleave', function () { qx(0); qy(0); });
     });
-  }
-
-  /* ══ 6b. Doprovodný kurzor ─────────────────────────────────────
-     Tečka drží krok 1:1, prstenec se zpožďuje (quickTo). Nad
-     interaktivními prvky se nafoukne, při stisku stáhne. Element
-     vkládáme z JS, takže bez JS ani na dotyku nikde nepřekáží. */
-  function cursorCompanion() {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var el = document.createElement('div');
-    el.className = 'cursor';
-    el.innerHTML = '<span class="cursor__dot"></span><span class="cursor__ring"></span>';
-    document.body.appendChild(el);
-
-    var dot  = el.firstChild;
-    var ring = el.lastChild;
-    var dx = gsap.quickTo(dot,  'x', { duration: .09, ease: 'none' });
-    var dy = gsap.quickTo(dot,  'y', { duration: .09, ease: 'none' });
-    var rx = gsap.quickTo(ring, 'x', { duration: .42, ease: 'power3' });
-    var ry = gsap.quickTo(ring, 'y', { duration: .42, ease: 'power3' });
-
-    var shown = false;
-    var sel = 'a, button, [data-card], .services__card, .portrait__fig, .rail__email, .brand, summary, label';
-
-    window.addEventListener('pointermove', function (e) {
-      if (e.pointerType && e.pointerType !== 'mouse') return;
-      if (!shown) { shown = true; gsap.to(el, { opacity: 1, duration: .3 }); }
-      dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
-      var over = e.target && e.target.closest && e.target.closest(sel);
-      el.classList.toggle('is-hover', !!over);
-    }, { passive: true });
-
-    window.addEventListener('pointerdown', function () { el.classList.add('is-down'); });
-    window.addEventListener('pointerup',   function () { el.classList.remove('is-down'); });
-    document.addEventListener('mouseleave', function () { el.classList.add('is-hidden'); });
-    document.addEventListener('mouseenter', function () { el.classList.remove('is-hidden'); });
   }
 
   /* ══ 6c. Počítadla čísel ───────────────────────────────────────
@@ -1084,6 +1056,39 @@
     });
   }
 
+  /* ══ 7i2. Výzva k akci — reveal CTA pásu (mezi Portrétem a Fotogalerií) ══ */
+  function buildCta() {
+    var sec = document.querySelector('.cta');
+    if (!sec) return;
+    var accent = sec.querySelector('.cta__accent');
+    var lines  = sec.querySelectorAll('.cta__title .ln__i');
+    var lead   = sec.querySelector('.cta__lead');
+    var btn    = sec.querySelector('.cta__btn');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!ST || reduce) {
+      gsap.set(lines, { yPercent: 0, y: 0 });
+      gsap.set([lead, btn], { opacity: 1, y: 0 });
+      if (accent) gsap.set(accent, { scaleX: 1 });
+      return;
+    }
+
+    gsap.set(lines, { yPercent: 110, y: 0 });
+    gsap.set([lead, btn], { opacity: 0, y: 18 });
+    gsap.set(accent, { scaleX: 0 });
+
+    ST.create({
+      trigger: sec, start: 'top 80%', once: true,
+      onEnter: function () {
+        gsap.timeline({ defaults: { ease: 'expo.out' } })
+          .to(accent, { scaleX: 1, duration: .6 }, 0)
+          .to(lines,  { yPercent: 0, duration: 1, stagger: .1 }, .05)
+          .to(lead,   { opacity: 1, y: 0, duration: .7 }, .3)
+          .to(btn,    { opacity: 1, y: 0, duration: .7 }, .42);
+      }
+    });
+  }
+
   /* ══ 7j. Reference — kolotoč jedné recenze ════════════════════
      Podle design-testimonial (21st.dev), přepsáno do vanilla JS:
      jedna recenze naráz, auto-přepínání po 6 s + kruhová navigace.
@@ -1473,13 +1478,13 @@
       built = true;
       buildScroll();
       magneticCta();
-      cursorCompanion();
       countUp();
       buildBrands();
       buildAbout();
       buildRail();
       buildServices();
       buildPortrait();
+      buildCta();
       buildGallery();
       galleryLightbox();
       buildVideos();
