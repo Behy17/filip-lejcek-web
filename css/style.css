@@ -2718,8 +2718,18 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   /* Horní lišta */
   .hero__top{ position:static; display:block; }
   .hero__nav{ display:none; }
-  .hero__brand-pre{ display:none; }   /* „FILIP" jen na desktopu; na mobilu je v liště */
   .hero__brand{ display:contents; }   /* wrapper nesmí rozbít absolutní pozici wordmarku */
+  /* „FILIP" — stejný holý text jako na desktopu (žádná bublina),
+     jen samostatně pozicovaný v úrovni horní lišty (na desktopu sedí
+     v běžném toku přímo nad wordmarkem, na mobilu wordmark i lišta
+     jedou na position:absolute, takže potřebuje vlastní souřadnice). */
+  .hero__brand-pre{
+    display:block;
+    position:absolute;
+    left:var(--pad);
+    top:calc(env(safe-area-inset-top) + 9px);
+    z-index:var(--z-nav);
+  }
   .hero__bar{
     display:flex; align-items:center; gap:8px;
     position:absolute;
@@ -2727,14 +2737,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     top:calc(env(safe-area-inset-top) + 12px);
     z-index:var(--z-nav);
   }
-  .hero__bar-brand{
-    flex:none;
-    padding:9px 13px;
-    font:700 12px/1 var(--f-display);
-    letter-spacing:.03em; text-transform:uppercase;
-    color:var(--cream); background:var(--ink);
-    border-radius:12px; text-decoration:none;
-  }
+  .hero__bar-brand{ display:none; }   /* nahrazeno .hero__brand-pre, viz výš */
   .hero__bar-cta{
     margin-left:auto; flex:none;
     padding:11px 17px;
