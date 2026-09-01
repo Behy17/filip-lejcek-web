@@ -2796,8 +2796,8 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      nad headline blokem, mimo obličej i gestikulující ruku. */
   .card--traits{
     position:absolute;
-    right:calc(var(--pad) + 4.5vw); left:auto;
-    top:clamp(360px,45vh,420px);
+    right:var(--pad); left:auto;
+    top:calc(clamp(360px,45vh,420px) + 19px);  /* +19px ≈ 0,5cm doladění na přání */
     z-index:var(--z-cards);
     width:min(37vw,140px);
     padding:clamp(11px,3vw,15px);
