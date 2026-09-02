@@ -690,71 +690,68 @@
     });
   }
 
-  /* ══ 7f. Portrét pod Portfoliem — prémiový reveal + 3D náklon ═══
-     Fotka naběhne zdola (fade + posun), vnitřní obraz se dojede
-     z mírného zoomu. Po hraně obíhá rotující „gradient bold" rám
-     (CSS). Na desktopu fotka reaguje jemným 3D náklonem + odleskem. */
+  /* ══ 7f. Portrét pod Portfoliem — profilová karta (glassmorphism) ══
+     Vanilla náhrada za 21st.dev/@beratberkayg "glassmorphism-profile-
+     card" (React/Tailwind/shadcn) — tenhle web běží bez build kroku,
+     takže stejné chování (reveal, živé hodiny, kopírování e-mailu)
+     je přepsané do prostého GSAP + DOM. */
   function buildPortrait() {
     var sec = document.querySelector('.portrait');
     if (!sec) return;
-    var fig   = sec.querySelector('.portrait__fig');
-    var media = sec.querySelector('.portrait__media');
-    var img   = sec.querySelector('.portrait__fig img');
-    var beam  = sec.querySelector('.portrait__beam');
+    var wrap = sec.querySelector('.pcard-wrap');
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce || !ST) {
-      gsap.set(fig, { opacity: 1, y: 0, scale: 1 });
-      gsap.set(img, { scale: 1 });
-      return;
+      gsap.set(wrap, { opacity: 1, y: 0, scale: 1 });
+    } else {
+      gsap.set(wrap, { opacity: 0, y: 40, scale: .96 });
+      ST.create({
+        trigger: sec, start: 'top 82%', once: true,
+        onEnter: function () {
+          gsap.to(wrap, { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'expo.out' });
+        }
+      });
     }
 
-    gsap.set(fig, { opacity: 0, y: 44, scale: .94 });
-    gsap.set(img, { scale: 1.12 });
-    if (beam) gsap.set(beam, { opacity: 0 });
-
-    ST.create({
-      trigger: sec, start: 'top 82%', once: true,
-      onEnter: function () {
-        gsap.timeline()
-          .to(fig,  { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'expo.out' }, 0)
-          .to(img,  { scale: 1, duration: 1.5, ease: 'expo.out' }, 0)
-          .to(beam, { opacity: 1, duration: 1.2, ease: 'power2.out' }, .5);
-      }
-    });
-
-    portraitTilt(fig, media, img);
+    pcardClock(sec);
+    pcardCopyEmail(sec);
   }
 
-  /* Kurzorem řízený 3D náklon fotky portrétu (jen desktop s přesným
-     kurzorem, mimo reduce-motion). */
-  function portraitTilt(fig, media, img) {
-    if (!fig || !media) return;
-    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* Živé hodiny v kartě — minutová přesnost, kontrola co 15s stačí. */
+  function pcardClock(sec) {
+    var el = sec.querySelector('[data-pcard-time]');
+    if (!el) return;
+    function tick() {
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes().toString().padStart(2, '0');
+      var hour12 = ((h + 11) % 12) + 1;
+      var ampm = h >= 12 ? 'PM' : 'AM';
+      el.textContent = hour12 + ':' + m + ampm;
+    }
+    tick();
+    setInterval(tick, 15000);
+  }
 
-    var setRX = gsap.quickTo(fig, '--rx', { duration: .6, ease: 'power3' });
-    var setRY = gsap.quickTo(fig, '--ry', { duration: .6, ease: 'power3' });
-    var setIX = gsap.quickTo(img, 'x', { duration: .7, ease: 'power3' });
-    var setIY = gsap.quickTo(img, 'y', { duration: .7, ease: 'power3' });
+  /* Tlačítko „Zkopírovat e-mail" — Clipboard API + krátká zpětná vazba. */
+  function pcardCopyEmail(sec) {
+    var btn = sec.querySelector('[data-pcard-copy]');
+    if (!btn) return;
+    var txt   = btn.querySelector('.pcard__btn-txt');
+    var email = btn.getAttribute('data-email');
+    var timer;
 
-    fig.addEventListener('pointerenter', function () { fig.classList.add('is-live'); });
-    fig.addEventListener('pointermove', function (e) {
-      var r = media.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width  - .5;
-      var py = (e.clientY - r.top)  / r.height - .5;
-      setRX(-py * 6);
-      setRY(px * 7);
-      setIX(px * 12);         // lehký paralax obrazu proti náklonu
-      setIY(py * 12);
-      fig.style.setProperty('--mx', ((px + .5) * 100).toFixed(1) + '%');
-      fig.style.setProperty('--my', ((py + .5) * 100).toFixed(1) + '%');
-    });
-    fig.addEventListener('pointerleave', function () {
-      fig.classList.remove('is-live');
-      setRX(0); setRY(0); setIX(0); setIY(0);
-      fig.style.setProperty('--mx', '50%');
-      fig.style.setProperty('--my', '50%');
+    btn.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).catch(function () {});
+      }
+      btn.classList.add('is-copied');
+      txt.textContent = 'Zkopírováno';
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        btn.classList.remove('is-copied');
+        txt.textContent = 'Zkopírovat e-mail';
+      }, 1600);
     });
   }
 
@@ -776,18 +773,15 @@
 
     if (!ST || reduce || !desktop) return;
 
-    /* Naklonuj obsah každého sloupce jednou, ať 3D mřížka drží výšku. */
-    cols.forEach(function (col) {
-      Array.prototype.slice.call(col.children).forEach(function (fig) {
-        col.appendChild(fig.cloneNode(true));
-      });
-    });
+    /* Bez klonování — každá fotka jednou. Sloupce (4–5 fotek) jsou vyšší
+       než mřížka (.gallery__matrix height), přesah ořízne .gallery__pin;
+       paralaxa je proto malá, aby se nikde neukázala mezera. */
 
     var tracks = [
-      { from: 0,   to: -40 },
-      { from: -40, to: 10  },
-      { from: 0,   to: -40 },
-      { from: -30, to: 20  }
+      { from:  3, to: -5 },
+      { from: -5, to:  4 },
+      { from:  2, to: -6 },
+      { from: -4, to:  5 }
     ];
 
     var tl = gsap.timeline({

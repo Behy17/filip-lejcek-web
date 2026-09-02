@@ -37,12 +37,14 @@ za ním rozostřené hlediště) je vyříznutá postava po pas, pozadí odstran
 
 | Soubor | Rozměr | Kde se použije |
 |---|---|---|
-| `img/filip-lejcek.webp` (127 kB) | 1244×1500 | ≥ 981 px — výřez po pas, bez pozadí |
-| `img/filip-lejcek-mobil.webp` (60 kB) | 788×950 | ≤ 980 px — tentýž výřez, menší soubor |
+| `img/filip-lejcek.webp` (230 kB, q92) | 1244×1500 | ≥ 981 px — výřez po pas, bez pozadí |
+| `img/filip-lejcek-mobil.webp` (100 kB, q90) | 788×950 | ≤ 980 px — tentýž výřez, menší soubor |
 
 PNG varianty jsou fallback pro prohlížeče bez WebP. Správnou verzi vybírá
 `<picture>` přes `media`, přednačítá se jen ta relevantní. URL nesou
-`?v=2` — bez toho prohlížeče držely starý (jinak pojmenovaný) výřez z cache.
+`?v=` (teď `?v=4`) — bez toho prohlížeče drží starý výřez z cache; při
+každé výměně fotky číslo zvyš na všech 6 místech v `index.html`
+(2× `preload` + 4× `<picture>`/`<img>`).
 
 **Kompozice na ≥ 981 px** (jako [heynesh.com](https://heynesh.com) —
 velký portrét po pas): rozměr sedí na `<picture>` (`position:absolute`,
@@ -312,13 +314,12 @@ Cíl: kratší scroll, plynulejší vykreslení.
 - **Kratší scroll** — celková výška stránky ~14 700 → ~10 000 px (−31 %):
   - **Fotogalerie** držena na **2 sloupce** i na telefonu (smazané
     pravidlo `@media max-width:520px { grid-template-columns:1fr }`) —
-    1 sloupec = 12 fotek na celou šířku ≈ 5000 px scrollu → teď ~1400.
+    1 sloupec = všechny fotky na celou šířku ≈ 5000 px scrollu → teď ~2× méně.
   - Svislé mezery sekcí (`.brands/.about/.services/.portrait/.cta/
     .videos/.contact/.footer`) z `clamp(…13vh…168px)` na
     `clamp(…9vh…~80px)` — každá dvojice sekcí ušetří ~120–150 px.
 - **Méně dekorace, která na malé ploše hlavně zdržuje kompozitor:**
   `.hero__grain` skryté, `.hero__aurora` bez animace (statický blur),
-  `.portrait__beam` (rotující konický okraj) + `.portrait__sheen` skryté,
   `.testi__index` (obří vybledlé číslo) skryté, `.contact__plus` rohové
   „+" skryté, `.footer__glow` skryté.
 - **Menší akcentová typografie:** `.services__num`
@@ -336,17 +337,22 @@ Nekonečný pás log značek pod hero. **Sekce nemá `id`** — kotva
 pauza na hover, měkké okraje maskou, spotlight na najeté dlaždici; pás
 decentně nafade při vjezdu do viewportu (`buildBrands()` v `js/main.js`).
 
-Loga jsou v `img/logos/` – 10× barevné rastrové PNG stažené z rozpracované
-verze `filiplejcek.lovable.app` a zmenšené (dlouhá hrana ≤ 560 px), plus
-`hc-sparta.svg` (jednopath „S", brand burgundy `#651b2d`, z Wikimedia
-Commons). Celkem ~0,5 MB. Sedí na krémových dlaždicích, ve výchozím stavu
-`grayscale` + ztlumená, hover je rozsvítí. Dvě identické skupiny 11
-položek = bezešvá smyčka.
+Loga jsou v `img/logos/` – barevné rastrové PNG (většina z rozpracované
+verze `filiplejcek.lovable.app`, zmenšené a přeuložené na paletu ~5–10 kB,
+viz sekce 16b), plus `hc-sparta.svg` (jednopath „S", brand burgundy
+`#651b2d`, z Wikimedia Commons) a `playzone.png` (červený roundel „PLAYZONE"
+vyčištěný z dodaného výstřižku – transparentní pozadí). Sedí na krémových
+dlaždicích, ve výchozím stavu `grayscale` + ztlumená, hover je rozsvítí.
+Dvě identické skupiny **12 položek** = bezešvá smyčka.
 
 **Výměna / doplnění loga:** nový soubor do `img/logos/`, uprav `src`
-`<img>` v [index.html](index.html) — **na dvou místech** (obě
-`.brands__group`). Šířku dlaždice/logo ladí `.brand` a `.brand img`
-v [css/style.css](css/style.css) (sekce 5.9). Styl `.brand--word`
+`<img>` v [index.html](index.html) — **na čtyřech místech**: obě
+`.brands__group` (pás pod hero) a obě `.rail__logos-group` (mini pás
+v levé liště); u pásu pod hero doplň i název do `aria-label`
+`.brands__marquee`. Kompaktní/kulatá loga dostávají v liště `height:25px`
+(pravidlo `.rail__logos-group img[src*="…"]`). Šířku dlaždice/logo ladí
+`.brand` a `.brand img` v [css/style.css](css/style.css) (sekce 5.9).
+Styl `.brand--word`
 (textová dlaždice) zůstává v CSS jako fallback, kdyby nějaké logo
 dočasně chybělo — teď se nepoužívá.
 
@@ -461,7 +467,7 @@ doleva, vše jednosloupcově. Na `≥ 1280 px` `.services__inner` používá
 
 ## 9b. Výzva k akci (`.cta`, bez kotvy)
 
-Kompaktní CTA pás **mezi profilovou fotkou (`.portrait`) a Fotogalerií**
+Kompaktní CTA pás **mezi profilovou kartou (`.portrait`) a Fotogalerií**
 — vychází z „CTA section" (21st.dev), přepsáno do palety webu.
 `background:var(--bg)` (bezešvě navazuje na Portrét i Fotogalerii),
 nahoře i dole vlasová dělící linka (`.cta::before` / `::after`, gradient
@@ -480,7 +486,7 @@ bez ST → vše rovnou viditelné. Na `≥ 1280 px` `.cta__inner` respektuje
 ## 10. Fotogalerie (`#foto`)
 
 Podle komponenty **3d-parallax-unfurling-gallery** (21st.dev), přepsáno
-z Reactu/framer-motion do GSAP. Sekce je vysoká `520vh`, vnitřek
+z Reactu/framer-motion do GSAP. Sekce je vysoká `380vh`, vnitřek
 přišpendlený přes CSS `position: sticky` (`.gallery__pin`). Scrubovaná
 timeline (`buildGallery()` v `js/main.js`):
 
@@ -492,8 +498,12 @@ timeline (`buildGallery()` v `js/main.js`):
    `rotateX 25° / rotateY -45° / rotateZ 15° / translateZ -800` do skoro
    roviny (`4° / -8° / 2° / 0`).
 3. **Paralaxa sloupců**: 4 sloupce jedou různou rychlostí (`yPercent`
-   -40…+20). JS obsah každého sloupce jednou naklonuje, ať 3D mřížka
-   drží výšku.
+   ±5–6 %, `tracks` v `buildGallery()`). **Bez klonování** — každá
+   fotka je v DOM jednou. Sloupce (4–5 fotek) jsou vyšší než
+   `.gallery__matrix` (`height: 112vh`), přesah se přes `justify-content:
+   center` rozdělí nahoru/dolů a ořízne `.gallery__pin` (`overflow:
+   hidden`); paralaxa je malá, aby se nikde neukázala mezera, zbytek
+   schová `.gallery__vignette`.
 
 Titulek `.gallery__title` vyjede zpod masky a při rozjezdu mřížky zmizí.
 
@@ -502,18 +512,18 @@ a 3D: 2 sloupce (`display: contents` na `.gallery__col`), pod 520 px
 1 sloupec, tmavé pozadí `#141410`.
 
 **Lightbox** (`galleryLightbox()` v `js/main.js`): klik na fotku ji
-zvětší v překryvu. Seznam se dedupuje podle `src`, takže klonované
-dlaždice míří na správnou fotku (12 unikátních). Listování šipkami
-i klávesami ←/→ (s přetočením), zavření křížkem / klikem mimo / Esc,
-zámek scrollu (`html { overflow: hidden }`) po dobu otevření. Styly
-`.lightbox*` v [css/style.css](css/style.css).
+zvětší v překryvu. Seznam se dedupuje podle `src` (17 unikátních).
+Listování šipkami i klávesami ←/→ (s přetočením), zavření křížkem /
+klikem mimo / Esc, zámek scrollu (`html { overflow: hidden }`) po dobu
+otevření. Styly `.lightbox*` v [css/style.css](css/style.css).
 
-**Fotky:** `img/gallery/foto-01…12.{jpg,webp}` — 12 skutečných fotek
-(zdroj `C:\Users\studio\Desktop\Filip Lejček fotky`, zmenšeno na dlouhou
-hranu 1280 px, `.webp` + `.jpg` progressive). Rozdělení do sloupců:
-sl. 1 = 01/05/09, sl. 2 = 02/06/10, sl. 3 = 03/07/11, sl. 4 = 04/08/12.
+**Fotky:** `img/gallery/foto-01…17.{jpg,webp}` — 17 skutečných fotek
+(zmenšeno na dlouhou hranu 1280 px, `.webp` + `.jpg` progressive).
+Rozdělení do sloupců: sl. 1 = 01/05/09/13, sl. 2 = 02/06/10/16,
+sl. 3 = 03/07/11/14, sl. 4 = 04/08/12/15/17.
 Přidání další fotky = nový pár `foto-NN.{jpg,webp}` + `<figure>` do
-příslušného `.gallery__col` (JS si sloupce sám naklonuje na výšku).
+příslušného `.gallery__col`. Kvůli zrušenému klonování musí mít
+každý sloupec **aspoň 4 fotky**, ať přesahuje `.gallery__matrix`.
 
 ## 11. Video prezentace (`#video`)
 
@@ -578,9 +588,10 @@ skryté záložce.
   **progress linka**, jejíž výplň roste podle indexu.
 - Uprostřed: nahoře **logo klienta** (`.testi__badge-logo`,
   `object-fit:contain`) — mění se podle recenze z atributu `data-logo`
-  na zdrojovém `<div>`. Wordmark (Škoda) má výšku ~26 px; čtvercové
-  znaky dostávají přes `[src*="ac-sparta"]` výšku ~52 px, ať mají
-  podobnou optickou váhu. **Citace odkrývaná po slovech**
+  na zdrojovém `<div>`. Wordmark (Škoda) má výšku ~26 px; čtvercové /
+  kulaté znaky dostávají přes `[src*="ac-sparta"]` (~52 px) resp.
+  `[src*="playzone"]` (~42 px) víc výšky, ať mají podobnou optickou
+  váhu. **Citace odkrývaná po slovech**
   (`stagger .014`, `expo.out`), autor s **narůstající linkou**
   (`scaleX 0 → 1`). `setBadge()` přepíná `src` + `alt`; když recenze
   `data-logo` nemá, `<img>` se schová.
@@ -589,9 +600,11 @@ skryté záložce.
 
 Data recenzí jsou v `.testi__source` (skrytý `<div hidden>`), JS je
 čte do pole — **úprava textu / přidání recenze / změna loga = jen tam**
-(`data-name`, `data-role`, `data-logo`). Loga jsou v `img/logos/`
-(Škoda `skoda.png`, AC Sparta `ac-sparta.png`). Přechod i odemčení
-řídí `setTimeout`, takže se kolotoč nezasekne.
+(`data-name`, `data-role`, `data-logo`). Číslo, progress i wrap navigace
+se dopočítají z počtu položek. Teď **3 recenze**: Škoda Auto
+(`skoda.png`), AC Sparta Praha (`ac-sparta.png`), Jakub Jícha / Agentura
+PLAYzone (`playzone.png`). Přechod i odemčení řídí `setTimeout`, takže
+se kolotoč nezasekne.
 `prefers-reduced-motion` → bez auto-přepínání; nav funguje okamžitým
 překreslením.
 
@@ -669,9 +682,9 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
 - [x] Sekce O mně
 - [x] Levá lišta (po hero)
 - [x] Portfolio služeb
-- [x] Fotogalerie (efekt + 12 fotek hotové)
+- [x] Fotogalerie (efekt + 17 fotek hotové)
 - [x] Video prezentace (přehrávač + 3 videa)
-- [x] Reference — recenze (Škoda Auto, AC Sparta Praha)
+- [x] Reference — recenze (Škoda Auto, AC Sparta Praha, Jakub Jícha / PLAYzone)
 - [x] Kontaktní formulář (mailto, bez backendu)
 - [x] Patička
 - [ ] GDPR stránka existuje, ale doplnit `[IČO]`, `[sídlo / adresa]`,
@@ -730,9 +743,12 @@ Cíl: co nejmenší kritická cesta, opět bez zásahu do designu.
 - **Videa `preload="none"`** (viz sekce 11) — z počátečního načtení
   zmizelo ~180 kB metadat + 3 requesty (+ přestal spam `ERR_ABORTED`
   z rušených Range requestů).
-- **Hero fotka** `filip-lejcek.webp` 186 → 127 kB (q80),
-  `-mobil.webp` 87 → 60 kB. Vizuálně shodné (ověřeno), retuš odlesku
-  brýlí zachovaná.
+- **Hero fotka** — během tohoto průchodu snížena na q80 (186 → 127 kB),
+  jenže se re-enkódovala z už komprimovaného webp (generační ztráta) →
+  obličej „plastový", z retuše odlesku fialová šmouha. **Vráceno na q92
+  (230 kB), re-export čerstvě z bezztrátového `img/filip-lejcek.png`**
+  (= retušovaný master). `-mobil.webp` q90 (100 kB), zmenšeno z masteru.
+  Retuš odlesku brýlí zachovaná; PNG fallbacky beze změny.
 - **O mně:** `about-1.webp` 273 → 162 kB (zdroj zmenšen 1000→760 px,
   q70; je to hodně detailní záběr davu, proto pořád největší fotka),
   `about-2.webp` 124 → 76 kB (→ 860 px, q74). JPG fallbacky taky.

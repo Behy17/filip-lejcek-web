@@ -1049,7 +1049,8 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .rail__logos-group img[src*="ac-sparta"],
 .rail__logos-group img[src*="rytiri-kladno"],
 .rail__logos-group img[src*="hc-sparta"],
-.rail__logos-group img[src*="red-bull"]{ height:25px; }
+.rail__logos-group img[src*="red-bull"],
+.rail__logos-group img[src*="playzone"]{ height:25px; }
 @keyframes rail-logos{
   from{ transform:translate3d(0,0,0); }
   to  { transform:translate3d(-50%,0,0); }
@@ -1422,14 +1423,19 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.13 PORTRÉT — samostatná fotka pod Portfoliem
+   5.13 PORTRÉT — glassmorphism profilová karta pod Portfoliem
+   Vanilla rekonstrukce 21st.dev/@beratberkayg "glassmorphism-profile-
+   card" (React/Tailwind/shadcn komponenta) — tenhle web nemá React
+   build, takže stejný vzhled/chování (hodiny, kopírování e-mailu,
+   pulsující stav, spodní lime „glow" pruh) je přepsaný do čistého
+   HTML/CSS/JS. JS: buildPortrait() v main.js.
    ══════════════════════════════════════════════════════════════ */
 .portrait{
   position:relative;
   z-index:6;
-  padding:clamp(40px,6vh,84px) 0 clamp(72px,12vh,152px);
+  padding:clamp(40px,6vh,84px) 0 clamp(96px,14vh,176px);
   background:var(--bg);
-  overflow-x:clip;           /* záře nepřeteče vodorovně */
+  overflow-x:clip;
 }
 .portrait__inner{
   max-width:1180px;
@@ -1438,124 +1444,129 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   display:flex;
   justify-content:center;
 }
-.portrait__fig{
-  --rx:0; --ry:0; --mx:50%; --my:50%;
+
+.pcard-wrap{
   position:relative;
-  margin:0;
   width:100%;
-  max-width:clamp(280px,40vw,440px);
+  max-width:380px;
 }
+.js .pcard-wrap{ opacity:0; }   /* JS rozanimuje (buildPortrait) */
 
-/* Měkká olivová záře za fotkou — hloubka a barevná vazba na akcent. */
-.portrait__aura{
-  position:absolute; inset:-16% -14% -12%;
+/* Spodní lime „glow" — bleeduje zpod karty, nese doprovodný text. */
+.pcard-glow{
+  position:absolute;
+  inset:auto 12px -34px;
+  top:91%;
   z-index:0;
-  border-radius:48% 52% 55% 45%;
-  background:radial-gradient(closest-side,
-    rgba(79,93,58,.32), rgba(79,93,58,0) 78%);
-  filter:blur(26px);
+  border-radius:26px;
+  background:#a3e635;
+  box-shadow:0 36px 70px -14px rgba(163,230,53,.65);
   pointer-events:none;
 }
-
-/* Vlastní médium — nese zaoblení, ořez, hloubkový stín a 3D náklon. */
-.portrait__media{
-  position:relative;
+.pcard-glow__text{
+  position:absolute; left:0; right:0; bottom:-38px;
   z-index:1;
-  overflow:hidden;
-  border-radius:var(--r-lg);
-  background:var(--bg-deep);
-  box-shadow:
-    0 54px 94px -28px rgba(28,30,23,.5),
-    0 20px 42px -18px rgba(28,30,23,.34),
-    inset 0 0 0 1px rgba(255,255,255,.22);
-  transform:
-    perspective(1000px)
-    rotateX(calc(var(--rx) * 1deg))
-    rotateY(calc(var(--ry) * 1deg));
-  transition:transform .6s var(--e-out), box-shadow .5s var(--e-soft);
-  will-change:transform;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  margin:0; padding:11px 0;
+  font-family:var(--f-display);
+  font-size:13.5px; font-weight:600;
+  color:#1b2205;
+  pointer-events:none;
 }
-.portrait__fig.is-live .portrait__media{ transition:box-shadow .5s var(--e-soft); }
-.portrait__fig:hover .portrait__media,
-.portrait__fig.is-live .portrait__media{
-  box-shadow:
-    0 64px 110px -26px rgba(28,30,23,.56),
-    0 24px 50px -18px rgba(28,30,23,.4),
-    inset 0 0 0 1px rgba(255,255,255,.3);
+.pcard-glow__text svg{ width:15px; height:15px; flex:none; }
+
+.pcard{
+  position:relative; z-index:2;
+  border-radius:22px;
+  padding:clamp(20px,2.6vw,28px);
+  background:rgba(248,247,243,.55);
+  -webkit-backdrop-filter:blur(22px) saturate(1.3);
+          backdrop-filter:blur(22px) saturate(1.3);
+  border:1px solid rgba(28,30,23,.12);
+  box-shadow:0 26px 54px -20px rgba(28,30,23,.3),
+             inset 0 1px 0 rgba(255,255,255,.5);
 }
-.portrait__fig picture{ display:block; }
-.portrait__fig img{
-  display:block;
-  width:100%; height:auto;
+
+.pcard__top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:var(--s-2);
+  margin-bottom:clamp(18px,3vw,26px);
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+.pcard__status{ display:flex; align-items:center; gap:8px; }
+.pcard__dot{
+  width:9px; height:9px; flex:none;
+  border-radius:50%;
+  background:#84cc16;
+  box-shadow:0 0 0 3px rgba(132,204,22,.22);
+  animation:pcard-pulse 1.8s ease-in-out infinite;
+}
+@keyframes pcard-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+.pcard__clock{ display:flex; align-items:center; gap:6px; opacity:.85; }
+.pcard__clock svg{ width:14px; height:14px; flex:none; }
+.pcard__time{ font-variant-numeric:tabular-nums; }
+
+.pcard__avatar{
+  position:relative;
+  width:clamp(160px,44vw,208px);
   aspect-ratio:1/1;
-  object-fit:cover;
-  filter:saturate(1.02) contrast(1.02);
-  transition:filter .8s var(--e-soft), transform .9s var(--e-out);
+  margin:0 auto clamp(16px,2.6vw,22px);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4),
+             0 18px 34px -16px rgba(28,30,23,.4);
 }
-.portrait__fig:hover img{ filter:saturate(1.06) contrast(1.03); transform:scale(1.03); }
-
-/* Filmové zrno na fotce — stejná textura jako v hero. */
-.portrait__grain{
-  position:absolute; inset:0; z-index:2;
-  pointer-events:none;
-  opacity:.42;
-  mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-}
-/* Světlo sledující kurzor po skle fotky. */
-.portrait__sheen{
-  position:absolute; inset:0; z-index:3;
-  pointer-events:none;
-  opacity:0;
-  mix-blend-mode:soft-light;
-  background:radial-gradient(280px circle at var(--mx) var(--my),
-    rgba(255,255,255,.42), rgba(255,255,255,0) 60%);
-  transition:opacity .5s var(--e-soft);
-}
-.portrait__fig:hover .portrait__sheen,
-.portrait__fig.is-live .portrait__sheen{ opacity:1; }
-
-/* ── Rotující „gradient bold" rám (dle 21st.dev / ruixen.ui).
-   Konická výseč světla obíhá po vnitřní hraně fotky. Prstenec
-   vykrojíme maskou (exclude), úhel točíme přes @property. */
-@property --portrait-angle{
-  syntax:"<angle>";
-  initial-value:0deg;
-  inherits:false;
-}
-.portrait__beam{
-  position:absolute; inset:0; z-index:4;
-  border-radius:var(--r-lg);
-  padding:2px;
-  pointer-events:none;
-  background:conic-gradient(from var(--portrait-angle),
-    rgba(139,154,107,0)    0deg,
-    rgba(139,154,107,0)    150deg,
-    rgba(139,154,107,.85)  232deg,
-    var(--cream)           288deg,
-    rgba(139,154,107,.85)  320deg,
-    rgba(139,154,107,0)    360deg);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-          mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-          mask-composite:exclude;
-  animation:portrait-beam 6s linear infinite;
-}
-@keyframes portrait-beam{ to{ --portrait-angle:360deg; } }
-/* Fallback bez @property (starší prohlížeče): klidný statický prstenec. */
-@supports not (background: conic-gradient(from 1deg, red, blue)){
-  .portrait__beam{ background:none; border:1.5px solid rgba(139,154,107,.5); padding:0; }
+.pcard__avatar img{
+  display:block; width:100%; height:100%;
+  object-fit:cover; object-position:top center;
 }
 
-.js .portrait__fig{ opacity:0; }   /* JS rozanimuje */
+.pcard__id{ text-align:center; margin-bottom:clamp(20px,3vw,28px); }
+.pcard__name{
+  font-family:var(--f-display);
+  font-size:clamp(22px,2.6vw,27px);
+  font-weight:700;
+  letter-spacing:-.012em;
+  color:var(--ink);
+}
+.pcard__role{
+  margin-top:3px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+}
+
+.pcard__actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.pcard__btn{
+  display:flex; align-items:center; justify-content:center; gap:clamp(5px,1.6vw,8px);
+  height:46px; padding:0 clamp(8px,2.4vw,14px);
+  border-radius:14px;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(28,30,23,.12);
+  font-family:var(--f-body);
+  font-size:clamp(11px,3vw,13px); font-weight:500;
+  white-space:nowrap;
+  color:var(--ink);
+  text-decoration:none;
+  cursor:pointer;
+  transition:background-color var(--t-mid) var(--e-soft),
+             border-color var(--t-mid) var(--e-soft);
+}
+.pcard__btn:hover{ background:rgba(255,255,255,.85); border-color:rgba(28,30,23,.2); }
+.pcard__btn svg{ width:14px; height:14px; flex:none; }
+/* [hidden] prohraje s "img,svg,picture{ display:block }" výš (autorské
+   pravidlo bije UA styl bez ohledu na specificitu) — přepínáme třídou. */
+.pcard__btn-ico-check{ display:none; color:var(--olive); }
+.pcard__btn.is-copied .pcard__btn-ico-copy{ display:none; }
+.pcard__btn.is-copied .pcard__btn-ico-check{ display:block; }
+.pcard__btn.is-copied{ border-color:rgba(79,93,58,.4); }
 
 @media (prefers-reduced-motion:reduce){
-  .portrait__media{ transform:none; }
-  .portrait__beam{ animation:none; --portrait-angle:270deg; }
+  .pcard__dot{ animation:none; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1568,7 +1579,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .gallery{
   position:relative;
   z-index:6;
-  height:520vh;
+  height:380vh;
   background:var(--bg);
 }
 .gallery__pin{
@@ -1595,12 +1606,13 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   display:flex;
   gap:clamp(14px,1.6vw,26px);
   width:124vw;
-  height:154vh;
+  height:112vh;              /* nižší než obsah sloupce (4–5 fotek) → přesah ořízne pin */
   transform-style:preserve-3d;
   will-change:transform;
 }
 .gallery__col{
   display:flex; flex-direction:column;
+  justify-content:center;    /* přesah rozdělit nahoru/dolů (schová ho vinětace) */
   gap:clamp(14px,1.6vw,26px);
   width:22vw; min-width:170px;
   will-change:transform;
@@ -1609,7 +1621,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   position:relative;
   margin:0;
   width:100%;
-  height:clamp(200px,32vh,400px);
+  height:clamp(220px,32vh,460px);
   flex:none;
   overflow:hidden;
   border-radius:10px;
@@ -2073,6 +2085,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    optickou váhu jako široký wordmark Škody */
 .testi__badge-logo[src*="ac-sparta"]{
   height:clamp(40px,4.6vw,52px);
+}
+.testi__badge-logo[src*="playzone"]{   /* roundel + wordmark — vyšší, ať je kolečko čitelné */
+  height:clamp(32px,3.6vw,42px);
 }
 .testi__quote{
   margin:0 0 clamp(28px,4vw,44px);
@@ -3002,8 +3017,6 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   /* Dekorace, která na malé ploše hlavně zatěžuje vykreslení. */
   .hero__aurora   { animation:none; }              /* rozmazaný blob nech statický */
   .hero__grain    { display:none; }                /* full-screen overlay vrstva */
-  .portrait__beam { display:none; }                /* rotující konický okraj (anim) */
-  .portrait__sheen{ display:none; }
   .testi__index   { display:none; }                /* obří vybledlé číslo, teklo z okraje */
   .contact__plus  { display:none; }                /* rohové „+" značky karty */
   .footer__glow   { display:none; }                /* 4× rozmazaný olivový blob */
