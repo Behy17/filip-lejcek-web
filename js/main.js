@@ -693,8 +693,8 @@
   /* ══ 7f. Portrét pod Portfoliem — profilová karta (glassmorphism) ══
      Vanilla náhrada za 21st.dev/@beratberkayg "glassmorphism-profile-
      card" (React/Tailwind/shadcn) — tenhle web běží bez build kroku,
-     takže stejné chování (reveal, živé hodiny, kopírování e-mailu)
-     je přepsané do prostého GSAP + DOM. */
+     takže stejné chování (reveal, živé hodiny) je přepsané do
+     prostého GSAP + DOM. */
   function buildPortrait() {
     var sec = document.querySelector('.portrait');
     if (!sec) return;
@@ -714,7 +714,6 @@
     }
 
     pcardClock(sec);
-    pcardCopyEmail(sec);
   }
 
   /* Živé hodiny v kartě — minutová přesnost, kontrola co 15s stačí. */
@@ -731,28 +730,6 @@
     }
     tick();
     setInterval(tick, 15000);
-  }
-
-  /* Tlačítko „Zkopírovat e-mail" — Clipboard API + krátká zpětná vazba. */
-  function pcardCopyEmail(sec) {
-    var btn = sec.querySelector('[data-pcard-copy]');
-    if (!btn) return;
-    var txt   = btn.querySelector('.pcard__btn-txt');
-    var email = btn.getAttribute('data-email');
-    var timer;
-
-    btn.addEventListener('click', function () {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email).catch(function () {});
-      }
-      btn.classList.add('is-copied');
-      txt.textContent = 'Zkopírováno';
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        btn.classList.remove('is-copied');
-        txt.textContent = 'Zkopírovat e-mail';
-      }, 1600);
-    });
   }
 
   /* ══ 7g. Fotogalerie — „unfurling" panel + 3D parallax mřížka ═══
