@@ -1423,12 +1423,11 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.13 PORTRÉT — glassmorphism profilová karta pod Portfoliem
+   5.13 PORTRÉT — profilová karta pod Portfoliem
    Vanilla rekonstrukce 21st.dev/@beratberkayg "glassmorphism-profile-
-   card" (React/Tailwind/shadcn komponenta) — tenhle web nemá React
-   build, takže stejný vzhled/chování (hodiny, kopírování e-mailu,
-   pulsující stav, spodní lime „glow" pruh) je přepsaný do čistého
-   HTML/CSS/JS. JS: buildPortrait() v main.js.
+   card" (React/Tailwind/shadcn), přebarvená do palety webu: béžová
+   karta jako .services__card, spodní olivový „glow" pruh se štítkem,
+   tlačítka cream → olive na hoveru. JS: buildPortrait() (jen reveal).
    ══════════════════════════════════════════════════════════════ */
 .portrait{
   position:relative;
@@ -1448,120 +1447,240 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .pcard-wrap{
   position:relative;
   width:100%;
-  max-width:380px;
+  max-width:468px;
 }
 .js .pcard-wrap{ opacity:0; }   /* JS rozanimuje (buildPortrait) */
 
-/* Spodní lime „glow" — bleeduje zpod karty, nese doprovodný text. */
-.pcard-glow{
-  position:absolute;
-  inset:auto 12px -34px;
-  top:91%;
-  z-index:0;
-  border-radius:26px;
-  background:#a3e635;
-  box-shadow:0 36px 70px -14px rgba(163,230,53,.65);
-  pointer-events:none;
-}
-.pcard-glow__text{
-  position:absolute; left:0; right:0; bottom:-38px;
-  z-index:1;
-  display:flex; align-items:center; justify-content:center; gap:7px;
-  margin:0; padding:11px 0;
-  font-family:var(--f-display);
-  font-size:13.5px; font-weight:600;
-  color:#1b2205;
-  pointer-events:none;
-}
-.pcard-glow__text svg{ width:15px; height:15px; flex:none; }
-
 .pcard{
   position:relative; z-index:2;
-  border-radius:22px;
-  padding:clamp(20px,2.6vw,28px);
-  background:rgba(248,247,243,.55);
-  -webkit-backdrop-filter:blur(22px) saturate(1.3);
-          backdrop-filter:blur(22px) saturate(1.3);
-  border:1px solid rgba(28,30,23,.12);
-  box-shadow:0 26px 54px -20px rgba(28,30,23,.3),
-             inset 0 1px 0 rgba(255,255,255,.5);
+  border-radius:24px;
+  padding:clamp(26px,3.4vw,38px);
+  background:rgba(240,237,228,.74);
+  -webkit-backdrop-filter:blur(16px) saturate(1.12);
+          backdrop-filter:blur(16px) saturate(1.12);
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:
+    0 40px 70px -26px rgba(28,30,23,.4),
+    0 12px 26px -14px rgba(28,30,23,.24),
+    inset 0 1px 0 rgba(255,255,255,.6);
 }
-
-.pcard__top{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:var(--s-2);
-  margin-bottom:clamp(18px,3vw,26px);
-  font-size:12.5px;
-  color:var(--ink-soft);
-}
-.pcard__status{ display:flex; align-items:center; gap:8px; }
-.pcard__dot{
-  width:9px; height:9px; flex:none;
-  border-radius:50%;
-  background:#84cc16;
-  box-shadow:0 0 0 3px rgba(132,204,22,.22);
-  animation:pcard-pulse 1.8s ease-in-out infinite;
-}
-@keyframes pcard-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
-.pcard__clock{ display:flex; align-items:center; gap:6px; opacity:.85; }
-.pcard__clock svg{ width:14px; height:14px; flex:none; }
-.pcard__time{ font-variant-numeric:tabular-nums; }
 
 .pcard__avatar{
   position:relative;
-  width:clamp(160px,44vw,208px);
+  width:clamp(196px,52vw,266px);
   aspect-ratio:1/1;
-  margin:0 auto clamp(16px,2.6vw,22px);
-  border-radius:18px;
+  margin:0 auto clamp(22px,3.2vw,30px);
+  border-radius:20px;
   overflow:hidden;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4),
-             0 18px 34px -16px rgba(28,30,23,.4);
+  background:var(--bg-deep);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.5),
+    0 20px 38px -18px rgba(28,30,23,.45);
+}
+.pcard__avatar::after{               /* olivový vlas + spodní vinětace, jako u .about__fig */
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(79,93,58,.26),
+    inset 0 -34px 38px -28px rgba(28,30,23,.34);
+  pointer-events:none;
 }
 .pcard__avatar img{
   display:block; width:100%; height:100%;
   object-fit:cover; object-position:top center;
 }
 
-.pcard__id{ text-align:center; margin-bottom:clamp(20px,3vw,28px); }
+.pcard__id{ text-align:center; margin-bottom:clamp(24px,3.4vw,32px); }
 .pcard__name{
   font-family:var(--f-display);
-  font-size:clamp(22px,2.6vw,27px);
+  font-size:clamp(26px,3.2vw,33px);
   font-weight:700;
-  letter-spacing:-.012em;
+  letter-spacing:-.014em;
   color:var(--ink);
-}
-.pcard__role{
-  margin-top:3px;
-  font-size:13.5px;
-  color:var(--ink-soft);
 }
 
 .pcard__actions{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:11px;
 }
 .pcard__btn{
   display:flex; align-items:center; justify-content:center; gap:clamp(5px,1.6vw,8px);
-  height:46px; padding:0 clamp(8px,2.4vw,14px);
+  height:54px; padding:0 clamp(10px,2.4vw,16px);
   border-radius:14px;
-  background:rgba(255,255,255,.55);
-  border:1px solid rgba(28,30,23,.12);
-  font-family:var(--f-body);
-  font-size:clamp(11px,3vw,13px); font-weight:500;
+  background:var(--cream);
+  border:1px solid rgba(28,30,23,.14);
+  font-family:var(--f-display);
+  font-size:clamp(12px,3vw,13.5px); font-weight:500;
+  letter-spacing:.03em;
   white-space:nowrap;
   color:var(--ink);
   text-decoration:none;
   cursor:pointer;
   transition:background-color var(--t-mid) var(--e-soft),
-             border-color var(--t-mid) var(--e-soft);
+             border-color var(--t-mid) var(--e-soft),
+             color var(--t-mid) var(--e-soft);
 }
-.pcard__btn:hover{ background:rgba(255,255,255,.85); border-color:rgba(28,30,23,.2); }
-.pcard__btn svg{ width:14px; height:14px; flex:none; }
+.pcard__btn:hover{
+  background:var(--olive);
+  border-color:var(--olive);
+  color:var(--cream);
+}
+.pcard__btn svg{ width:16px; height:16px; flex:none; }
 
-@media (prefers-reduced-motion:reduce){
-  .pcard__dot{ animation:none; }
+/* Instagram glyph (Lucide geometrie) — decentní „nakreslení" rámečku +
+   pružný záblesk čočky při hoveru. Vše gatováno reduced-motion. */
+.pcard__btn--ig svg .ig-frame{ stroke-dasharray:1; stroke-dashoffset:0; }
+.pcard__btn--ig svg .ig-lens,
+.pcard__btn--ig svg .ig-dot{ transform-box:view-box; }
+.pcard__btn--ig svg .ig-lens{ transform-origin:12px 11.4px; }
+.pcard__btn--ig svg .ig-dot{ transform-origin:17.5px 6.5px; }
+
+@media (prefers-reduced-motion:no-preference){
+  .pcard__btn--ig:hover svg .ig-frame,
+  .pcard__btn--ig:focus-visible svg .ig-frame{
+    animation:ig-frame-draw .6s cubic-bezier(.55,.06,.15,1);
+  }
+  .pcard__btn--ig:hover svg .ig-lens,
+  .pcard__btn--ig:focus-visible svg .ig-lens{
+    animation:ig-lens-pop .52s cubic-bezier(.34,1.56,.64,1) .07s both;
+  }
+  .pcard__btn--ig:hover svg .ig-dot,
+  .pcard__btn--ig:focus-visible svg .ig-dot{
+    animation:ig-dot-pulse .34s ease .15s both;
+  }
 }
+@keyframes ig-frame-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
+@keyframes ig-lens-pop{ 0%{ transform:scale(.8); } 55%{ transform:scale(1.06); } 100%{ transform:scale(1); } }
+@keyframes ig-dot-pulse{ 0%,100%{ transform:scale(1); } 40%{ transform:scale(1.65); } }
+
+/* Telefon (Lucide phone-forwarded) — při hoveru „přesměrování": šipka
+   ťukne doprava, tělo šipky se stlačí, celá ikona jemně pulzne.
+   Gatováno reduced-motion, funguje i na :focus-visible. */
+.pcard__btn--tel svg{ overflow:visible; }
+.pcard__btn--tel svg .pf-shaft,
+.pcard__btn--tel svg .pf-head{ transform-box:view-box; }
+.pcard__btn--tel svg .pf-shaft{ transform-origin:22px 6px; }
+
+@media (prefers-reduced-motion:no-preference){
+  .pcard__btn--tel:hover svg,
+  .pcard__btn--tel:focus-visible svg{
+    animation:pf-pulse .9s cubic-bezier(.4,0,.2,1);
+  }
+  .pcard__btn--tel:hover svg .pf-head,
+  .pcard__btn--tel:focus-visible svg .pf-head{
+    animation:pf-nudge .5s cubic-bezier(.4,0,.2,1);
+  }
+  .pcard__btn--tel:hover svg .pf-shaft,
+  .pcard__btn--tel:focus-visible svg .pf-shaft{
+    animation:pf-shaft .5s cubic-bezier(.4,0,.2,1);
+  }
+}
+@keyframes pf-pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.1); } }
+@keyframes pf-nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(3px); } }
+@keyframes pf-shaft{ 0%,100%{ transform:translateX(0) scaleX(1); } 50%{ transform:translateX(3px) scaleX(.85); } }
+
+/* Rail nav „domů" (Iconify line-md:home-md) — při hoveru / :focus-visible
+   se dům sekvenčně překreslí: střecha → stěny → podlaha → dveře.
+   Gatováno reduced-motion. */
+.rail__nav a[href="#hero"] svg path{ stroke-dasharray:1; stroke-dashoffset:0; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#hero"]:hover svg .hm-roof,
+  .rail__nav a[href="#hero"]:focus-visible svg .hm-roof{ animation:hm-draw .34s ease; }
+  .rail__nav a[href="#hero"]:hover svg .hm-walls,
+  .rail__nav a[href="#hero"]:focus-visible svg .hm-walls{ animation:hm-draw .3s ease .12s both; }
+  .rail__nav a[href="#hero"]:hover svg .hm-floor,
+  .rail__nav a[href="#hero"]:focus-visible svg .hm-floor{ animation:hm-draw .26s ease .26s both; }
+  .rail__nav a[href="#hero"]:hover svg .hm-door,
+  .rail__nav a[href="#hero"]:focus-visible svg .hm-door{ animation:hm-draw .3s ease .38s both; }
+}
+@keyframes hm-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
+
+/* Rail nav „o mně" (Iconify line-md:account) — při hoveru / :focus-visible
+   se postava sekvenčně překreslí: hlava → tělo. Gatováno reduced-motion. */
+.rail__nav a[href="#o-mne"] svg path{ stroke-dasharray:1; stroke-dashoffset:0; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#o-mne"]:hover svg .pe-head,
+  .rail__nav a[href="#o-mne"]:focus-visible svg .pe-head{ animation:hm-draw .42s ease; }
+  .rail__nav a[href="#o-mne"]:hover svg .pe-body,
+  .rail__nav a[href="#o-mne"]:focus-visible svg .pe-body{ animation:hm-draw .42s ease .2s both; }
+}
+
+/* Rail nav „portfolio" (Lucide layout-list) — při hoveru / :focus-visible
+   boxy postupně lupnou, řádky se zleva „setřou" dovnitř. Gatováno
+   reduced-motion. */
+.rail__nav a[href="#portfolio"] svg .ll-box,
+.rail__nav a[href="#portfolio"] svg .ll-line{ transform-box:fill-box; }
+.rail__nav a[href="#portfolio"] svg .ll-box{ transform-origin:center; }
+.rail__nav a[href="#portfolio"] svg .ll-line{ transform-origin:left; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#portfolio"]:hover svg .ll-box,
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-box{ animation:ll-pop .35s ease both; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-box:nth-of-type(2),
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-box:nth-of-type(2){ animation-delay:.08s; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-line,
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-line{ animation:ll-wipe .3s ease both; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-line:nth-of-type(3),
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-line:nth-of-type(3){ animation-delay:.15s; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-line:nth-of-type(4),
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-line:nth-of-type(4){ animation-delay:.22s; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-line:nth-of-type(5),
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-line:nth-of-type(5){ animation-delay:.29s; }
+  .rail__nav a[href="#portfolio"]:hover svg .ll-line:nth-of-type(6),
+  .rail__nav a[href="#portfolio"]:focus-visible svg .ll-line:nth-of-type(6){ animation-delay:.36s; }
+}
+@keyframes ll-pop{ 0%{ transform:scale(.85); opacity:.6; } 60%{ transform:scale(1.05); } 100%{ transform:scale(1); opacity:1; } }
+@keyframes ll-wipe{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+
+/* Rail nav „foto" (Lucide camera) — při hoveru / :focus-visible čočka
+   „cvakne": prudce se stáhne, přeskočí přes a dosedne. Gatováno
+   reduced-motion. */
+.rail__nav a[href="#foto"] svg .cam-lens{ transform-box:fill-box; transform-origin:center; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#foto"]:hover svg .cam-lens,
+  .rail__nav a[href="#foto"]:focus-visible svg .cam-lens{ animation:cam-snap .8s cubic-bezier(.34,1.4,.64,1); }
+}
+@keyframes cam-snap{ 0%{ transform:scale(1); } 30%{ transform:scale(.45); } 65%{ transform:scale(1.15); } 100%{ transform:scale(1); } }
+
+/* Rail nav „video" (Lucide video) — při hoveru / :focus-visible kamera
+   „panuje": nakloní se, chvíli podrží, přehoupne zpět. Gatováno
+   reduced-motion. */
+.rail__nav a[href="#video"] svg .vid-cam{ transform-box:view-box; transform-origin:9px 18px; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#video"]:hover svg .vid-cam,
+  .rail__nav a[href="#video"]:focus-visible svg .vid-cam{ animation:vid-pan .75s ease-in-out; }
+}
+@keyframes vid-pan{ 0%{ transform:rotate(0); } 32%{ transform:rotate(-6deg); } 50%{ transform:rotate(-6deg); } 80%{ transform:rotate(2.5deg); } 100%{ transform:rotate(0); } }
+
+/* Rail nav „reference" (Lucide message-circle-heart) — při hoveru /
+   :focus-visible bublina vyskočí a srdce uvnitř dvakrát tepne.
+   Gatováno reduced-motion. */
+.rail__nav a[href="#reference"] svg .mh-bubble,
+.rail__nav a[href="#reference"] svg .mh-heart{ transform-box:view-box; }
+.rail__nav a[href="#reference"] svg .mh-bubble{ transform-origin:4px 20px; }
+.rail__nav a[href="#reference"] svg .mh-heart{ transform-origin:12px 12px; }
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#reference"]:hover svg .mh-bubble,
+  .rail__nav a[href="#reference"]:focus-visible svg .mh-bubble{ animation:mh-bubble .55s cubic-bezier(.34,1.4,.64,1); }
+  .rail__nav a[href="#reference"]:hover svg .mh-heart,
+  .rail__nav a[href="#reference"]:focus-visible svg .mh-heart{ animation:mh-heart .7s ease-in-out .24s both; }
+}
+@keyframes mh-bubble{ 0%{ transform:scale(.3); opacity:0; } 70%{ transform:scale(1.05); opacity:1; } 100%{ transform:scale(1); opacity:1; } }
+@keyframes mh-heart{ 0%{ transform:scale(.6); opacity:0; } 30%{ transform:scale(1.22); opacity:1; } 50%{ transform:scale(1); } 72%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
+
+/* Rail nav „kontakt" (Lucide message-square-more) — při hoveru /
+   :focus-visible tři tečky „píšou": postupně 2× bliknou. Gatováno
+   reduced-motion. */
+@media (prefers-reduced-motion:no-preference){
+  .rail__nav a[href="#kontakt"]:hover svg .msm-dot,
+  .rail__nav a[href="#kontakt"]:focus-visible svg .msm-dot{ animation:msm-blink .5s ease-in-out 2; }
+  .rail__nav a[href="#kontakt"]:hover svg .msm-dot:nth-of-type(3),
+  .rail__nav a[href="#kontakt"]:focus-visible svg .msm-dot:nth-of-type(3){ animation-delay:.12s; }
+  .rail__nav a[href="#kontakt"]:hover svg .msm-dot:nth-of-type(4),
+  .rail__nav a[href="#kontakt"]:focus-visible svg .msm-dot:nth-of-type(4){ animation-delay:.24s; }
+}
+@keyframes msm-blink{ 0%,100%{ opacity:1; } 45%{ opacity:.12; } }
 
 /* ══════════════════════════════════════════════════════════════
    5.14 FOTOGALERIE — „unfurling" panel + 3D parallax mřížka
@@ -1767,49 +1886,75 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   width:100%;
   margin-inline:auto;
   aspect-ratio:1 / 2;              /* jednotná svislá výška všech tří přehrávačů */
-  border-radius:clamp(12px,1.4vw,18px);
+  border-radius:clamp(14px,1.6vw,20px);
   overflow:hidden;
-  background:var(--bg);
+  background:var(--ink);
+  border:1px solid rgba(255,255,255,.06);
   box-shadow:
-    0 24px 56px -32px rgba(28,30,23,.4),
-    0 10px 24px -16px rgba(28,30,23,.24);
+    0 32px 64px -30px rgba(28,30,23,.5),
+    0 12px 28px -18px rgba(28,30,23,.28);
 }
 .js .vplayer{ opacity:0; }
 .vplayer__video{
   display:block;
   width:100%; height:100%;
   object-fit:cover;                 /* ořízne k obsahu — pryč s pillarboxem i „zapečenými" pruhy */
-  background:var(--bg);
+  background:var(--ink);
   cursor:pointer;
+}
+
+/* Filmový přechod: spodní stín pod ovládáním + jemná vinětace za „play".
+   Mizí, jakmile video běží. */
+.vplayer::after{
+  content:"";
+  position:absolute; inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(to top, rgba(10,11,7,.58) 0%, rgba(10,11,7,.14) 24%, rgba(10,11,7,0) 44%),
+    radial-gradient(130% 62% at 50% 42%, rgba(10,11,7,.30), rgba(10,11,7,0) 60%);
+  transition:opacity .45s var(--e-soft);
+}
+.vplayer.is-playing::after{ opacity:0; }
+
+@media (hover:hover) and (pointer:fine){
+  .vplayer__video{ transition:transform .6s var(--e-out); }
+  .vplayer:hover:not(.is-playing) .vplayer__video{ transform:scale(1.045); }
+}
+@media (prefers-reduced-motion:reduce){
+  .vplayer:hover:not(.is-playing) .vplayer__video{ transform:none; }
 }
 
 /* Velké „play" uprostřed, dokud se nepřehrává */
 .vplayer__big{
   position:absolute; inset:0; margin:auto;
-  width:clamp(60px,7vw,78px); height:clamp(60px,7vw,78px);
+  z-index:2;
+  width:clamp(56px,6.4vw,70px); height:clamp(56px,6.4vw,70px);
   display:grid; place-items:center;
-  border:1px solid rgba(255,255,255,.28);
+  border:1.5px solid rgba(255,255,255,.55);
   border-radius:50%;
-  background:rgba(18,19,13,.5);
-  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-  color:var(--cream);
+  background:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  box-shadow:0 10px 34px -10px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.4);
+  color:#fff;
   cursor:pointer;
   transition:transform var(--t-mid) var(--e-out), background-color var(--t-mid) var(--e-soft), opacity var(--t-mid) var(--e-soft);
 }
-.vplayer__big svg{ width:44%; height:44%; margin-left:6%; }
-.vplayer__big:hover{ transform:scale(1.08); background:rgba(18,19,13,.66); }
+.vplayer__big svg{ width:42%; height:42%; margin-left:6%; filter:drop-shadow(0 1px 4px rgba(0,0,0,.4)); }
+.vplayer__big:hover{ transform:scale(1.06); background:rgba(255,255,255,.24); }
 .vplayer.is-playing .vplayer__big{ opacity:0; transform:scale(.8); pointer-events:none; }
 
 /* Panel ovládání */
 .vplayer__controls{
   position:absolute; left:0; right:0; bottom:0;
+  z-index:2;
   max-width:560px;
   margin:clamp(8px,1.4vw,14px) auto;
   padding:clamp(10px,1.5vw,15px) clamp(12px,1.8vw,18px);
-  background:rgba(15,16,11,.62);
-  -webkit-backdrop-filter:blur(16px) saturate(1.1);
-          backdrop-filter:blur(16px) saturate(1.1);
-  border:1px solid rgba(255,255,255,.12);
+  background:rgba(13,14,9,.52);
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);
+          backdrop-filter:blur(18px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.1);
   border-radius:14px;
   color:var(--cream);
 }
@@ -1821,7 +1966,6 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     filter:blur(6px);
   }
   .vplayer:hover .vplayer__controls,
-  .vplayer:not(.is-playing) .vplayer__controls,
   .vplayer:focus-within .vplayer__controls{
     opacity:1; transform:none; filter:blur(0); pointer-events:auto;
   }
@@ -2083,6 +2227,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .testi__badge-logo[src*="playzone"]{   /* roundel + wordmark — vyšší, ať je kolečko čitelné */
   height:clamp(32px,3.6vw,42px);
 }
+.testi__badge-logo[src*="mongagua"]{   /* barevný znak (postava + míč) — vyšší jako čtvercové marky */
+  height:clamp(38px,4.4vw,50px);
+}
 .testi__quote{
   margin:0 0 clamp(28px,4vw,44px);
   font-family:var(--f-display);
@@ -2247,6 +2394,84 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   color:var(--olive);
 }
 .contact__ico svg{ width:18px; height:18px; }
+
+/* Telefon (Heroicons phone) — při hoveru / focusu na položku sluchátko
+   „zazvoní" (rychlý shake). Gatováno reduced-motion. */
+.contact__ico--phone svg{ transform-box:fill-box; transform-origin:center; }
+@media (prefers-reduced-motion:no-preference){
+  .contact__item:hover .contact__ico--phone svg,
+  .contact__item:focus-within .contact__ico--phone svg{ animation:contact-ring .6s ease-in-out; }
+}
+@keyframes contact-ring{
+  0%{ transform:rotate(0); }
+  14%{ transform:rotate(-10deg); }
+  28%{ transform:rotate(10deg); }
+  43%{ transform:rotate(-10deg); }
+  57%{ transform:rotate(10deg); }
+  71%{ transform:rotate(-5deg); }
+  86%{ transform:rotate(5deg); }
+  100%{ transform:rotate(0); }
+}
+
+/* E-mail (Lucide mail) — při hoveru / focusu na položku se obálka
+   „otevře": chlopeň se nakreslí a ikona lehce poskočí. Gatováno
+   reduced-motion. */
+.contact__ico--mail svg{ transform-box:fill-box; transform-origin:center; }
+.contact__ico--mail svg .mail-flap{ stroke-dasharray:24; stroke-dashoffset:0; }
+@media (prefers-reduced-motion:no-preference){
+  .contact__item:hover .contact__ico--mail svg,
+  .contact__item:focus-within .contact__ico--mail svg{ animation:mail-pop .5s ease-out; }
+  .contact__item:hover .contact__ico--mail svg .mail-flap,
+  .contact__item:focus-within .contact__ico--mail svg .mail-flap{ animation:mail-flap .35s ease-out .22s both; }
+}
+@keyframes mail-pop{ 0%{ transform:scale(.85); } 55%{ transform:scale(1.06); } 80%{ transform:scale(.98); } 100%{ transform:scale(1); } }
+@keyframes mail-flap{ from{ stroke-dashoffset:24; opacity:0; } to{ stroke-dashoffset:0; opacity:1; } }
+
+/* Působnost (map-marker-alt) — při hoveru / focusu na položku špendlík
+   „dopadne" od hrotu a tečka uvnitř vyskočí. Gatováno reduced-motion. */
+.contact__ico--pin svg .pin-body{ transform-box:fill-box; transform-origin:bottom; }
+.contact__ico--pin svg .pin-dot{ transform-box:fill-box; transform-origin:center; }
+@media (prefers-reduced-motion:no-preference){
+  .contact__item:hover .contact__ico--pin svg .pin-body,
+  .contact__item:focus-within .contact__ico--pin svg .pin-body{ animation:pin-drop .4s cubic-bezier(.34,1.5,.64,1); }
+  .contact__item:hover .contact__ico--pin svg .pin-dot,
+  .contact__item:focus-within .contact__ico--pin svg .pin-dot{ animation:pin-pop .2s ease-out .4s both; }
+}
+@keyframes pin-drop{ 0%{ transform:scale(.35); } 70%{ transform:scale(1.08); } 100%{ transform:scale(1); } }
+@keyframes pin-pop{ from{ transform:scale(0); } to{ transform:scale(1); } }
+
+/* Footer Facebook (Lucide facebook) — při hoveru / :focus-visible se
+   obrys „nakreslí" a ikona pružně poskočí. Gatováno reduced-motion. */
+.footer__social a[aria-label="Facebook"] svg{ transform-box:fill-box; transform-origin:center; overflow:visible; }
+.footer__social a[aria-label="Facebook"] svg .fb-path{ stroke-dasharray:1; stroke-dashoffset:0; }
+@media (prefers-reduced-motion:no-preference){
+  .footer__social a[aria-label="Facebook"]:hover svg,
+  .footer__social a[aria-label="Facebook"]:focus-visible svg{ animation:fb-pop .9s ease-out; }
+  .footer__social a[aria-label="Facebook"]:hover svg .fb-path,
+  .footer__social a[aria-label="Facebook"]:focus-visible svg .fb-path{ animation:fb-draw .8s ease-in-out; }
+}
+@keyframes fb-pop{
+  0%{ transform:scale(1) rotate(0); }
+  33%{ transform:scale(1.15) rotate(-4deg); }
+  66%{ transform:scale(.92) rotate(4deg); }
+  100%{ transform:scale(1) rotate(0); }
+}
+@keyframes fb-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
+
+/* Footer Instagram (Lucide instagram) — při hoveru / :focus-visible se
+   všechny tři části obrysu naráz „nakreslí". Gatováno reduced-motion. */
+.footer__social a[aria-label="Instagram"] svg rect,
+.footer__social a[aria-label="Instagram"] svg path,
+.footer__social a[aria-label="Instagram"] svg line{ stroke-dasharray:1; stroke-dashoffset:0; }
+@media (prefers-reduced-motion:no-preference){
+  .footer__social a[aria-label="Instagram"]:hover svg rect,
+  .footer__social a[aria-label="Instagram"]:hover svg path,
+  .footer__social a[aria-label="Instagram"]:hover svg line,
+  .footer__social a[aria-label="Instagram"]:focus-visible svg rect,
+  .footer__social a[aria-label="Instagram"]:focus-visible svg path,
+  .footer__social a[aria-label="Instagram"]:focus-visible svg line{ animation:ig-trace .6s linear; }
+}
+@keyframes ig-trace{ from{ stroke-dashoffset:1; opacity:0; } 20%{ opacity:1; } to{ stroke-dashoffset:0; opacity:1; } }
 .contact__item-label{
   font:500 13.5px/1.3 var(--f-display);
   color:var(--ink);

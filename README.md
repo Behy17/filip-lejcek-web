@@ -461,10 +461,6 @@ dítě `.services__timeline`, položky jsou `<article>`). Pod 860 px čára
 doleva, vše jednosloupcově. Na `≥ 1280 px` `.services__inner` používá
 `var(--rail-space)` (kvůli liště).
 
-> ⚠️ Popis u služby **04 „Rádio a televize"** je zatím shodný se
-> službou 06 (svatba) — vypadá to na omylem zkopírovaný text. Uprav
-> `.services__desc` u 4. `<article>` v [index.html](index.html).
-
 ## 9b. Výzva k akci (`.cta`, bez kotvy)
 
 Kompaktní CTA pás **mezi profilovou kartou (`.portrait`) a Fotogalerií**
@@ -529,10 +525,11 @@ každý sloupec **aspoň 4 fotky**, ať přesahuje `.gallery__matrix`.
 
 Podle komponenty **video-player** (21st.dev / chetanverma16), přepsáno
 z Reactu/framer-motion do vanilla JS (`buildVideos()` +
-`initVideoPlayer()` v `js/main.js`). **Tři přehrávače (`.vplayer`)
-vedle sebe** — `.videos__inner` je `display:grid;
-grid-template-columns:repeat(3,1fr)`, pod 720 px se skládají pod sebe
-(`1fr`). Bez čísel a linek (dřív `.videos__head` — odstraněno).
+`initVideoPlayer()` v `js/main.js`). **Šest přehrávačů (`.vplayer`)** —
+`.videos__inner` je `display:grid; grid-template-columns:repeat(3,1fr)`
+(6 → 2 řady po 3), pod 720 px se skládají pod sebe (`1fr`). `buildVideos()`
+i grid jsou generické — přidání videa = jen nový `<article class="videos__item">`
++ soubor `video/video-N.mp4` (+ `video/poster-N.jpg`). Bez čísel a linek.
 
 - **Ovládání** (`.vplayer__controls`): scrub lišta (klik = seek,
   ←/→ = ±5 s), play/pauza (klik na video / velké „play" uprostřed /
@@ -542,12 +539,14 @@ grid-template-columns:repeat(3,1fr)`, pod 720 px se skládají pod sebe
   `@media (min-width:721px)` panel zkompaktní (menší mezery, užší
   hlasitost, menší časy).
 - **Jen jedno naráz**: spuštění jednoho přehrávače pauzne ostatní.
-- `preload="none"` (kvůli rychlosti načtení stránky — 3 videa mají
-  dohromady ~25 MB a sekce je hluboko pod foldem). Do prvního kliknutí
-  se tedy nestahuje nic; místo poster snímku drží plochu velké „play"
-  tlačítko (`.vplayer__big`) nad `var(--bg)`. Po kliknutí `video.play()`
-  spustí načítání a `loadedmetadata` doplní délku. `#t=0.1` ve `src`
-  zůstává — poster snímek naskočí, jakmile se metadata jednou načtou.
+- `preload="none"` (kvůli rychlosti načtení — videa jsou desítky MB a
+  sekce je hluboko pod foldem). Do prvního kliknutí se ze **samotného
+  videa** nestahuje nic; náhled drží `poster="video/poster-N.jpg"` —
+  reálný první snímek (~8 % délky), vytažený přes `<canvas>` v prohlížeči
+  (bez ffmpeg), zmenšený na ≤ 640 px, ~15–40 kB, dohromady ~130 kB za
+  všech 6. Poster respektuje `object-fit:cover`, takže sedí přesně jako
+  video. Po kliknutí `video.play()` spustí načítání a `loadedmetadata`
+  doplní délku.
 - Reveal přehrávačů přes ScrollTrigger per `.videos__item`
   (`expo.out`, stagger `idx * 0.12 s`).
 
@@ -560,19 +559,21 @@ odřízne). `background` je `var(--bg)`, aby krátký výpadek při načítání
 ladil s pozadím. Videa 2 a 3 jsou nativně svislá (540×960 / 464×832),
 `1/2` je oproti jejich poměru ořízne shora/zdola o ~5 %.
 
-**Videa:** `video/video-1…3.mp4` (zdroj `Desktop\show-1/5/6.mp4`,
-zkopírováno beze změny — bez ffmpeg; ~5 / 8,5 / 12 MB, `moov` atom
-vepředu, takže se dají streamovat progresivně). Video-1 je 1280×720,
-videa 2–3 svislá.
+**Videa:** `video/video-1…6.mp4` + `video/poster-1…6.jpg`. Všechna H.264/
+AAC, `moov` atom vepředu (streamovatelná). video-1..3 původní; video-4..6
+přidané později — video-4/5 byly `.mov` (QuickTime brand `qt `), převedené
+bez ffmpeg jen přepsáním `ftyp` brandu na `mp42` (20bajtový box beze
+změny velikosti → offsety `moov` netknuté), ověřeno v prohlížeči.
+Orientace: video-1 1280×720 a video-6 832×464 na šířku (ořez `1/2` bere
+středový výřez), ostatní svislá.
 
 > ⚠️ Perkládání ve videu (seek na nenačtenou část) potřebuje HTTP
 > **Range** requesty — Python `http.server` v náhledu je neumí, na
 > reálném hostingu (Vercel/Netlify/nginx…) to funguje samo.
 
-> 💡 Videa jsou `preload="none"` (viz výše). Pokud chceš poster snímek
-> hned a zároveň malý přenos, vygeneruj ffmpegem první snímek jako JPG
-> a dej ho do `poster="…"`. Pro menší soubory je protáhni ffmpegem
-> (H.264 720p, CRF ~24, `-movflags +faststart`).
+> 💡 Nový poster: přehraj video v prohlížeči (nebo `<video>` + `<canvas>`),
+> `currentTime` na požadovaný snímek, `canvas.toDataURL('image/jpeg')`,
+> zmenši na ≤ 640 px, ulož jako `video/poster-N.jpg`.
 
 ## 12. Reference — kolotoč recenzí (`#reference`)
 
@@ -740,9 +741,8 @@ Cíl: co nejmenší kritická cesta, opět bez zásahu do designu.
 - **Přednačítá se i `pp-neue-montreal-bold.woff2`.** Obří wordmark
   („LEJČEK") je 700 — dřív se ten font objevil až po parsování CSS.
   Teď startuje spolu s Book/Medium → LCP text vykreslí dřív.
-- **Videa `preload="none"`** (viz sekce 11) — z počátečního načtení
-  zmizelo ~180 kB metadat + 3 requesty (+ přestal spam `ERR_ABORTED`
-  z rušených Range requestů).
+- **Videa `preload="none"`** (viz sekce 11) — ze samotných videí se
+  do kliknutí nestahuje nic, náhled drží `poster` JPG (~130 kB za 6).
 - **Hero fotka** — během tohoto průchodu snížena na q80 (186 → 127 kB),
   jenže se re-enkódovala z už komprimovaného webp (generační ztráta) →
   obličej „plastový", z retuše odlesku fialová šmouha. **Vráceno na q92

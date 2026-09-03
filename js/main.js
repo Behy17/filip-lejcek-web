@@ -693,8 +693,7 @@
   /* ══ 7f. Portrét pod Portfoliem — profilová karta (glassmorphism) ══
      Vanilla náhrada za 21st.dev/@beratberkayg "glassmorphism-profile-
      card" (React/Tailwind/shadcn) — tenhle web běží bez build kroku,
-     takže stejné chování (reveal, živé hodiny) je přepsané do
-     prostého GSAP + DOM. */
+     takže reveal je přepsaný do prostého GSAP + DOM. */
   function buildPortrait() {
     var sec = document.querySelector('.portrait');
     if (!sec) return;
@@ -712,24 +711,6 @@
         }
       });
     }
-
-    pcardClock(sec);
-  }
-
-  /* Živé hodiny v kartě — minutová přesnost, kontrola co 15s stačí. */
-  function pcardClock(sec) {
-    var el = sec.querySelector('[data-pcard-time]');
-    if (!el) return;
-    function tick() {
-      var now = new Date();
-      var h = now.getHours();
-      var m = now.getMinutes().toString().padStart(2, '0');
-      var hour12 = ((h + 11) % 12) + 1;
-      var ampm = h >= 12 ? 'PM' : 'AM';
-      el.textContent = hour12 + ':' + m + ampm;
-    }
-    tick();
-    setInterval(tick, 15000);
   }
 
   /* ══ 7g. Fotogalerie — „unfurling" panel + 3D parallax mřížka ═══
