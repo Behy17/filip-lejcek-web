@@ -841,6 +841,110 @@ a{ color:inherit; text-decoration:none; }
 .js .about__text p{ opacity:0; }
 
 /* ══════════════════════════════════════════════════════════════
+   5.10b  MÉDIA — sportovní komentátor Nova Sport
+   Editoriální blok hned za „O mně": vlevo nadpis + krátký text
+   (1. osoba, jako zbytek O mně), vpravo cream panel s logy
+   (Nova Sport + MS 2026 + Liga mistrů + Bundesliga + La Liga).
+   Pozadí bezešvé s .about/.brands; spodní padding velký, protože
+   .services „vyjede" zaoblenou hranou přes konec bloku.
+   JS: buildMedia() v main.js.
+   ══════════════════════════════════════════════════════════════ */
+.media{
+  position:relative;
+  z-index:6;
+  /* Blok drží blízko sekce „O mně" — malý horní padding + zápor. margin
+     ukusuje z prázdného spodního odsazení .about (nekříží obsah). */
+  margin-top:clamp(-84px,-10vh,-40px);
+  padding:clamp(12px,2.4vh,36px) 0 clamp(120px,16vh,180px);
+  background:var(--bg);
+}
+.media__inner{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 var(--pad);
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);
+  gap:clamp(28px,4.5vw,60px);
+  align-items:center;
+}
+
+.media__title{
+  overflow:hidden;                 /* maska pro reveal */
+  font-family:var(--f-display);
+  font-size:clamp(1.5rem,3vw,2.5rem);
+  font-weight:700;
+  line-height:1.12;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  text-wrap:balance;
+  max-width:18ch;
+}
+.media__title-i{ display:block; will-change:transform; }
+
+.media__text{
+  margin-top:clamp(18px,2.4vw,28px);
+  display:grid;
+  gap:clamp(10px,1.2vw,15px);
+  max-width:52ch;
+}
+.media__text p{
+  font-size:clamp(14px,1.05vw,15.5px);
+  line-height:1.72;
+  color:var(--ink-soft);
+}
+
+.media__logos{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);   /* 6 = 3× dvojité pole → 3+2 s vycentrovaným spodním řádkem */
+  gap:clamp(14px,1.8vw,22px);
+  align-items:center;
+  padding:clamp(20px,2.6vw,34px);
+  background:var(--cream);
+  border:1px solid rgba(28,30,23,.07);
+  border-radius:var(--r-lg);
+}
+.media__logo{
+  display:flex; align-items:center; justify-content:center;
+  grid-column:span 2;
+  width:100%;
+  min-height:clamp(66px,8vw,90px);
+  will-change:transform;                 /* magnetický posun (JS: mediaMagnetic) */
+  transition:opacity .4s var(--e-soft);
+}
+.media__logo:nth-child(4){ grid-column:2 / span 2; }   /* spodní řádek 2 loga vprostřed */
+.media__logo:nth-child(5){ grid-column:4 / span 2; }
+.media__logo img{
+  width:auto; height:auto;
+  max-width:100%;
+  max-height:clamp(40px,4.8vw,56px);   /* výchozí: „badge"/stacked znaky soutěží */
+  object-fit:contain;
+  transition:transform .55s var(--e-out), filter .4s var(--e-soft);
+}
+/* Prémiová interakce — jen desktop s myší:
+   ostatní loga při najetí ustoupí (opacity), aktivní se zvedne a lehce
+   „prosvětlí" (drop-shadow). Magnetický posun celého .media__logo řeší JS. */
+@media (hover:hover) and (pointer:fine){
+  .media__logos:hover .media__logo{ opacity:.4; }
+  .media__logos:hover .media__logo:hover{ opacity:1; }
+  .media__logo:hover img{
+    transform:translateY(-3px) scale(1.05);
+    filter:drop-shadow(0 8px 18px rgba(28,30,23,.16));
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .media__logo:hover img{ transform:none; }
+}
+/* Nova Sport je široký wordmark — nižší strop, ať nepřebíjí ostatní šířkou. */
+.media__logo img[src*="nova-sport"]{ max-height:clamp(20px,2.4vw,28px); }
+/* MS 2026 je vysoký portrét (poměr ~1:1.9) — potřebuje víc výšky. */
+.media__logo img[src*="ms-2026"]{ max-height:clamp(48px,5.6vw,66px); }
+
+/* ── Reveal — počáteční stavy (JS je rozanimuje) ───────────────── */
+.js .media__title-i{ transform:translate3d(0,110%,0); }
+.js .media__text p{ opacity:0; }
+.js .media__logo{ opacity:0; }
+
+/* ══════════════════════════════════════════════════════════════
    5.11 LEVÁ LIŠTA (rail)
    Vzor podle heynesh.com: fixní svislá lišta u levého okraje, stack
    matných „skleněných" panelů na béžové (identita + claim, čísla,
@@ -1205,20 +1309,6 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   pointer-events:none;
   background:linear-gradient(180deg,
     rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 100%);
-}
-/* Olivový „steh" překlenující šev mezi sekcemi. */
-.services__seam{
-  position:absolute;
-  left:50%; top:0;
-  width:2px; height:clamp(38px,7vh,74px);
-  transform:translate(-50%,-52%) scaleY(var(--seam,1));
-  transform-origin:center;
-  border-radius:2px;
-  background:linear-gradient(to bottom,
-    transparent 0%, var(--olive) 42%, var(--olive) 58%, transparent 100%);
-  opacity:.6;
-  pointer-events:none;
-  z-index:2;
 }
 .services__inner{
   position:relative;
@@ -2866,8 +2956,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      (clamp 190–240) + její odsazení (clamp 14–22) + pohodlná mezera. */
   :root{ --rail-space:clamp(292px,21vw,322px); }
 
-  /* O mně + Portfolio + portrét + video + výzva + reference — obsah začíná za lištou */
+  /* O mně + Média + Portfolio + portrét + video + výzva + reference — obsah začíná za lištou */
   .about__inner,
+  .media__inner,
   .services__inner,
   .portrait__inner,
   .videos__inner,
@@ -3176,11 +3267,23 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .about__body{ transform:none; }   /* jednosloupcově bez posunu */
   .about__title{ font-size:clamp(1.55rem,6vw,2.3rem); max-width:none; }
   .about__text{ max-width:60ch; }
+
+  /* Média: jednosloupcově — text nad panelem log */
+  .media__inner{ grid-template-columns:1fr; gap:clamp(28px,7vw,40px); }
+  .media__title{ font-size:clamp(1.45rem,6vw,2.2rem); max-width:none; }
+  .media__text{ max-width:60ch; }
 }
 @media (max-width:480px){
   .about{ padding:clamp(60px,12vh,96px) 0; }
   .about__media{ gap:10px; }
   .about__fig--b{ margin-top:clamp(20px,8vw,40px); }
+  /* 5 log = 2+2+1, poslední přes celou šířku */
+  .media__logos{ grid-template-columns:repeat(2,1fr); gap:14px; }
+  .media__logo,
+  .media__logo:nth-child(4),
+  .media__logo:nth-child(5){ grid-column:auto; }
+  .media__logo:nth-child(5){ grid-column:1 / -1; }
+  .media__logo{ min-height:52px; }
 }
 
 /* ── Portfolio služeb: jednosloupcově, akcentová čára vlevo ──────── */
@@ -3216,9 +3319,10 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 
 /* ══════════════════════════════════════════════════════════════
    6b. MOBILNÍ PRŮCHOD (≤ 600 px)
-   Cíl: kratší scroll (menší svislé mezery, 2sloupcová galerie),
-   plynulejší vykreslení (méně animované/blendované dekorace),
-   menší akcentová typografie. Nesahá na rozvržení hero sekce.
+   Záměrný průchod pro telefon: HIDE (skrýt, co na malé ploše nic
+   nepřidá a jen zdrží vykreslení), SHRINK (zkrátit video + svislé
+   mezery), PERF (odlehčit blur/stíny/3D). Rozvržení hero sekce se
+   nemění (má vlastní přepracování ≤ 980 px).
    ══════════════════════════════════════════════════════════════ */
 @media (max-width:600px){
 
@@ -3226,19 +3330,28 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      scrollu mezi každou dvojicí sekcí. */
   .brands  { padding-top:clamp(44px,8vh,66px);  padding-bottom:clamp(44px,8vh,66px); }
   .about   { padding-top:clamp(52px,9vh,78px);  padding-bottom:clamp(52px,9vh,78px); }
+  .media   { padding-bottom:clamp(96px,13vh,120px); }  /* .services se ≤600 zasouvá jen ~‑89px */
   .services{ padding-bottom:clamp(48px,8vh,72px); }
   .portrait{ padding-top:clamp(28px,5vh,44px);  padding-bottom:clamp(48px,8vh,72px); }
   .cta     { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(52px,9vh,80px); }
   .videos  { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(52px,9vh,80px); }
+  .testi   { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(52px,9vh,80px); }
   .contact { padding-top:clamp(52px,9vh,80px);  padding-bottom:clamp(56px,9vh,84px); }
   .footer  { padding-top:clamp(48px,8vh,68px); }
 
-  /* Dekorace, která na malé ploše hlavně zatěžuje vykreslení. */
-  .hero__aurora   { animation:none; }              /* rozmazaný blob nech statický */
+  /* ── HIDE ──────────────────────────────────────────────────
+     Dekorace / ovládání, které na telefonu hlavně zatěžuje
+     vykreslení nebo se špatně ovládá prstem. */
+  .hero__aurora   { display:none; }                /* rozmazaný blob za full-bleed fotkou */
+  .hero__photo    { filter:none; }                 /* 2vrstvý drop-shadow, na cover fotce neviditelný */
   .hero__grain    { display:none; }                /* full-screen overlay vrstva */
+  .cta__glow      { display:none; }                /* blur(46px) radial, čistě dekorace */
   .testi__index   { display:none; }                /* obří vybledlé číslo, teklo z okraje */
   .contact__plus  { display:none; }                /* rohové „+" značky karty */
   .footer__glow   { display:none; }                /* 4× rozmazaný olivový blob */
+  .services__card { transform:none; }              /* zbytek perspektivy — na dotyku se nehýbe */
+  .vplayer__speeds{ display:none; }                /* fiddly rychlosti; zůstává play/pauza + scrub + mute */
+  .vplayer__vol   { display:none; }
 
   /* Portfolio — menší olivové číslo, těsnější karty. */
   .services__num  { font-size:clamp(1.35rem,7vw,1.85rem); }
@@ -3250,12 +3363,45 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .gallery__matrix{ grid-template-columns:repeat(2,1fr); }
   .gallery{ padding-top:clamp(44px,8vh,64px); padding-bottom:clamp(52px,9vh,72px); }
 
-  /* Video — 3 svislé přehrávače pod sebou; menší mezera. */
-  .videos__inner{ gap:clamp(20px,4vw,30px); }
+  /* ── SHRINK: video ────────────────────────────────────────
+     6 přehrávačů 1/2 pod sebou = ~31 % výšky stránky. Zrušit
+     pevný poměr a zastropovat výšku; video zůstává object-fit:cover. */
+  .videos__item { max-width:440px; }
+  .vplayer      { aspect-ratio:auto; height:min(58vh,520px); }
+  .videos__inner{ gap:clamp(18px,4vw,26px); }
+
+  /* ── PERF ─────────────────────────────────────────────────
+     Vypnout backdrop-filter (u průsvitných karet zvýšit krytí
+     pozadí) a zredukovat vícevrstvé stíny na jednu vrstvu. */
+  .services__card,
+  .pcard{
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    background:rgba(240,237,228,.96);
+  }
+  .vplayer__controls{
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    background:rgba(13,14,9,.82);
+  }
+  .vplayer__big{
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    background:rgba(255,255,255,.22);
+  }
+  .about__fig, .about__fig--b,
+  .services, .services__card,
+  .pcard, .contact__card, .vplayer{
+    box-shadow:0 14px 34px -18px rgba(28,30,23,.42);
+  }
 
   /* Patička — 4 sloupce pod sebou; těsnější rozestupy. */
   .footer__grid{ gap:clamp(20px,4vw,28px); }
   .footer__links a{ padding:4px 0; }
+  /* Cíl dotyku: e-mail/telefon v patičce byly ~15 px vysoké řádky. */
+  .footer__addr a{ display:inline-block; padding:3px 0; }
+}
+
+/* Nejužší telefony — akční tlačítka karty pod sebou (2 sloupce se lámaly). */
+@media (max-width:360px){
+  .pcard__actions{ grid-template-columns:1fr; }
 }
 
 /* ══════════════════════════════════════════════════════════════

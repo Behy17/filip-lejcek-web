@@ -347,15 +347,19 @@
       }
     });
 
-    /* Scroll parallax — obě fotky, opačná „hloubka" */
-    if (figA) gsap.fromTo(figA, { y: 26 }, {
-      y: -34, ease: 'none',
-      scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: .6 }
-    });
-    if (figB) gsap.fromTo(figB, { y: 54 }, {
-      y: -60, ease: 'none',
-      scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: .6 }
-    });
+    /* Scroll parallax — obě fotky, opačná „hloubka".
+       Jen desktop: ≤ 900 px je .about__media stejně zploštělé
+       (bez překryvu/perspektivy), scrub by byl jen zbytečná zátěž. */
+    if (window.matchMedia('(min-width: 901px)').matches) {
+      if (figA) gsap.fromTo(figA, { y: 26 }, {
+        y: -34, ease: 'none',
+        scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: .6 }
+      });
+      if (figB) gsap.fromTo(figB, { y: 54 }, {
+        y: -60, ease: 'none',
+        scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: .6 }
+      });
+    }
 
     /* Pointer 3D náklon (jen desktop s přesným kurzorem) */
     if (media && figA && figB &&
@@ -378,6 +382,64 @@
         aRY(0); aRX(0); aX(0); bRY(0); bRX(0); bX(0);
       });
     }
+  }
+
+  /* ══ 7c2. Média — reveal bloku „sportovní komentátor Nova Sport" ══
+     Nadpis zpod masky → odstavce → loga (pružné „rozdání karet"),
+     staggered. Loga navíc magneticky reagují na myš (mediaMagnetic).
+     Fallback (!ST || reduce) nechá vše viditelné. */
+  function buildMedia() {
+    var sec = document.querySelector('.media');
+    if (!sec) return;
+    var titleI  = sec.querySelector('.media__title-i');
+    var paras   = sec.querySelectorAll('.media__text p');
+    var logos   = sec.querySelectorAll('.media__logo');
+    var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!ST || reduce) {
+      gsap.set(titleI, { yPercent: 0, y: 0 });
+      gsap.set(Array.prototype.slice.call(paras)
+                    .concat(Array.prototype.slice.call(logos)),
+               { opacity: 1, y: 0, scale: 1 });
+      return;
+    }
+
+    gsap.set(titleI, { yPercent: 110, y: 0 });
+    gsap.set(paras, { opacity: 0, y: 18 });
+    gsap.set(logos, { opacity: 0, y: 22, scale: .78 });
+
+    ST.create({
+      trigger: sec, start: 'top 78%', once: true,
+      onEnter: function () {
+        gsap.timeline({ defaults: { ease: 'power3.out' } })
+          .to(titleI, { yPercent: 0, duration: .9, ease: 'expo.out' }, 0)
+          .to(paras,  { opacity: 1, y: 0, duration: .7, stagger: .1 }, .22)
+          .to(logos,  { opacity: 1, y: 0, scale: 1, duration: .66,
+                        ease: 'back.out(1.7)', stagger: .075 }, .36);
+      }
+    });
+
+    mediaMagnetic(logos);
+  }
+
+  /* Magnetická interakce log — každé logo jemně jede za kurzorem v rámci
+     své buňky (±~7 px), pružný návrat po opuštění. Jen desktop s myší,
+     mimo reduce-motion. Posouvá .media__logo (obal), CSS hover zvedá <img>. */
+  function mediaMagnetic(logos) {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    Array.prototype.forEach.call(logos, function (el) {
+      var qx = gsap.quickTo(el, 'x', { duration: .5, ease: 'power3.out' });
+      var qy = gsap.quickTo(el, 'y', { duration: .5, ease: 'power3.out' });
+
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        qx((e.clientX - (r.left + r.width  / 2)) * .18);
+        qy((e.clientY - (r.top  + r.height / 2)) * .22);
+      });
+      el.addEventListener('pointerleave', function () { qx(0); qy(0); });
+    });
   }
 
   /* ══ CTA v liště — „roll" textu po slovech (stejně jako [data-button-hover]
@@ -579,7 +641,6 @@
 
     var headI = sec.querySelector('.services__head-i');
     var lead  = sec.querySelector('.services__lead');
-    var seam  = sec.querySelector('.services__seam');
     var items = Array.prototype.slice.call(sec.querySelectorAll('.services__item'));
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -588,7 +649,6 @@
       gsap.set([lead].concat(items), { opacity: 1, y: 0 });
       gsap.set(sec.querySelectorAll('.services__card'), { opacity: 1, x: 0, xPercent: 0 });
       gsap.set(sec.querySelectorAll('.services__desc'), { opacity: 1, y: 0 });
-      if (seam) seam.style.setProperty('--seam', '1');
       items.forEach(function (it) {
         gsap.set(it.querySelector('.services__title span'), { yPercent: 0, y: 0 });
         gsap.set(it.querySelector('.services__num i'), { yPercent: 0, y: 0 });
@@ -601,14 +661,6 @@
     gsap.set(headI, { yPercent: 110, y: 0 });
     gsap.set(lead,  { opacity: 0, y: 16 });
 
-    /* Olivový steh ve švu — dokreslí se, jak sekce vstupuje do záběru. */
-    if (seam) {
-      seam.style.setProperty('--seam', '0');
-      ST.create({
-        trigger: sec, start: 'top 96%', end: 'top 68%', scrub: .6,
-        onUpdate: function (self) { seam.style.setProperty('--seam', self.progress.toFixed(3)); }
-      });
-    }
     items.forEach(function (it, idx) {
       var fromLeft = (idx % 2 === 0);            // liché dlaždice = levý sloupec
       gsap.set(it.querySelector('.services__card'), {
@@ -1433,6 +1485,7 @@
       countUp();
       buildBrands();
       buildAbout();
+      buildMedia();
       buildRail();
       buildServices();
       buildPortrait();

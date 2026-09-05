@@ -12,7 +12,7 @@ img/filip-lejcek.*    hlavní hero fotka (WebP + PNG fallback)
 img/filip-lejcek-mobil.*  tentýž výřez po pas, menší soubor pro telefony
 img/about-1.*         O mně — Filip na stadionu Sparty (WebP + JPG)
 img/about-2.*         O mně — Filip ve studiu Hitrádia (WebP + JPG)
-img/logos/            loga značek pro pás v sekci Reference
+img/logos/            loga značek (pás v sekci Reference + blok Média 7b)
 tools/vyrez-filip.py  reprodukovatelný výřez fotky
 ```
 
@@ -309,23 +309,52 @@ Reduced-motion: `min-height:100svh` drží výšku i s `height:auto`.
 ### Mobilní průchod (`@media max-width:600px`, CSS sekce „6b")
 
 Samostatný blok jen pro telefony (tablet 601–980 px zůstává beze změny).
-Cíl: kratší scroll, plynulejší vykreslení.
+Cíl: kratší scroll, plynulejší vykreslení. Blok je členěný na
+**HIDE / SHRINK / PERF**. Rozvržení hero sekce se **nemění** (má vlastní
+blok výš).
 
-- **Kratší scroll** — celková výška stránky ~14 700 → ~10 000 px (−31 %):
-  - **Fotogalerie** držena na **2 sloupce** i na telefonu (smazané
-    pravidlo `@media max-width:520px { grid-template-columns:1fr }`) —
-    1 sloupec = všechny fotky na celou šířku ≈ 5000 px scrollu → teď ~2× méně.
-  - Svislé mezery sekcí (`.brands/.about/.services/.portrait/.cta/
-    .videos/.contact/.footer`) z `clamp(…13vh…168px)` na
-    `clamp(…9vh…~80px)` — každá dvojice sekcí ušetří ~120–150 px.
-- **Méně dekorace, která na malé ploše hlavně zdržuje kompozitor:**
-  `.hero__grain` skryté, `.hero__aurora` bez animace (statický blur),
-  `.testi__index` (obří vybledlé číslo) skryté, `.contact__plus` rohové
-  „+" skryté, `.footer__glow` skryté.
-- **Menší akcentová typografie:** `.services__num`
-  `clamp(1.35rem,7vw,1.85rem)`, těsnější `.services__card` / `.services__item`.
-- Menší mezery `.videos__inner` a `.footer__grid`.
-- Rozvržení hero sekce se **nemění** (má vlastní blok výš).
+**HIDE — skryté na ≤ 600 px:**
+
+- `.hero__aurora` (rozmazaný blob za full-bleed fotkou) a `.hero__grain`
+  (overlay přes celou plochu s `mix-blend-mode`) — `display:none`.
+- `.hero__photo{filter:none}` — 2vrstvý drop-shadow je na `object-fit:cover`
+  fotce neviditelný.
+- `.cta__glow` (`blur(46px)` radial), `.testi__index` (obří vybledlé
+  číslo), `.contact__plus` (rohové „+"), `.footer__glow` — `display:none`.
+- `.services__card{transform:none}` — zbytek perspektivy (na dotyku se
+  stejně nehýbe).
+- **Video ovládání:** `.vplayer__speeds` a `.vplayer__vol` skryté —
+  na telefonu zůstává play/pauza + scrub lišta + mute.
+
+**SHRINK — kratší scroll:**
+
+- **Video** (hlavní úspora, dřív ~31 % výšky stránky): `.vplayer` ztrácí
+  pevný poměr `1/2` → `aspect-ratio:auto; height:min(58vh,520px)`, video
+  dál `object-fit:cover`. `.videos__item` max-width 440 px, těsnější
+  `.videos__inner` gap. Sekce Video ~4 300 → ~3 100 px.
+- **Fotogalerie** držena na **2 sloupce** i na telefonu, jen menší mezery.
+- Svislé mezery sekcí (`.brands/.about/.media/.services/.portrait/.cta/
+  .videos/.testi/.contact/.footer`) z `clamp(…13–15vh…168–180px)` na
+  `clamp(…9vh…~80px)`. Nově i `.testi` (dřív bez override) a `.media`
+  (spodní padding stažen na `clamp(96px,13vh,120px)`).
+- `.services__num` `clamp(1.35rem,7vw,1.85rem)`, těsnější
+  `.services__card` / `.services__item`.
+- `@media (max-width:360px)`: `.pcard__actions` na 1 sloupec.
+
+**PERF — odlehčené vykreslení:**
+
+- `backdrop-filter` vypnutý na `.services__card`, `.pcard`
+  (`background` zvednuté na `rgba(240,237,228,.96)`, ať karta nezprůhlední),
+  `.vplayer__controls` (`background` na `.82`) a `.vplayer__big`.
+- Vícevrstvé stíny na `.about__fig(-–b)`, `.services(__card)`, `.pcard`,
+  `.contact__card`, `.vplayer` sjednocené na jednu vrstvu
+  `0 14px 34px -18px rgba(28,30,23,.42)`.
+
+**JS:** `buildAbout()` parallax scrub obou fotek (`js/main.js`) je nově
+za bránou `min-width:901px` — pod ní je `.about__media` stejně zploštělé,
+scrub byl jen zbytečná zátěž. Ostatní efekty jsou už buď `min-width:981px`
+(hero choreografie), nebo pointer-gated (magnetické/kurzorové — na dotyku
+se listenery nevěší).
 
 ---
 
@@ -386,6 +415,55 @@ nemá co animovat (stejný trik jako u `.wordmark__l`).
 
 Text i fotky jsou napevno v `index.html`. Ořez velké fotky drží
 `object-position:50% 12%` (Filipův obličej v záběru).
+
+## 7b. Média — sportovní komentátor Nova Sport (`.media`, `#media`)
+
+Samostatný editoriální blok **hned za „O mně"**, před Portfoliem
+(CSS oddíl `5.10b`). Kredit, který web dřív nezmiňoval: Filip komentuje
+fotbal na stanici **Nova Sport** (MS ve fotbale 2026, Bundesliga, La Liga,
+Liga mistrů UEFA).
+
+Layout: dvousloupcový grid `.media__inner` (`minmax(0,1.05fr)` text /
+`minmax(0,0.95fr)` panel), text v **1. osobě** jako zbytek „O mně" —
+`.media__eyebrow` (olivový nadpisek), `.media__title` (maskovaný reveal
+`.media__title-i`), `.media__text` (2 odstavce). Vpravo cream panel
+`.media__logos` s 5 logy v mřížce 3+2 (technika `repeat(6,1fr)` +
+`grid-column:span 2`, spodní řádek přes `:nth-child(4/5)` vycentrovaný).
+Loga jsou `grayscale` + ztlumená, na hoveru `filter:none`. Nahoře tenký
+statický olivový „steh" `.media__seam` (návaznost na předchozí sekci).
+
+Pod 900 px jednosloupcově (text nad panelem log), pod 480 px mřížka log
+`repeat(2,1fr)` = 2+2+1 (páté logo přes celou šířku). Na ≥ 1280 px má
+`.media__inner` `padding-left:var(--rail-space)` (v seznamu selektorů
+v `@media (min-width:1280px)`), aby obsah začínal za fixní lištou.
+
+Animace `buildMedia()` v `js/main.js` (volá se v `build()` hned za
+`buildAbout()`): eyebrow → nadpis zpod masky → odstavce → loga, vše
+staggered; fallback `if (!ST || reduce)` nechá vše viditelné. Pre-guardy
+`.js .media__title-i{transform:…}` a `.js .media__eyebrow / .media__text p
+/ .media__logo{opacity:0}`.
+
+**Loga (`img/logos/`):** `nova-sport.png` (360×131) už existovalo.
+`ms-2026.png` (FIFA WC 2026, ~1:1.9 portrét), `liga-mistru.png`
+(UEFA Champions League), `bundesliga.png` a `laliga.png` jsou **oficiální
+znaky dodané klientem**, zpracované na průhledné PNG (~190 px na výšku):
+u LaLiga / MS 2026 zdroj už průhledný byl, u Champions League (bílo-šedý
+„checkerboard") se pozadí vyklíčovalo přes luminanci a barva sjednotila
+na UEFA navy, u Bundesligy se vyklíčovalo bílé/šedé pozadí — běžec zůstává
+jako **negativní tvar** (přes červený štít prosvítá cream panelu, čte se
+stejně jako bílá verze). `<img>` mají skutečné intrinsic `width`/`height`,
+`alt=""` + přístupný název na `.media__logos[role="img"]` (vzor jako
+`.brands__marquee`).
+
+Mísené poměry řeší CSS: výchozí strop `max-height:clamp(40px,4.8vw,56px)`
+(stacked znaky soutěží), `nova-sport` má nižší strop (široký wordmark),
+`ms-2026` vyšší (vysoký portrét). Cell `min-height:clamp(66px,8vw,90px)`.
+Loga se **nepřidávají** do pásu `.brands` ani do `.rail__logos`.
+
+**Pre-launch flag:** oficiální znaky FIFA World Cup 2026, UEFA Champions
+League, Bundesligy a La Ligy jsou chráněné ochranné známky (FIFA/UEFA je
+hlídají obzvlášť přísně) — před spuštěním ověřit povolené užití, nebo
+nechat textové wordmarky.
 
 ## 8. Levá lišta (`#rail`)
 
@@ -681,6 +759,7 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
 - [x] Hero fotka (desktop + mobilní varianta)
 - [x] Pás log značek
 - [x] Sekce O mně
+- [x] Blok „Sportovní komentátor Nova Sport" (`.media` / `#media`, viz 7b)
 - [x] Levá lišta (po hero)
 - [x] Portfolio služeb
 - [x] Fotogalerie (efekt + 17 fotek hotové)
@@ -692,7 +771,13 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
       `[datum účinnosti]` + nechat právně ověřit
 - [ ] Opravit popis služby 04 (viz výše)
 - [ ] Potvrdit čísla — `150+ akcí` a `8 let` jsou zástupné (hero karty i lišta)
+- [x] Favicon (`favicon.svg`, monogram FL) — nalinkovaný v `index.html` i GDPR stránce
 - [ ] Doplnit `img/og-image.jpg` (1200×630) pro sdílení na sociálních sítích
+      (+ volitelně `apple-touch-icon.png` 180×180 pro iOS)
+- [ ] Blok Média (7b): oficiální loga soutěží už jsou nasazená
+      (`img/logos/{ms-2026,liga-mistru,bundesliga,laliga}.png`) — **ověřit
+      povolené užití chráněných znaků** (FIFA WC 2026 a UEFA Champions
+      League obzvlášť), případně nahradit textovými wordmarky
 - [ ] Ověřit doménu — audit (sekce 16) předpokládá `https://filiplejcek.cz/`
       (`canonical`, `og:url`, `robots.txt`, `sitemap.xml`, JSON-LD). Když bude
       jiná, přepiš ji na těch 5 místech.
@@ -770,3 +855,28 @@ hero obrázek `fetchpriority="high"` + `preload`, formulářová pole mají
 `<label>`, honeypot je mimo a11y strom (`aria-hidden` + off-screen),
 všech 5 `<nav>` má unikátní `aria-label`, jeden `<h1>`, pořadí nadpisů
 bez skoků, `lang="cs"`, skip-link.
+
+### 16c. Třetí Lighthouse průchod (favicon + drobnosti)
+
+- **Favicon** (`favicon.svg`) — web dosud žádný neměl, prohlížeč tak
+  dostával 404 na `/favicon.ico`. Přidán inline-SVG monogram „FL"
+  (olivová `#4F5D3A` dlaždice, krémové písmo) + `<link rel="icon"
+  type="image/svg+xml">` do `index.html` i GDPR stránky. Jen ikonka
+  v panelu prohlížeče — na stránku nezasahuje. Pro iOS by šlo doplnit
+  `apple-touch-icon.png` (180×180), vyžaduje ale rastrový export.
+- **GDPR stránka: `style.css?v=98` → `?v=161`.** Query string se na
+  obsah souboru neprojeví (stejné byty), šlo jen o sjednocení
+  cache-klíče s `index.html` — jinak si prohlížeč držel dvě kopie
+  téhož CSS.
+- **Cíl dotyku v patičce (≤ 600 px):** `.footer__addr a` (e-mail,
+  telefon) byly ~15 px vysoké řádky → `display:inline-block;
+  padding:3px 0` (jen mobil, stejný vzor jako `.footer__links a`).
+  Na desktopu beze změny.
+
+Co **zůstává na rozhodnutí / chybí asset** (nešlo bez zásahu do
+designu): `img/og-image.jpg` (1200×630) pořád neexistuje → 404 na
+`og:image`/`twitter:image` i v JSON-LD; scrub lišta přehrávače videa
+(`.vplayer__bar`, 4 px) je záměrně tenká linka — zvětšení plochy
+dotyku nese riziko regrese přehrávače; `.pcard__name` jako `<h3>`
+(spíš `<p>`) je sémantická drobnost; `style.css` 121 kB blokuje
+render (řešitelné jen build-stepem / inline critical CSS).
