@@ -2320,6 +2320,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .testi__badge-logo[src*="mongagua"]{   /* barevný znak (postava + míč) — vyšší jako čtvercové marky */
   height:clamp(38px,4.4vw,50px);
 }
+.testi__badge-logo[src*="hc-sparta"]{   /* čtvercový klubový znak — vyšší jako ostatní čtvercové marky */
+  height:clamp(38px,4.4vw,50px);
+}
 .testi__quote{
   margin:0 0 clamp(28px,4vw,44px);
   font-family:var(--f-display);

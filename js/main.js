@@ -1340,7 +1340,7 @@
         btnTxt.textContent = 'Odeslat poptávku';
       }, 3200);
 
-      window.location.href = 'mailto:info@filiplejcek.cz'
+      window.location.href = 'mailto:Filip.Lejcek@seznam.cz'
         + '?subject=' + encodeURIComponent(subject)
         + '&body=' + encodeURIComponent(body);
     });
@@ -1418,7 +1418,7 @@
             if (sendTxt) sendTxt.textContent = 'Odeslat';
           }, 3200);
         }
-        window.location.href = 'mailto:info@filiplejcek.cz'
+        window.location.href = 'mailto:Filip.Lejcek@seznam.cz'
           + '?subject=' + encodeURIComponent('Mám zájem o spolupráci')
           + '&body=' + encodeURIComponent('Můj e-mail: ' + v + '\n\n');
       });

@@ -511,8 +511,10 @@ přes `execCommand`), tooltip změní text na „Zkopírováno", olivové pozad�
 a „pop" fajfky (`back.out(1.7)`); `mouseleave` vše resetuje. Pilulka je
 `<button>` (klávesnicově ovladatelná, `focus`/`blur` = totéž co hover).
 
-> ⚠️ **`info@filiplejcek.cz` je zástupná adresa.** Skutečnou dej do
-> `.rail__email-addr` v [index.html](index.html) — jen na jednom místě.
+> ℹ️ Kontaktní adresa je **`Filip.Lejcek@seznam.cz`**. Vyskytuje se v
+> `index.html` (`.rail__email-addr`, sekce Kontakt, patička, `action`
+> formuláře), v `zasady-ochrany-osobnich-udaju.html` a v `js/main.js`
+> (`mailto:` fallbacky) — při změně projít všechna místa.
 
 Aby lišta nekryla obsah, existuje token **`--rail-space`**: `var(--pad)`
 by default, na `≥ 1280 px` `clamp(292px, 21vw, 322px)` (šířka lišty +
