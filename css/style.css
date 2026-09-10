@@ -2739,6 +2739,20 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   0%   { box-shadow:0 0 0 0 rgba(79,93,58,.45); }
   100% { box-shadow:0 0 0 16px rgba(79,93,58,0); }
 }
+
+/* Stav odesílání — tlumené tlačítko, pravá šipka jemně „dýchá" dál */
+.flow-btn.is-loading{
+  pointer-events:none;
+  opacity:.7;
+  cursor:progress;
+}
+.flow-btn.is-loading .flow-btn__arr--r{
+  animation:flow-btn-wait 1s cubic-bezier(.45,0,.55,1) infinite;
+}
+@keyframes flow-btn-wait{
+  0%,100% { transform:translateX(0); opacity:.55; }
+  50%     { transform:translateX(4px); opacity:1; }
+}
 .contact__note{
   margin:0;
   min-height:1.2em;
@@ -2771,6 +2785,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .flow-btn__arr,
   .flow-btn__circle{ transition-duration:.001ms; }
   .flow-btn.is-sent{ animation:none; }
+  .flow-btn.is-loading .flow-btn__arr--r{ animation:none; }
   .contact__field::after{ transition:none; }
   .flow-btn:hover{ background:var(--olive); }
   .flow-btn:hover .flow-btn__circle{ opacity:0; }

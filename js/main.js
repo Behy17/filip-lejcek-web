@@ -1290,7 +1290,9 @@
     var phoneEl = form.querySelector('#cf-phone');
     var msgEl   = form.querySelector('#cf-msg');
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var ENDPOINT = 'https://submit-form.com/63dzsJJxv';   // Formspark
     var sentTimer = null;
+    var sending   = false;
 
     function setNote(txt, cls) {
       note.textContent = txt || '';
@@ -1322,27 +1324,63 @@
         return;
       }
 
+      if (sending) return;
+      sending = true;
+
       var subject = 'Poptávka moderování — ' + nameEl.value.trim();
-      var body =
-        'Jméno: ' + nameEl.value.trim() + '\n' +
-        'E-mail: ' + mailEl.value.trim() + '\n' +
-        (phoneEl.value.trim() ? 'Telefon: ' + phoneEl.value.trim() + '\n' : '') +
-        '\n' + msgEl.value.trim() + '\n';
+      var payload = {
+        '_email.subject': subject,
+        '_email.replyto': mailEl.value.trim(),
+        _gotcha: '',
+        'Jméno': nameEl.value.trim(),
+        'E-mail': mailEl.value.trim(),
+        'Telefon': phoneEl.value.trim() || '—',
+        'Zpráva': msgEl.value.trim()
+      };
 
-      setNote('Otevírám váš e-mailový klient…', 'is-ok');
-      btn.classList.remove('is-sent');
-      void btn.offsetWidth;                 // reflow, ať „lupne" i podruhé
-      btnTxt.textContent = 'Odesláno';
-      btn.classList.add('is-sent');
-      clearTimeout(sentTimer);
-      sentTimer = setTimeout(function () {
+      setNote('Odesílám…', 'is-ok');
+      btn.classList.add('is-loading');
+
+      function finish() { sending = false; btn.classList.remove('is-loading'); }
+
+      function fallbackMailto() {
+        var body =
+          'Jméno: ' + nameEl.value.trim() + '\n' +
+          'E-mail: ' + mailEl.value.trim() + '\n' +
+          (phoneEl.value.trim() ? 'Telefon: ' + phoneEl.value.trim() + '\n' : '') +
+          '\n' + msgEl.value.trim() + '\n';
+        window.location.href = 'mailto:Filip.Lejcek@seznam.cz'
+          + '?subject=' + encodeURIComponent(subject)
+          + '&body=' + encodeURIComponent(body);
+      }
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error('formspark');
+
+        setNote('Děkuji, zpráva byla odeslána — ozvu se zpravidla do jednoho pracovního dne.', 'is-ok');
+        form.reset();
+        [nameEl, mailEl, phoneEl, msgEl].forEach(function (el) { mark(el, false); });
+
         btn.classList.remove('is-sent');
-        btnTxt.textContent = 'Odeslat poptávku';
-      }, 3200);
-
-      window.location.href = 'mailto:Filip.Lejcek@seznam.cz'
-        + '?subject=' + encodeURIComponent(subject)
-        + '&body=' + encodeURIComponent(body);
+        void btn.offsetWidth;               // reflow, ať „lupne" i podruhé
+        btnTxt.textContent = 'Odesláno';
+        btn.classList.add('is-sent');
+        clearTimeout(sentTimer);
+        sentTimer = setTimeout(function () {
+          btn.classList.remove('is-sent');
+          btnTxt.textContent = 'Odeslat poptávku';
+        }, 3200);
+      })
+      .catch(function () {
+        setNote('Automatické odeslání se nezdařilo — otevírám váš e-mailový klient.', 'is-err');
+        fallbackMailto();
+      })
+      .then(finish);
     });
 
     /* Světlo u kurzoru po kartě (jen desktop s přesným kurzorem). */

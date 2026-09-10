@@ -512,9 +512,11 @@ a „pop" fajfky (`back.out(1.7)`); `mouseleave` vše resetuje. Pilulka je
 `<button>` (klávesnicově ovladatelná, `focus`/`blur` = totéž co hover).
 
 > ℹ️ Kontaktní adresa je **`Filip.Lejcek@seznam.cz`**. Vyskytuje se v
-> `index.html` (`.rail__email-addr`, sekce Kontakt, patička, `action`
-> formuláře), v `zasady-ochrany-osobnich-udaju.html` a v `js/main.js`
-> (`mailto:` fallbacky) — při změně projít všechna místa.
+> `index.html` (`.rail__email-addr`, sekce Kontakt, patička), v
+> `zasady-ochrany-osobnich-udaju.html` a v `js/main.js` (`mailto:`
+> fallbacky) — při změně projít všechna místa. Kontaktní formulář
+> notifikace nechodí přes tuto adresu přímo, ale přes Formspark
+> (viz § 13).
 
 Aby lišta nekryla obsah, existuje token **`--rail-space`**: `var(--pad)`
 by default, na `≥ 1280 px` `clamp(292px, 21vw, 322px)` (šířka lišty +
@@ -702,13 +704,26 @@ jemně odlišeném podkladu formulář (jméno, e-mail, telefon, zpráva,
 odeslat). Pod 900 px jednosloupcově (dělící linka se překlopí na
 `border-top`).
 
-**Odesílání bez backendu:** JS po validaci sestaví `mailto:` odkaz
-(`subject` = „Poptávka moderování — {jméno}", `body` = pole + zpráva)
-a otevře e-mailový klient. Fallback bez JS: `<form action="mailto:…"
-method="post" enctype="text/plain">`. Honeypot `_gotcha` proti spamu
-(vyplněné pole → tichá „úspěšná" hláška, nic se neodešle). Validace:
-jméno + zpráva neprázdné, e-mail podle regexu; chybná pole dostanou
-`.is-invalid`, hláška v `.contact__note` (`role="status"`).
+**Odesílání přes Formspark (bez vlastního backendu):** po validaci
+pošle JS `fetch` POST (JSON) na `https://submit-form.com/63dzsJJxv`
+— e-mail se odešle **automaticky**, stránka nikam neodskakuje. Předmět
+`_email.subject`, `_email.replyto` = e-mail odesílatele. Úspěch = HTTP
+`200` (s hlavičkou `Accept: application/json` Formspark neodskakuje).
+Po úspěchu: `form.reset()`, hláška „Děkuji, zpráva byla odeslána…",
+tlačítko `.is-sent`. Při chybě sítě/služby fallback na `mailto:`
+(`subject` = „Poptávka moderování — {jméno}", `body` = pole + zpráva).
+Fallback bez JS: nativní `<form method="post"
+action="https://submit-form.com/63dzsJJxv">` (Formspark zobrazí
+vlastní děkovací stránku). Honeypot `_gotcha` (klientská tichá
+„úspěšná" hláška + serverový spam-filtr Formsparku). Validace: jméno
++ zpráva neprázdné, e-mail podle regexu; chybná pole `.is-invalid`,
+hláška v `.contact__note` (`role="status"`). Během odesílání má
+tlačítko `.is-loading` (ztlumené, pravá šipka jemně „dýchá").
+
+> ℹ️ **Nastavení:** notifikační e-mail(y) a povolené domény
+> (`filiplejcek.cz`, `localhost` pro test) se konfigurují v dashboardu
+> Formsparku pod form ID `63dzsJJxv`. Všechna odeslání se navíc ukládají
+> v dashboardu — pojistka, kdyby seznam.cz notifikaci odfiltroval.
 
 **Prémiové mikrointerakce:** při vjezdu do viewportu „+" rohy „lupnou"
 z rotace (`back.out`), kontaktní čipy popnou, nadpis zpod masky, pole
@@ -723,12 +738,6 @@ vpravo a druhá přijede zleva, rohy se stáhnou na 12 px; po odeslání
 (používá ji i CTA v patičce). Karta má jemné **světlo u kurzoru**
 (`.contact__glow`, `--mx/--my`). Vše přes GSAP / CSS, respektuje
 `prefers-reduced-motion`.
-
-> ⚠️ Pro reálné nasazení zvaž napojení na **Formspree**
-> (`action="https://formspree.io/f/ID"`, `method="POST"`) nebo
-> **Netlify Forms** (`data-netlify="true"` + skryté `form-name`) —
-> pak stačí v `buildContact()` vypnout `e.preventDefault()` / mailto
-> větev.
 
 ## 14. Patička (`.footer`)
 
@@ -767,7 +776,7 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
 - [x] Fotogalerie (efekt + 17 fotek hotové)
 - [x] Video prezentace (přehrávač + 3 videa)
 - [x] Reference — recenze (Škoda Auto, AC Sparta Praha, Jakub Jícha / PLAYzone)
-- [x] Kontaktní formulář (mailto, bez backendu)
+- [x] Kontaktní formulář (FormSubmit.co — automatický e-mail, mailto fallback)
 - [x] Patička
 - [ ] GDPR stránka existuje, ale doplnit `[IČO]`, `[sídlo / adresa]`,
       `[datum účinnosti]` + nechat právně ověřit
