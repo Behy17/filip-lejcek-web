@@ -774,17 +774,18 @@ odkaz na zásady zpracování os. údajů. Sloupce naběhnou při vjezdu
 - [x] Levá lišta (po hero)
 - [x] Portfolio služeb
 - [x] Fotogalerie (efekt + 17 fotek hotové)
-- [x] Video prezentace (přehrávač + 3 videa)
-- [x] Reference — recenze (Škoda Auto, AC Sparta Praha, Jakub Jícha / PLAYzone)
-- [x] Kontaktní formulář (FormSubmit.co — automatický e-mail, mailto fallback)
+- [x] Video prezentace (přehrávač + 6 videí, překódováno H.264/30fps)
+- [x] Reference — recenze (Škoda, AC Sparta, PLAYzone, Mongaguá, Good Game, HC Sparta, NIDUM)
+- [x] Kontaktní formulář (Formspark — automatický e-mail, mailto fallback)
 - [x] Patička
-- [ ] GDPR stránka existuje, ale doplnit `[IČO]`, `[sídlo / adresa]`,
-      `[datum účinnosti]` + nechat právně ověřit
-- [ ] Opravit popis služby 04 (viz výše)
-- [ ] Potvrdit čísla — `150+ akcí` a `8 let` jsou zástupné (hero karty i lišta)
+- [x] GDPR stránka — IČO, sídlo i datum účinnosti doplněny; odst. 5 (Formspark,
+      přenos mimo EU/EHP) **doporučeno nechat právně ověřit**
+- [x] Popis služby 04 „Rádio a televize" opraven
+- [x] Čísla v hero — `250+ akcí` (dřív zástupných 150+)
 - [x] Favicon (`favicon.svg`, monogram FL) — nalinkovaný v `index.html` i GDPR stránce
-- [ ] Doplnit `img/og-image.jpg` (1200×630) pro sdílení na sociálních sítích
-      (+ volitelně `apple-touch-icon.png` 180×180 pro iOS)
+- [x] `img/og-image.jpg` (1200×630) — brand card pro sdílení na sítích
+      (volitelně ještě `apple-touch-icon.png` 180×180 pro iOS)
+- [x] Custom `404.html` (třídy `.notfound`, Netlify servíruje automaticky)
 - [ ] Blok Média (7b): oficiální loga soutěží už jsou nasazená
       (`img/logos/{ms-2026,liga-mistru,bundesliga,laliga}.png`) — **ověřit
       povolené užití chráněných znaků** (FIFA WC 2026 a UEFA Champions
