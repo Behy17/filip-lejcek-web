@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stránka nenalezena — Filip Lejček</title>
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#D5CFBE">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-bold.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/pp-neue-montreal-medium.woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css?v=163">
+</head>
+<body>
+
+<header class="legal__top">
+  <a class="legal__brand" href="/">Filip Lejček</a>
+  <a class="legal__back" href="/">← Zpět na web</a>
+</header>
+
+<main class="notfound">
+  <p class="notfound__code">404</p>
+  <h1 class="notfound__title">Tady nic není</h1>
+  <p class="notfound__text">
+    Stránka, kterou hledáte, neexistuje nebo byla přesunuta.
+    Vraťte se na úvod, nebo mi rovnou napište.
+  </p>
+  <a class="notfound__btn" href="/">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8M5 9v11h5v-6h4v6h5V9"/></svg>
+    Zpět na úvodní stránku
+  </a>
+</main>
+
+<footer class="legal__foot">
+  © <span id="nf-year">2026</span> Filip Lejček ·
+  <a href="/">filiplejcek.cz</a>
+</footer>
+
+<script>
+  try { document.getElementById('nf-year').textContent = new Date().getFullYear(); } catch (e) {}
+</script>
+</body>
+</html>
