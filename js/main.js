@@ -1207,7 +1207,7 @@
     }
     function restart() {
       if (timer) clearInterval(timer);
-      if (!reduce) timer = setInterval(function () { go(1, false); }, 10000);
+      if (!reduce) timer = setInterval(function () { go(1, false); }, 15000);
     }
     function wireNav() {
       prevB.addEventListener('click', function () { go(-1, true); });
