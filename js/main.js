@@ -949,6 +949,12 @@
      ostatní se pauznou. Číslo + přehrávač naběhnou při scrollu. */
   function clampPct(n) { return Math.min(100, Math.max(0, n)); }
   function fmtTime(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ':' + ('0' + (s % 60)).slice(-2); }
+  function isMobileVideo() { return window.matchMedia('(max-width:600px)').matches; }
+  function enterVideoFullscreen(wrap, video) {
+    if (wrap.requestFullscreen) wrap.requestFullscreen().catch(function () {});
+    else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+  }
 
   function initVideoPlayer(wrap, onPlay) {
     var video = wrap.querySelector('.vplayer__video');
@@ -966,7 +972,16 @@
     function setFill(p) { p = clampPct(p); fill.style.width = p + '%'; bar.setAttribute('aria-valuenow', Math.round(p)); }
     function setVolFill(p) { p = clampPct(p); volF.style.width = p + '%'; volB.setAttribute('aria-valuenow', Math.round(p)); }
 
-    function toggle() { if (video.paused) { video.play().catch(function () {}); } else { video.pause(); } }
+    function toggle() {
+      if (video.paused) {
+        if (isMobileVideo() && !document.fullscreenElement && !document.webkitFullscreenElement) {
+          enterVideoFullscreen(wrap, video);
+        }
+        video.play().catch(function () {});
+      } else {
+        video.pause();
+      }
+    }
     video.addEventListener('click', toggle);
     big.addEventListener('click', toggle);
     playB.addEventListener('click', toggle);
