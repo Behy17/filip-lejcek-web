@@ -1,11 +1,11 @@
 /* ══════════════════════════════════════════════════════════════
-   Filip Lejček — profesionální moderátor
+   Filip Lejček - profesionální moderátor
    Hero sekce · design tokens + layout + motion
    Paleta: béžová základna + olivový akcent
    ══════════════════════════════════════════════════════════════ */
 
 /* ── 0. Písmo ─────────────────────────────────────────────────────
-   PP Neue Montreal (Pangram Pangram) — shodné písmo jako referenční
+   PP Neue Montreal (Pangram Pangram) - shodné písmo jako referenční
    web heynesh.com. Self-hostované z /fonts, žádný externí CDN.
    Jedno písmo pro nadpisy i běžný text. Pokrývá kompletní českou
    diakritiku (Č Ž Š Ř Ď Ť Ň Ů …).
@@ -38,14 +38,14 @@
   --bg:          #D5CFBE;   /* béžová základna */
   --bg-warm:     #E0DACA;   /* světlejší béžová (gradient nahoře) */
   --bg-deep:     #C6BFAB;   /* tmavší béžová (gradient dole) */
-  --ink:         #1C1E17;   /* text — téměř černá s olivovým nádechem */
+  --ink:         #1C1E17;   /* text - téměř černá s olivovým nádechem */
   --ink-soft:    #4A4D42;   /* sekundární text */
   --cream:       #F8F7F3;   /* text přes fotku */
-  --olive:       #4F5D3A;   /* hlavní akcent — CTA */
+  --olive:       #4F5D3A;   /* hlavní akcent - CTA */
   --olive-dk:    #3A4529;   /* akcent hover */
   --olive-lt:    #8B9A6B;   /* jemné detaily */
 
-  /* Tmavé sklo — karty stojí vedle fotky na světlé béžové, ne na ní.
+  /* Tmavé sklo - karty stojí vedle fotky na světlé béžové, ne na ní.
      Světlý odstín (194,184,172 @ .30) by tam nechal krémový text
      prakticky nečitelný (kontrast ~1,5:1). Tmavá varianta drží čitelnost
      bez ohledu na to, co je vzadu. */
@@ -53,7 +53,7 @@
   --glass-bd:    rgba(248,247,243,.34);
   --glass-hi:    rgba(248,247,243,.10);
 
-  /* Typografie — jedno písmo (viz sekce 0). Dvě proměnné zůstávají
+  /* Typografie - jedno písmo (viz sekce 0). Dvě proměnné zůstávají
      kvůli sémantice: kdyby nadpisy měly někdy dostat vlastní řez,
      stačí přepsat --f-display. */
   --f-display: "PP Neue Montreal", "Segoe UI", system-ui, sans-serif;
@@ -83,7 +83,7 @@
 
   /* Vrstvy */
   --z-aurora:   1;
-  --z-wordmark: 2;   /* obří „LEJČEK“ sedí POD fotkou — postava ho tam, kde se kryjí, zakrývá */
+  --z-wordmark: 2;   /* obří „LEJČEK“ sedí POD fotkou - postava ho tam, kde se kryjí, zakrývá */
   --z-photo:    3;
   --z-grain:    4;
   --z-cards:    5;
@@ -183,7 +183,7 @@ a{ color:inherit; text-decoration:none; }
 .btn--primary:active{ transform:translateY(0) scale(.985); }
 
 .btn--ghost{
-  /* Tmavý (ne světlý) skleněný tón — funguje spolehlivě i tam, kde fotka
+  /* Tmavý (ne světlý) skleněný tón - funguje spolehlivě i tam, kde fotka
      nezakrývá pozadí a scrim za textem je slabý. Sytost odpovídá glass
      kartám, takže styl ladí s nimi. */
   background:rgba(20,22,17,.34);
@@ -251,7 +251,7 @@ a{ color:inherit; text-decoration:none; }
   z-index:var(--z-photo);
   pointer-events:none;
 }
-/* <picture> nemá vlastní rozměr — bez toho nemá width:100% na <img> k čemu se vztáhnout */
+/* <picture> nemá vlastní rozměr - bez toho nemá width:100% na <img> k čemu se vztáhnout */
 .hero__photo-layer picture{ display:block; width:100%; height:100%; }
 .hero__photo{
   width:100%; height:100%;
@@ -262,7 +262,7 @@ a{ color:inherit; text-decoration:none; }
          drop-shadow(0 2px 6px rgba(28,30,23,.14));
 }
 
-/* Desktop: portrét po pas jako na heynesh.com — velká postava kotvená
+/* Desktop: portrét po pas jako na heynesh.com - velká postava kotvená
    ke spodní hraně, klín „vytéká" pod fold (ořízne overflow:hidden na
    .hero__sticky). Rozměr sedí na <picture>, aby GSAP transformace na
    .hero__photo (reveal, scale, parallax) zůstaly nedotčené.
@@ -277,14 +277,14 @@ a{ color:inherit; text-decoration:none; }
     aspect-ratio:1244 / 1500;
     /* Ve výřezu má postava hlavu ~90 px vlevo od svého středu (pravá ruka
        gestikuluje → bbox je širší doprava). Posun doprava ji vrátí nad
-       střed viewportu — hlava tím sjede z písmene „J" do mezery „J | Č"
+       střed viewportu - hlava tím sjede z písmene „J" do mezery „J | Č"
        (viz .wordmark__l:nth-child(4) níž). Užší okno = „J" víc schované →
        potřebuje větší posun, proto inverzní vw. */
     transform:translateX(-50%) translateX(clamp(58px, 120px - 3.2vw, 90px));
   }
   .hero__photo{ object-position:bottom center; }
 }
-/* Scrim — garantuje kontrast bílého textu přes fotku */
+/* Scrim - garantuje kontrast bílého textu přes fotku */
 .hero__photo-layer::after{
   content:"";
   position:absolute; inset:0;
@@ -307,7 +307,7 @@ a{ color:inherit; text-decoration:none; }
 
 /* ── 5.4 Horní blok: wordmark + navigace ──────────────────────── */
 .hero__top{
-  /* Bez vlastního z-indexu — značka a navigace níže mají KAŽDÁ svou vrstvu
+  /* Bez vlastního z-indexu - značka a navigace níže mají KAŽDÁ svou vrstvu
      (grid items mají z-index bez ohledu na position), takže se nezabalí
      společně do jedné bubliny nad fotkou. */
   position:relative;
@@ -315,7 +315,7 @@ a{ color:inherit; text-decoration:none; }
   gap:clamp(14px,2.2vw,30px);
 }
 
-/* Horní lišta — jen mobil (viz @media níže), na desktopu skrytá */
+/* Horní lišta - jen mobil (viz @media níže), na desktopu skrytá */
 .hero__bar{ display:none; }
 
 /* Malý štítek „FILIP" nad obří „LEJČEK" (jen desktop), v běžném toku
@@ -326,17 +326,17 @@ a{ color:inherit; text-decoration:none; }
   font-family:var(--f-display);
   font-weight:700;
   font-size:clamp(16px,1.55vw,23px);
-  line-height:1;                              /* těsné — zvětšení fontu neposune wordmark */
+  line-height:1;                              /* těsné - zvětšení fontu neposune wordmark */
   letter-spacing:.24em;
   text-transform:uppercase;
   color:var(--ink);
   /* margin-left = levý side-bearing velkého „L" (≈ .058em z --wm-size),
      aby „FILIP" opticky začínalo na svislém tahu „L", ne u hrany boxu */
   margin:0 0 clamp(2px,0.5vw,7px) calc(var(--wm-size, 25vw) * .058);
-  /* posunout „FILIP" do středové úrovně háčku nad „Č" — bez vlivu na
+  /* posunout „FILIP" do středové úrovně háčku nad „Č" - bez vlivu na
      pozici wordmarku (proto transform, ne margin). Kalibrováno podle
      skutečného screenshotu vykreslené stránky (ne teoretických
-     font-metrik — ty se u tohoto webfontu neshodovaly se skutečným
+     font-metrik - ty se u tohoto webfontu neshodovaly se skutečným
      renderem). */
   transform:translateY(calc(var(--wm-size, 25vw) * .04 + 11px));  /* +11px ≈ 0,3cm doladění na přání */
 }
@@ -376,17 +376,17 @@ a{ color:inherit; text-decoration:none; }
    (padding-top) a částečně kompenzujeme posun dolů (margin-top).
    Mobil má vlastní řešení (viz @media max-width:980px). */
 @media (min-width:981px){
-  /* wordmark co nejvýš — malý horní padding sekce + agresivnější
+  /* wordmark co nejvýš - malý horní padding sekce + agresivnější
      záporný margin-top wordmarku (padding-top drží prostor pro háček,
      který sedí těsně pod horní hranou stránky) */
   .hero__sticky{ padding-top:clamp(2px,0.5vh,8px); }
   .wordmark{
     line-height:1;
-    padding-top:calc(var(--wm-size, 25vw) * .205);   /* prostor pro háček nad Č — jen tak akorát */
+    padding-top:calc(var(--wm-size, 25vw) * .205);   /* prostor pro háček nad Č - jen tak akorát */
     margin-top:calc(var(--wm-size, 25vw) * -.185);   /* wordmark až k horní hraně stránky */
     margin-bottom:calc(var(--wm-size, 25vw) * -.15);   /* stáhnout navigaci blíž (line-height přidalo vzduch pod textem) */
   }
-  /* Mezera „J | Č" — postava (posunutá doprava, viz .hero__photo-layer
+  /* Mezera „J | Č" - postava (posunutá doprava, viz .hero__photo-layer
      picture) stojí v tomhle okně, ne přes „J". fitWordmark() měří i tuhle
      mezeru a o její šířku písmena zmenší, takže „LEJČEK" pořád bleeduje
      přes celou šířku, jen se čte jako „LEJ · ČEK" s postavou uprostřed
@@ -408,7 +408,7 @@ a{ color:inherit; text-decoration:none; }
 .navgroup li{ display:flex; align-items:center; }
 .navgroup a{
   display:inline-flex; align-items:center; justify-content:center;
-  min-height:44px; min-width:44px;   /* dotykový cíl — krátká slova ("foto") by bez toho byla užší */
+  min-height:44px; min-width:44px;   /* dotykový cíl - krátká slova ("foto") by bez toho byla užší */
   padding:2px;
   font-family:var(--f-body);
   font-size:clamp(12.5px,1.05vw,15px);
@@ -488,7 +488,7 @@ a{ color:inherit; text-decoration:none; }
 }
 
 /* Obě hero CTA = stejné „flow" tlačítko jako v kontaktu a patičce.
-   Základ (ink text, tmavý obrys) sedí na béžové — použije ho mobil.
+   Základ (ink text, tmavý obrys) sedí na béžové - použije ho mobil.
    Nad fotkou (≥ 981 px) přepínáme na krémový text + světlý obrys
    a jemné sklo, ať drží kontrast i bez hoveru. */
 .hero__cta .flow-btn{
@@ -554,7 +554,7 @@ a{ color:inherit; text-decoration:none; }
   position:absolute;
   left:clamp(var(--pad), 3.5vw, 92px); right:auto;
   /* svisle na střed mezi spodkem "domů•o mně•portfolio" (.hero__nav)
-     a vrškem "Profesionální moderátor…" (.hero__kicker) — přeměřeno
+     a vrškem "Profesionální moderátor…" (.hero__kicker) - přeměřeno
      na 1280×900: (356+821)/2=588.5, výška bloku 187 -> top 495 = 55% */
   top:55%;
   display:grid; gap:clamp(10px,1.2vw,16px);
@@ -607,7 +607,7 @@ a{ color:inherit; text-decoration:none; }
 .card--traits{
   position:absolute;
   right:clamp(var(--pad), 3.5vw, 92px); left:auto;
-  /* na nižších oknech by top:57% zajel pod .hero__bottom — na výšku
+  /* na nižších oknech by top:57% zajel pod .hero__bottom - na výšku
      ubereme, jakmile by k tomu docházelo, jinak necháme 57 %.
      Rezerva 380px (nejen výška .hero__lede, ale i prostor pro
      box-shadow karty, který jinak vizuálně "leze" do textu). */
@@ -625,10 +625,10 @@ a{ color:inherit; text-decoration:none; }
 .card--traits svg{ width:13px; height:13px; flex:none; opacity:.9; }
 
 /* ══════════════════════════════════════════════════════════════
-   5.9 REFERENCE — nekonečný pás log značek
+   5.9 REFERENCE - nekonečný pás log značek
    Marquee pohyb podle heynesh.com: měkké okraje (mask-gradient),
    svižné lineární tempo, pauza na hover, spotlight na najeté dlaždici.
-   Bez nadpisu — jen samotný pás. Loga jsou barevná rastrová
+   Bez nadpisu - jen samotný pás. Loga jsou barevná rastrová
    (z filiplejcek.lovable.app), proto sedí na krémových dlaždicích
    a ve výchozím stavu jsou v odstínech šedi; hover je rozsvítí.
    Vypnuto při reduced-motion (zbyde statická první skupina).
@@ -667,9 +667,9 @@ a{ color:inherit; text-decoration:none; }
   to  { transform:translate3d(-50%,0,0); }
 }
 
-/* Jedna dlaždice — krémové pole. Šířka se řídí obsahem (široké wordmarky
+/* Jedna dlaždice - krémové pole. Šířka se řídí obsahem (široké wordmarky
    dostanou širokou dlaždici, kompaktní znaky úzkou) při pevné výšce a
-   svislém rytmu — vypadá to organicky jako skutečná zeď log. Logo je
+   svislém rytmu - vypadá to organicky jako skutečná zeď log. Logo je
    ve výchozím stavu v odstínech šedi a ztlumené; hover je rozsvítí,
    dlaždici nadzvedne a přidá stín (spotlight), ostatní decentně ustoupí. */
 .brand{
@@ -704,7 +704,7 @@ a{ color:inherit; text-decoration:none; }
 }
 .brands__row .brand:hover img{ filter:grayscale(0) contrast(1) opacity(1); }
 
-/* Fallback: dlaždice bez loga — jen název. Teď se nepoužívá (všech 11 má
+/* Fallback: dlaždice bez loga - jen název. Teď se nepoužívá (všech 11 má
    logo), zůstává pro případ dočasně chybějícího assetu. */
 .brand--word span{
   font-family:var(--f-display);
@@ -730,13 +730,13 @@ a{ color:inherit; text-decoration:none; }
    Dvousloupcový editorial: staggered dvojice fotek + text s pevným
    měřítkem řádku. Nadpis „vyjede" zpod masky, odstavce a fotky
    nabíhají při scrollu (JS: buildAbout v main.js). Fotky mají rám
-   z jemné světlé linky a hluboký měkký stín — „prémiový" dojem.
+   z jemné světlé linky a hluboký měkký stín - „prémiový" dojem.
    ══════════════════════════════════════════════════════════════ */
 .about{
   position:relative;
   z-index:6;
   padding:clamp(84px,13vh,168px) 0;
-  background:var(--bg);   /* shodné s .brands — bez viditelného švu mezi sekcemi */
+  background:var(--bg);   /* shodné s .brands - bez viditelného švu mezi sekcemi */
 }
 .about__inner{
   max-width:1180px;
@@ -804,7 +804,7 @@ a{ color:inherit; text-decoration:none; }
     0 16px 34px -14px rgba(28,30,23,.34);
 }
 
-/* Reveal maska fotek — obsah startuje schovaný pod spodní hranou */
+/* Reveal maska fotek - obsah startuje schovaný pod spodní hranou */
 .js .about__fig picture{ transform:translate3d(0,101%,0); }
 
 /* ── Text ───────────────────────────────────────────────────────── */
@@ -837,11 +837,11 @@ a{ color:inherit; text-decoration:none; }
   color:var(--ink-soft);
 }
 
-/* ── Reveal — počáteční stavy (JS je rozanimuje) ───────────────── */
+/* ── Reveal - počáteční stavy (JS je rozanimuje) ───────────────── */
 .js .about__text p{ opacity:0; }
 
 /* ══════════════════════════════════════════════════════════════
-   5.10b  MÉDIA — sportovní komentátor Nova Sport
+   5.10b  MÉDIA - sportovní komentátor Nova Sport
    Editoriální blok hned za „O mně": vlevo nadpis + krátký text
    (1. osoba, jako zbytek O mně), vpravo cream panel s logy
    (Nova Sport + MS 2026 + Liga mistrů + Bundesliga + La Liga).
@@ -852,7 +852,7 @@ a{ color:inherit; text-decoration:none; }
 .media{
   position:relative;
   z-index:6;
-  /* Blok drží blízko sekce „O mně" — malý horní padding + zápor. margin
+  /* Blok drží blízko sekce „O mně" - malý horní padding + zápor. margin
      ukusuje z prázdného spodního odsazení .about (nekříží obsah). */
   margin-top:clamp(-84px,-10vh,-40px);
   padding:clamp(12px,2.4vh,36px) 0 clamp(120px,16vh,180px);
@@ -920,7 +920,7 @@ a{ color:inherit; text-decoration:none; }
   object-fit:contain;
   transition:transform .55s var(--e-out), filter .4s var(--e-soft);
 }
-/* Prémiová interakce — jen desktop s myší:
+/* Prémiová interakce - jen desktop s myší:
    ostatní loga při najetí ustoupí (opacity), aktivní se zvedne a lehce
    „prosvětlí" (drop-shadow). Magnetický posun celého .media__logo řeší JS. */
 @media (hover:hover) and (pointer:fine){
@@ -934,12 +934,12 @@ a{ color:inherit; text-decoration:none; }
 @media (prefers-reduced-motion:reduce){
   .media__logo:hover img{ transform:none; }
 }
-/* Nova Sport je široký wordmark — nižší strop, ať nepřebíjí ostatní šířkou. */
+/* Nova Sport je široký wordmark - nižší strop, ať nepřebíjí ostatní šířkou. */
 .media__logo img[src*="nova-sport"]{ max-height:clamp(20px,2.4vw,28px); }
-/* MS 2026 je vysoký portrét (poměr ~1:1.9) — potřebuje víc výšky. */
+/* MS 2026 je vysoký portrét (poměr ~1:1.9) - potřebuje víc výšky. */
 .media__logo img[src*="ms-2026"]{ max-height:clamp(48px,5.6vw,66px); }
 
-/* ── Reveal — počáteční stavy (JS je rozanimuje) ───────────────── */
+/* ── Reveal - počáteční stavy (JS je rozanimuje) ───────────────── */
 .js .media__title-i{ transform:translate3d(0,110%,0); }
 .js .media__text p{ opacity:0; }
 .js .media__logo{ opacity:0; }
@@ -951,7 +951,7 @@ a{ color:inherit; text-decoration:none; }
    navigace) a dole plný CTA button. Po odscrollování ~42 % hero sjede
    zleva dovnitř (buildRail() v js/main.js) a nahrazuje mizející hero
    navigaci. Akcent = olivová (u heynesh žlutá). Jen desktop ≥ 1280 px
-   — pod tím pro ni není místo (viz posun .about__inner doprava níže).
+   - pod tím pro ni není místo (viz posun .about__inner doprava níže).
    ══════════════════════════════════════════════════════════════ */
 .rail{
   position:fixed;
@@ -972,7 +972,7 @@ a{ color:inherit; text-decoration:none; }
   height:100%;
 }
 
-/* Skleněný panel — společný styl (jako .nav-*-bg na referenci):
+/* Skleněný panel - společný styl (jako .nav-*-bg na referenci):
    teplé krémové sklo, jemný světlý obrys, malý rádius, bez stínu. */
 .rail__card{
   background:rgba(240,237,228,.68);
@@ -982,7 +982,7 @@ a{ color:inherit; text-decoration:none; }
   border-radius:8px;
 }
 
-/* Identita — jako .nav-profile na heynesh.com: logo + sociální ikony
+/* Identita - jako .nav-profile na heynesh.com: logo + sociální ikony
    v horní řádce, pod tím krátký popis. */
 .rail__id{
   display:flex; flex-direction:column; align-items:stretch;
@@ -1047,7 +1047,7 @@ a{ color:inherit; text-decoration:none; }
   color:var(--ink-soft);
 }
 
-/* Navigace — karta se roztáhne na volnou výšku lišty (jako na
+/* Navigace - karta se roztáhne na volnou výšku lišty (jako na
    referenci) a položky se rovnoměrně rozprostřou. */
 .rail__nav{
   position:relative;
@@ -1059,7 +1059,7 @@ a{ color:inherit; text-decoration:none; }
   margin-bottom:clamp(14px,1.8vw,22px);   /* odstup od pásu log dole */
 }
 /* Aktivní stav = jedna olivová „pilulka", která klouže mezi položkami
-   (JS: railNavMarker) — místo blikání pozadí u každého odkazu zvlášť. */
+   (JS: railNavMarker) - místo blikání pozadí u každého odkazu zvlášť. */
 .rail__nav-marker{
   position:absolute;
   left:0; top:0;
@@ -1108,11 +1108,11 @@ a{ color:inherit; text-decoration:none; }
 /* Bez JS drží aktivní pilulku pozadí odkazu (fallback). */
 html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 
-/* Mini pás log — jako .nav-comapny-wrap na heynesh.com. Vlastní
+/* Mini pás log - jako .nav-comapny-wrap na heynesh.com. Vlastní
    skleněný panel (jako ostatní .rail__card), aby loga byla čitelná
    i nad tmavou sekcí Fotogalerie. Maska měkkých okrajů je na vnitřní
    dráze .rail__logos-track, ať nevybledává i pozadí panelu.
-   Dekorativní (aria-hidden) — přístupný seznam značek je v Referencích. */
+   Dekorativní (aria-hidden) - přístupný seznam značek je v Referencích. */
 .rail__logos{
   margin-top:auto;            /* pás + e-mail + CTA drží u spodní hrany lišty */
   margin-bottom:36px;         /* volný pruh pod pásem pro tooltip „Kopírovat e-mail" */
@@ -1164,7 +1164,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .rail__logos-group:nth-child(2){ display:none; }
 }
 
-/* E-mail pill — klik = kopírování do schránky, na hover „tooltip"
+/* E-mail pill - klik = kopírování do schránky, na hover „tooltip"
    nad pilulkou. Chování jako .nav-email-item na heynesh.com
    (JS: railEmailCopy). */
 .rail__email{
@@ -1232,7 +1232,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .rail__email-check{ width:12px; height:12px; flex:none; display:none; }
 .rail__email-tip.is-copied .rail__email-check{ display:block; }
 
-/* CTA — hover = „roll" textu po slovech (JS: railCtaHover), stejně jako
+/* CTA - hover = „roll" textu po slovech (JS: railCtaHover), stejně jako
    [data-button-hover] na heynesh.com. Bez posunu/změny pozadí. */
 .rail__cta{
   display:flex; align-items:center; justify-content:center;
@@ -1250,7 +1250,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 .rail__cta:active{ transform:scale(.985); transition:transform var(--t-fast) var(--e-out); }
 
-/* Maska i slova mají stejnou výšku řádku (1.4) — dost místa pro čárky
+/* Maska i slova mají stejnou výšku řádku (1.4) - dost místa pro čárky
    nad velkými písmeny (NEZÁVAZNÁ), a yPercent 100 = přesně jedna
    výška masky, takže „roll" pořád lícuje. */
 .rail__cta-mask{
@@ -1268,11 +1268,11 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   will-change:transform;
 }
 
-/* Bez JS (nebo dotykově) zůstane jen text v masce — statický, čitelný */
+/* Bez JS (nebo dotykově) zůstane jen text v masce - statický, čitelný */
 .rail__cta-row--clone{ visibility:hidden; }
 .js .rail__cta-row--clone{ visibility:visible; }
 
-/* Výchozí skrytý stav — JS ji rozanimuje (autoAlpha + posun zleva) */
+/* Výchozí skrytý stav - JS ji rozanimuje (autoAlpha + posun zleva) */
 .js .rail{ opacity:0; visibility:hidden; }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1283,7 +1283,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    masky) a tečka na čáře „lupne". JS: buildServices() v main.js.
    ══════════════════════════════════════════════════════════════ */
 /* Prémiový přechod z „O mně": Portfolio je vyvýšený panel, který
-   zaoblenou horní hranou „vyjíždí" přes konec předchozí sekce —
+   zaoblenou horní hranou „vyjíždí" přes konec předchozí sekce -
    měkký stín nad hranou + světelný nádech na náběhu + olivový steh
    ve švu (dokresluje se scrollem, JS: buildServices). */
 .services{
@@ -1348,7 +1348,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   align-items:center;
   min-height:clamp(168px,23vh,240px);
 }
-/* Dlaždice služby — matné „sklo" jako .about-card na heynesh.com:
+/* Dlaždice služby - matné „sklo" jako .about-card na heynesh.com:
    krémové pozadí, jemný obrys, hluboký měkký stín, velké číslo nahoře.
    Prémiové efekty: 3D náklon za kurzorem, putující odlesk, jednorázový
    „sheen" při příchodu, rozsvícení akcentové linky. */
@@ -1390,7 +1390,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     0 18px 38px -14px rgba(28,30,23,.32);
 }
 
-/* Putující odlesk + jednorázový „sheen" — clip uvnitř skla, ať nepřetéká
+/* Putující odlesk + jednorázový „sheen" - clip uvnitř skla, ať nepřetéká
    přes akcentovou linku, která visí vně dlaždice. */
 .services__glow{
   position:absolute; inset:0;
@@ -1431,7 +1431,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .services__card > .services__title,
 .services__card > .services__desc{ position:relative; z-index:1; }
 
-/* Svislá linka podél vnější hrany dlaždice — vlevo u levých, vpravo
+/* Svislá linka podél vnější hrany dlaždice - vlevo u levých, vpravo
    u pravých. Jemná olivová, konce vyblednou; při příchodu „vyroste"
    shora, při najetí kurzorem zesílí a rozsvítí se. */
 .services__card::before{
@@ -1513,7 +1513,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.13 PORTRÉT — profilová karta pod Portfoliem
+   5.13 PORTRÉT - profilová karta pod Portfoliem
    Vanilla rekonstrukce 21st.dev/@beratberkayg "glassmorphism-profile-
    card" (React/Tailwind/shadcn), přebarvená do palety webu: béžová
    karta jako .services__card, spodní olivový „glow" pruh se štítkem,
@@ -1619,7 +1619,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 .pcard__btn svg{ width:16px; height:16px; flex:none; }
 
-/* Instagram glyph (Lucide geometrie) — decentní „nakreslení" rámečku +
+/* Instagram glyph (Lucide geometrie) - decentní „nakreslení" rámečku +
    pružný záblesk čočky při hoveru. Vše gatováno reduced-motion. */
 .pcard__btn--ig svg .ig-frame{ stroke-dasharray:1; stroke-dashoffset:0; }
 .pcard__btn--ig svg .ig-lens,
@@ -1645,7 +1645,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes ig-lens-pop{ 0%{ transform:scale(.8); } 55%{ transform:scale(1.06); } 100%{ transform:scale(1); } }
 @keyframes ig-dot-pulse{ 0%,100%{ transform:scale(1); } 40%{ transform:scale(1.65); } }
 
-/* Telefon (Lucide phone-forwarded) — při hoveru „přesměrování": šipka
+/* Telefon (Lucide phone-forwarded) - při hoveru „přesměrování": šipka
    ťukne doprava, tělo šipky se stlačí, celá ikona jemně pulzne.
    Gatováno reduced-motion, funguje i na :focus-visible. */
 .pcard__btn--tel svg{ overflow:visible; }
@@ -1671,7 +1671,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes pf-nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(3px); } }
 @keyframes pf-shaft{ 0%,100%{ transform:translateX(0) scaleX(1); } 50%{ transform:translateX(3px) scaleX(.85); } }
 
-/* Rail nav „domů" (Iconify line-md:home-md) — při hoveru / :focus-visible
+/* Rail nav „domů" (Iconify line-md:home-md) - při hoveru / :focus-visible
    se dům sekvenčně překreslí: střecha → stěny → podlaha → dveře.
    Gatováno reduced-motion. */
 .rail__nav a[href="#hero"] svg path{ stroke-dasharray:1; stroke-dashoffset:0; }
@@ -1687,7 +1687,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 @keyframes hm-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
 
-/* Rail nav „o mně" (Iconify line-md:account) — při hoveru / :focus-visible
+/* Rail nav „o mně" (Iconify line-md:account) - při hoveru / :focus-visible
    se postava sekvenčně překreslí: hlava → tělo. Gatováno reduced-motion. */
 .rail__nav a[href="#o-mne"] svg path{ stroke-dasharray:1; stroke-dashoffset:0; }
 @media (prefers-reduced-motion:no-preference){
@@ -1697,7 +1697,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .rail__nav a[href="#o-mne"]:focus-visible svg .pe-body{ animation:hm-draw .42s ease .2s both; }
 }
 
-/* Rail nav „portfolio" (Lucide layout-list) — při hoveru / :focus-visible
+/* Rail nav „portfolio" (Lucide layout-list) - při hoveru / :focus-visible
    boxy postupně lupnou, řádky se zleva „setřou" dovnitř. Gatováno
    reduced-motion. */
 .rail__nav a[href="#portfolio"] svg .ll-box,
@@ -1723,7 +1723,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes ll-pop{ 0%{ transform:scale(.85); opacity:.6; } 60%{ transform:scale(1.05); } 100%{ transform:scale(1); opacity:1; } }
 @keyframes ll-wipe{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
 
-/* Rail nav „foto" (Lucide camera) — při hoveru / :focus-visible čočka
+/* Rail nav „foto" (Lucide camera) - při hoveru / :focus-visible čočka
    „cvakne": prudce se stáhne, přeskočí přes a dosedne. Gatováno
    reduced-motion. */
 .rail__nav a[href="#foto"] svg .cam-lens{ transform-box:fill-box; transform-origin:center; }
@@ -1733,7 +1733,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 @keyframes cam-snap{ 0%{ transform:scale(1); } 30%{ transform:scale(.45); } 65%{ transform:scale(1.15); } 100%{ transform:scale(1); } }
 
-/* Rail nav „video" (Lucide video) — při hoveru / :focus-visible kamera
+/* Rail nav „video" (Lucide video) - při hoveru / :focus-visible kamera
    „panuje": nakloní se, chvíli podrží, přehoupne zpět. Gatováno
    reduced-motion. */
 .rail__nav a[href="#video"] svg .vid-cam{ transform-box:view-box; transform-origin:9px 18px; }
@@ -1743,7 +1743,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 @keyframes vid-pan{ 0%{ transform:rotate(0); } 32%{ transform:rotate(-6deg); } 50%{ transform:rotate(-6deg); } 80%{ transform:rotate(2.5deg); } 100%{ transform:rotate(0); } }
 
-/* Rail nav „reference" (Lucide message-circle-heart) — při hoveru /
+/* Rail nav „reference" (Lucide message-circle-heart) - při hoveru /
    :focus-visible bublina vyskočí a srdce uvnitř dvakrát tepne.
    Gatováno reduced-motion. */
 .rail__nav a[href="#reference"] svg .mh-bubble,
@@ -1759,7 +1759,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes mh-bubble{ 0%{ transform:scale(.3); opacity:0; } 70%{ transform:scale(1.05); opacity:1; } 100%{ transform:scale(1); opacity:1; } }
 @keyframes mh-heart{ 0%{ transform:scale(.6); opacity:0; } 30%{ transform:scale(1.22); opacity:1; } 50%{ transform:scale(1); } 72%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
 
-/* Rail nav „kontakt" (Lucide message-square-more) — při hoveru /
+/* Rail nav „kontakt" (Lucide message-square-more) - při hoveru /
    :focus-visible tři tečky „píšou": postupně 2× bliknou. Gatováno
    reduced-motion. */
 @media (prefers-reduced-motion:no-preference){
@@ -1773,7 +1773,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes msm-blink{ 0%,100%{ opacity:1; } 45%{ opacity:.12; } }
 
 /* ══════════════════════════════════════════════════════════════
-   5.14 FOTOGALERIE — „unfurling" panel + 3D parallax mřížka
+   5.14 FOTOGALERIE - „unfurling" panel + 3D parallax mřížka
    Inspirace: 3d-parallax-unfurling-gallery (21st.dev). Sekce je
    vysoká (520vh), vnitřek přišpendlený (sticky). Scroll nejdřív
    „rozbalí" tmavý zaoblený panel do celé plochy, pak odrotuje
@@ -1791,7 +1791,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   height:100svh;
   overflow:hidden;
 }
-/* „Unfurling" panel — začíná zaoblený a odsazený, scroll ho roztáhne. */
+/* „Unfurling" panel - začíná zaoblený a odsazený, scroll ho roztáhne. */
 .gallery__banner{
   position:absolute;
   top:9vh; right:5vw; bottom:9vh; left:5vw;
@@ -1809,7 +1809,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   display:flex;
   gap:clamp(14px,1.6vw,26px);
   width:124vw;
-  height:112vh;              /* nižší než obsah sloupce (4–5 fotek) → přesah ořízne pin */
+  height:112vh;              /* nižší než obsah sloupce (4-5 fotek) → přesah ořízne pin */
   transform-style:preserve-3d;
   will-change:transform;
 }
@@ -1837,7 +1837,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   transition:opacity .35s var(--e-soft), transform .5s var(--e-out);
 }
 .gallery__fig:hover img{ opacity:1; transform:scale(1.045); }
-/* Rámující ztmavení hran — jako „ambient shadow box" v předloze. */
+/* Rámující ztmavení hran - jako „ambient shadow box" v předloze. */
 .gallery__vignette{
   position:absolute; inset:0; z-index:5;
   pointer-events:none;
@@ -1847,7 +1847,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     inset 170px 0 180px -70px #141410,
     inset -170px 0 180px -70px #141410;
 }
-/* Bez JS / omezený pohyb / menší displeje — klidná 2sloupcová mřížka. */
+/* Bez JS / omezený pohyb / menší displeje - klidná 2sloupcová mřížka. */
 @media (max-width:900px), (prefers-reduced-motion:reduce){
   .gallery{ height:auto; background:#141410; padding:clamp(56px,10vh,110px) 0 clamp(64px,12vh,130px); }
   .gallery__pin{ position:static; height:auto; overflow:visible; }
@@ -1871,11 +1871,11 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .gallery__fig{ width:auto; height:auto; aspect-ratio:4/5; }
   .gallery__vignette{ display:none; }
 }
-/* i na telefonu držíme 2 sloupce — jeden sloupec = 12 fotek na celou
+/* i na telefonu držíme 2 sloupce - jeden sloupec = 12 fotek na celou
    šířku ≈ 5000 px scrollu (viz mobilní průchod, sekce 6b) */
 .gallery__fig{ cursor:pointer; }
 
-/* ── Lightbox — zvětšení fotky po kliknutí (JS: galleryLightbox). */
+/* ── Lightbox - zvětšení fotky po kliknutí (JS: galleryLightbox). */
 .lightbox{
   position:fixed; inset:0; z-index:9998;
   display:flex; align-items:center; justify-content:center;
@@ -1945,7 +1945,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.15 VIDEO PREZENTACE — tři přehrávače pod sebou
+   5.15 VIDEO PREZENTACE - tři přehrávače pod sebou
    Vzhled podle video-player komponenty (21st.dev / chetanverma16),
    přepsáno do vanilla JS (buildVideos). Tmavý „skleněný" panel
    ovládání na béžové stránce, olivový accent. Každé video má nad
@@ -2002,7 +2002,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .vplayer__video{
   display:block;
   width:100%; height:100%;
-  object-fit:cover;                 /* ořízne k obsahu — pryč s pillarboxem i „zapečenými" pruhy */
+  object-fit:cover;                 /* ořízne k obsahu - pryč s pillarboxem i „zapečenými" pruhy */
   background:var(--ink);
   cursor:pointer;
 }
@@ -2156,7 +2156,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .vplayer__speeds button{ padding:5px 5px; }
   .vplayer__left{ gap:3px; }
 }
-/* tři přehrávače v řadě jsou úzké — ovládání zkompaktnit i mimo mobil */
+/* tři přehrávače v řadě jsou úzké - ovládání zkompaktnit i mimo mobil */
 @media (min-width:721px){
   .vplayer__controls{ padding:10px 10px; }
   .vplayer__vol{ width:52px; }
@@ -2167,7 +2167,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.13b VÝZVA K AKCI — kompaktní CTA pás mezi Portrétem a Fotogalerií
+   5.13b VÝZVA K AKCI - kompaktní CTA pás mezi Portrétem a Fotogalerií
    Vychází z „CTA section" (21st.dev), přizpůsobeno paletě webu:
    vzdušný centrovaný blok, měkký olivový glow, nadpis „vyjede"
    zpod masky, tlačítko je sdílené .flow-btn (jako kontakt/patička).
@@ -2328,13 +2328,13 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .testi__badge-logo[src*="ac-sparta"]{
   height:clamp(40px,4.6vw,52px);
 }
-.testi__badge-logo[src*="playzone"]{   /* roundel + wordmark — vyšší, ať je kolečko čitelné */
+.testi__badge-logo[src*="playzone"]{   /* roundel + wordmark - vyšší, ať je kolečko čitelné */
   height:clamp(32px,3.6vw,42px);
 }
-.testi__badge-logo[src*="mongagua"]{   /* barevný znak (postava + míč) — vyšší jako čtvercové marky */
+.testi__badge-logo[src*="mongagua"]{   /* barevný znak (postava + míč) - vyšší jako čtvercové marky */
   height:clamp(38px,4.4vw,50px);
 }
-.testi__badge-logo[src*="hc-sparta"]{   /* čtvercový klubový znak — vyšší jako ostatní čtvercové marky */
+.testi__badge-logo[src*="hc-sparta"]{   /* čtvercový klubový znak - vyšší jako ostatní čtvercové marky */
   height:clamp(38px,4.4vw,50px);
 }
 .testi__quote{
@@ -2408,7 +2408,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.17 KONTAKT — formulář (contact-card, 21st.dev)
+   5.17 KONTAKT - formulář (contact-card, 21st.dev)
    Přizpůsobeno paletě webu. Ostrá karta s „+" v rozích, vlevo text
    + kontaktní údaje, vpravo formulář na jemně odlišeném podkladu.
    Bez backendu: JS sestaví mailto (fallback action="mailto:").
@@ -2502,7 +2502,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 .contact__ico svg{ width:18px; height:18px; }
 
-/* Telefon (Heroicons phone) — při hoveru / focusu na položku sluchátko
+/* Telefon (Heroicons phone) - při hoveru / focusu na položku sluchátko
    „zazvoní" (rychlý shake). Gatováno reduced-motion. */
 .contact__ico--phone svg{ transform-box:fill-box; transform-origin:center; }
 @media (prefers-reduced-motion:no-preference){
@@ -2520,7 +2520,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   100%{ transform:rotate(0); }
 }
 
-/* E-mail (Lucide mail) — při hoveru / focusu na položku se obálka
+/* E-mail (Lucide mail) - při hoveru / focusu na položku se obálka
    „otevře": chlopeň se nakreslí a ikona lehce poskočí. Gatováno
    reduced-motion. */
 .contact__ico--mail svg{ transform-box:fill-box; transform-origin:center; }
@@ -2534,7 +2534,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes mail-pop{ 0%{ transform:scale(.85); } 55%{ transform:scale(1.06); } 80%{ transform:scale(.98); } 100%{ transform:scale(1); } }
 @keyframes mail-flap{ from{ stroke-dashoffset:24; opacity:0; } to{ stroke-dashoffset:0; opacity:1; } }
 
-/* Působnost (map-marker-alt) — při hoveru / focusu na položku špendlík
+/* Působnost (map-marker-alt) - při hoveru / focusu na položku špendlík
    „dopadne" od hrotu a tečka uvnitř vyskočí. Gatováno reduced-motion. */
 .contact__ico--pin svg .pin-body{ transform-box:fill-box; transform-origin:bottom; }
 .contact__ico--pin svg .pin-dot{ transform-box:fill-box; transform-origin:center; }
@@ -2547,7 +2547,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @keyframes pin-drop{ 0%{ transform:scale(.35); } 70%{ transform:scale(1.08); } 100%{ transform:scale(1); } }
 @keyframes pin-pop{ from{ transform:scale(0); } to{ transform:scale(1); } }
 
-/* Footer Facebook (Lucide facebook) — při hoveru / :focus-visible se
+/* Footer Facebook (Lucide facebook) - při hoveru / :focus-visible se
    obrys „nakreslí" a ikona pružně poskočí. Gatováno reduced-motion. */
 .footer__social a[aria-label="Facebook"] svg{ transform-box:fill-box; transform-origin:center; overflow:visible; }
 .footer__social a[aria-label="Facebook"] svg .fb-path{ stroke-dasharray:1; stroke-dashoffset:0; }
@@ -2565,7 +2565,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 @keyframes fb-draw{ from{ stroke-dashoffset:1; } to{ stroke-dashoffset:0; } }
 
-/* Footer Instagram (Lucide instagram) — při hoveru / :focus-visible se
+/* Footer Instagram (Lucide instagram) - při hoveru / :focus-visible se
    všechny tři části obrysu naráz „nakreslí". Gatováno reduced-motion. */
 .footer__social a[aria-label="Instagram"] svg rect,
 .footer__social a[aria-label="Instagram"] svg path,
@@ -2733,7 +2733,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   transform:translate(-50%,-50%) scale(30);
 }
 
-/* Stav po odeslání — olivová výplň + fajfka + jedno „lupnutí" */
+/* Stav po odeslání - olivová výplň + fajfka + jedno „lupnutí" */
 .flow-btn__check{
   position:relative; z-index:1;
   width:15px; height:15px;
@@ -2754,7 +2754,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   100% { box-shadow:0 0 0 16px rgba(79,93,58,0); }
 }
 
-/* Stav odesílání — tlumené tlačítko, pravá šipka jemně „dýchá" dál */
+/* Stav odesílání - tlumené tlačítko, pravá šipka jemně „dýchá" dál */
 .flow-btn.is-loading{
   pointer-events:none;
   opacity:.7;
@@ -2818,7 +2818,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5.18 PATIČKA — footer-section (21st.dev), tmavá, 4 sloupce
+   5.18 PATIČKA - footer-section (21st.dev), tmavá, 4 sloupce
    ══════════════════════════════════════════════════════════════ */
 .footer{
   position:relative;
@@ -2985,10 +2985,10 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .rail{ display:block; }
 
   /* Jakmile je lišta na scéně, rezervujeme jí vlevo místo. Šířka lišty
-     (clamp 190–240) + její odsazení (clamp 14–22) + pohodlná mezera. */
+     (clamp 190-240) + její odsazení (clamp 14-22) + pohodlná mezera. */
   :root{ --rail-space:clamp(292px,21vw,322px); }
 
-  /* O mně + Média + Portfolio + portrét + video + výzva + reference — obsah začíná za lištou */
+  /* O mně + Média + Portfolio + portrét + video + výzva + reference - obsah začíná za lištou */
   .about__inner,
   .media__inner,
   .services__inner,
@@ -3003,10 +3003,10 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   }
 
   /* Obří číslo v Referencích bleeduje jen za levý okraj OBSAHU, ne přes
-     lištu — jinak by se schovávalo za panely lišty. */
+     lištu - jinak by se schovávalo za panely lišty. */
   .testi__index{ left:calc(var(--rail-space) - clamp(10px,1.4vw,22px)); }
 
-  /* Pás log — vlevo přisvícený úsek pod lištou schová maska;
+  /* Pás log - vlevo přisvícený úsek pod lištou schová maska;
      první plné logo je až za --rail-space. Vpravo pás dál „vytéká". */
   .brands__marquee{
     --brands-mask-l:calc(var(--rail-space) - 12px);
@@ -3035,7 +3035,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    (značka + CTA + menu), obří wordmark za fotkou, fotka přes celou
    plochu, karty plovou přes fotku (vlastnosti vlevo, „8+" vpravo),
    headline dole přes fotku, karta „150+" vlevo dole. Vše absolutně
-   v jedné obrazovce — žádné skládání pod sebe. */
+   v jedné obrazovce - žádné skládání pod sebe. */
 @media (max-width:980px){
   .hero{ height:auto; }
   .hero__sticky{
@@ -3049,7 +3049,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   }
   .hero__aurora{ filter:blur(34px); animation-duration:30s; }
 
-  /* Fotka — plná vrstva pod obsahem */
+  /* Fotka - plná vrstva pod obsahem */
   .hero__photo-layer{
     position:absolute;
     left:0; right:0;
@@ -3076,7 +3076,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .hero__top{ position:static; display:block; }
   .hero__nav{ display:none; }
   .hero__brand{ display:contents; }   /* wrapper nesmí rozbít absolutní pozici wordmarku */
-  /* „FILIP" — stejný holý text jako na desktopu (žádná bublina),
+  /* „FILIP" - stejný holý text jako na desktopu (žádná bublina),
      jen samostatně pozicovaný v úrovni horní lišty (na desktopu sedí
      v běžném toku přímo nad wordmarkem, na mobilu wordmark i lišta
      jedou na position:absolute, takže potřebuje vlastní souřadnice). */
@@ -3116,7 +3116,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .hero__bar-menu svg{ width:17px; height:17px; }
 
   /* Wordmark za fotkou (jen horní část vykoukne). Sjednoceno
-     s desktopem (viz @media min-width:981px výš) — stejný poměr
+     s desktopem (viz @media min-width:981px výš) - stejný poměr
      prostoru pro háček (.205×wm-size) i line-height:1 místo starého
      .76, ať je krok písma na mobilu i desktopu vizuálně stejný,
      jen o kousek výš, ať to působí sevřeněji/prémiověji. */
@@ -3130,7 +3130,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     padding-top:calc(var(--wm-size, 25vw) * .205);
   }
 
-  /* Plovoucí karty — děti pozicujeme samostatně, wrappery rozpustíme */
+  /* Plovoucí karty - děti pozicujeme samostatně, wrappery rozpustíme */
   .hero__cards{ position:static; display:block; margin:0; inset:auto; }
   .cards-left{ display:contents; }
 
@@ -3138,11 +3138,11 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
      jednosloupcová traits karta + menší stat karta, mírně posazené
      do schodů. Na heynesh.com jsou vedle sebe vlevo/vpravo, ale
      Filipova fotka má obličej posazený jinak (víc doleva/doprostřed)
-     — vlevo by traits karta zajela přes oči. Obě karty proto zůstávají
+     - vlevo by traits karta zajela přes oči. Obě karty proto zůstávají
      na pravé straně, kde je fotka bez obličeje i bez gestikulující
      ruky (viz .card--tall komentář výš v souboru), jen naskládané
      schodovitě pod sebou stejně jako v referenci. */
-  /* Posazená těsně nad traits kartu (níž, viz .card--traits) —
+  /* Posazená těsně nad traits kartu (níž, viz .card--traits) -
      spodek cca 0,5cm (19px) nad jejím vrškem; -64px ≈ vlastní
      výška téhle karty. */
   .card--tall{
@@ -3155,7 +3155,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     padding:clamp(11px,3vw,15px);
   }
 
-  /* Traits karta samostatně, v úrovni srdce postavy — pod rameny,
+  /* Traits karta samostatně, v úrovni srdce postavy - pod rameny,
      nad headline blokem, mimo obličej i gestikulující ruku. */
   .card--traits{
     position:absolute;
@@ -3265,9 +3265,9 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 @media (min-width:981px){ .mnav{ display:none; } }
 
 /* ── Telefony ─────────────────────────────────────────────────────
-   Tablet (721–980px) má na delší popisný odstavec dost místa a
+   Tablet (721-980px) má na delší popisný odstavec dost místa a
    zůstává beze změny. Na užším telefonu by ale 5 řádků textu hned
-   pod CTA jen oddalovalo fotku a přidávalo skenování navíc — hero
+   pod CTA jen oddalovalo fotku a přidávalo skenování navíc - hero
    má zůstat úderný. Krátký podpis (.hero__kicker) zůstává, nese tu
    samou informaci v jedné větě. */
 @media (max-width:720px){
@@ -3300,7 +3300,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .about__title{ font-size:clamp(1.55rem,6vw,2.3rem); max-width:none; }
   .about__text{ max-width:60ch; }
 
-  /* Média: jednosloupcově — text nad panelem log */
+  /* Média: jednosloupcově - text nad panelem log */
   .media__inner{ grid-template-columns:1fr; gap:clamp(28px,7vw,40px); }
   .media__title{ font-size:clamp(1.45rem,6vw,2.2rem); max-width:none; }
   .media__text{ max-width:60ch; }
@@ -3341,7 +3341,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 }
 
 /* ── Landscape na nízkých displejích ──────────────────────────── */
-/* Nad 980px se hero pořád připíná (position:sticky, 100svh) — na nízkém
+/* Nad 980px se hero pořád připíná (position:sticky, 100svh) - na nízkém
    displeji na šířku by karty ukously moc místa. Pod 980px content plyne
    přirozeně (viz blok výše), takže tam žádný zásah není potřeba. */
 @media (max-height:560px) and (min-width:981px){
@@ -3358,7 +3358,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
    ══════════════════════════════════════════════════════════════ */
 @media (max-width:600px){
 
-  /* Svislé mezery sekcí — clamp(…13vh…) přidával ~200 px mrtvého
+  /* Svislé mezery sekcí - clamp(…13vh…) přidával ~200 px mrtvého
      scrollu mezi každou dvojicí sekcí. */
   .brands  { padding-top:clamp(44px,8vh,66px);  padding-bottom:clamp(44px,8vh,66px); }
   .about   { padding-top:clamp(52px,9vh,78px);  padding-bottom:clamp(52px,9vh,78px); }
@@ -3381,17 +3381,17 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
   .testi__index   { display:none; }                /* obří vybledlé číslo, teklo z okraje */
   .contact__plus  { display:none; }                /* rohové „+" značky karty */
   .footer__glow   { display:none; }                /* 4× rozmazaný olivový blob */
-  .services__card { transform:none; }              /* zbytek perspektivy — na dotyku se nehýbe */
+  .services__card { transform:none; }              /* zbytek perspektivy - na dotyku se nehýbe */
   .vplayer__speeds{ display:none; }                /* fiddly rychlosti; zůstává play/pauza + scrub + mute */
   .vplayer__vol   { display:none; }
 
-  /* Portfolio — menší olivové číslo, těsnější karty. */
+  /* Portfolio - menší olivové číslo, těsnější karty. */
   .services__num  { font-size:clamp(1.35rem,7vw,1.85rem); }
   .services__item { padding:clamp(15px,3.4vw,22px) 0; }
   .services__item:nth-of-type(odd) .services__card,
   .services__item:nth-of-type(even) .services__card{ padding:clamp(16px,4vw,22px); }
 
-  /* Fotogalerie — 2 sloupce i na telefonu. */
+  /* Fotogalerie - 2 sloupce i na telefonu. */
   .gallery__matrix{ grid-template-columns:repeat(2,1fr); }
   .gallery{ padding-top:clamp(44px,8vh,64px); padding-bottom:clamp(52px,9vh,72px); }
 
@@ -3424,20 +3424,20 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
     box-shadow:0 14px 34px -18px rgba(28,30,23,.42);
   }
 
-  /* Patička — 4 sloupce pod sebou; těsnější rozestupy. */
+  /* Patička - 4 sloupce pod sebou; těsnější rozestupy. */
   .footer__grid{ gap:clamp(20px,4vw,28px); }
   .footer__links a{ padding:4px 0; }
   /* Cíl dotyku: e-mail/telefon v patičce byly ~15 px vysoké řádky. */
   .footer__addr a{ display:inline-block; padding:3px 0; }
 }
 
-/* Nejužší telefony — akční tlačítka karty pod sebou (2 sloupce se lámaly). */
+/* Nejužší telefony - akční tlačítka karty pod sebou (2 sloupce se lámaly). */
 @media (max-width:360px){
   .pcard__actions{ grid-template-columns:1fr; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   7.x MIKROINTERAKCE — ruční detaily „za víc peněz"
+   7.x MIKROINTERAKCE - ruční detaily „za víc peněz"
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Počítadla čísel: než JS naběhne, ať neblikne 0 (drží finální
@@ -3445,7 +3445,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .stat-count[data-counting]{ font-variant-numeric:tabular-nums; }
 
 /* ══════════════════════════════════════════════════════════════
-   6. PRÁVNÍ STRÁNKA (GDPR) — samostatné .html, jen typografie
+   6. PRÁVNÍ STRÁNKA (GDPR) - samostatné .html, jen typografie
    ══════════════════════════════════════════════════════════════ */
 .legal__top{
   max-width:760px;
@@ -3573,7 +3573,7 @@ html:not(.js) .rail__nav a.is-active{ background:var(--olive); }
 .notfound__btn:hover{ background:var(--olive-dk); }
 
 /* ══════════════════════════════════════════════════════════════
-   8. Přístupnost — omezený pohyb
+   8. Přístupnost - omezený pohyb
    ══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }

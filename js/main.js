@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   Filip Lejček — hero motion
+   Filip Lejček - hero motion
    GSAP 3.13 + ScrollTrigger
    Zásady: animujeme jen transform/opacity, respektujeme
    prefers-reduced-motion, scroll choreografie jen na desktopu.
@@ -44,7 +44,7 @@
       var avail = wm.clientWidth;
       var size = ((avail / natural) * REF).toFixed(2) + 'px';
       wm.style.setProperty('--wm-size', size);
-      /* i na wrapper — aby ho zdědilo malé „FILIP" (.hero__brand-pre)
+      /* i na wrapper - aby ho zdědilo malé „FILIP" (.hero__brand-pre)
          a mohlo se opticky zarovnat na levý tah „L" */
       if (wm.parentElement) wm.parentElement.style.setProperty('--wm-size', size);
     }
@@ -57,11 +57,11 @@
   var cards    = document.querySelectorAll('[data-card]');
 
   /* Maskované řádky sázíme přes yPercent i v JS.
-     CSS drží translate3d(0,110%,0) jen kvůli prvnímu vykreslení — GSAP by ho
+     CSS drží translate3d(0,110%,0) jen kvůli prvnímu vykreslení - GSAP by ho
      načetl jako pixelové „y“ a tween na yPercent by pak neměl co animovat. */
   gsap.set('.wordmark__l',      { yPercent: 110, y: 0 });
   gsap.set('.ln__i',            { yPercent: 110, y: 0 });
-  gsap.set('.hero__brand-pre__i', { yPercent: -105, y: 0 });   /* svislý štítek „FILIP" — sjede shora */
+  gsap.set('.hero__brand-pre__i', { yPercent: -105, y: 0 });   /* svislý štítek „FILIP" - sjede shora */
 
   gsap.set(photo,    { opacity: 0, scale: 1.06, transformOrigin: '50% 90%' });
   gsap.set(navItems, { opacity: 0, y: 12 });
@@ -118,13 +118,13 @@
 
     mm.add('(min-width: 981px) and (prefers-reduced-motion: no-preference)', function () {
 
-      /* 5.1 — navigace v hero mizí jako první */
+      /* 5.1 - navigace v hero mizí jako první */
       gsap.to('.hero__nav', {
         autoAlpha: 0, y: 10, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '7% top', scrub: true }
       });
 
-      /* 5.2 — karty odletí do stran a zmenší se */
+      /* 5.2 - karty odletí do stran a zmenší se */
       gsap.to('.cards-left', {
         scale: .34, autoAlpha: 0, xPercent: -26, yPercent: -18, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: '2% top', end: '20% top', scrub: true }
@@ -134,21 +134,21 @@
         scrollTrigger: { trigger: '.hero', start: '2% top', end: '20% top', scrub: true }
       });
 
-      /* 5.3 — spodní texty vyjedou nahoru pod masku */
+      /* 5.3 - spodní texty vyjedou nahoru pod masku */
       gsap.to('.hero__bottom .ln__i', {
         yPercent: -115, ease: 'none', stagger: .015,
         scrollTrigger: { trigger: '.hero', start: '3% top', end: '13% top', scrub: true }
       });
 
-      /* 5.4 — headline a CTA odplují */
+      /* 5.4 - headline a CTA odplují */
       gsap.to('.hero__center', {
         autoAlpha: 0, y: -54, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: '7% top', end: '26% top', scrub: true }
       });
 
-      /* 5.5 — fotka: jemný parallax + ztmavení
+      /* 5.5 - fotka: jemný parallax + ztmavení
          Pozor: procenta v ScrollTrigger se počítají z výšky triggeru (200svh),
-         ale odscrollovat lze jen 100svh. Použitelné je tedy jen pásmo 0–50 %. */
+         ale odscrollovat lze jen 100svh. Použitelné je tedy jen pásmo 0-50 %. */
       gsap.to('.hero__photo', {
         scale: 1.09, yPercent: 3, opacity: .16, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '46% top', scrub: .4 }
@@ -158,7 +158,7 @@
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '46% top', scrub: .4 }
       });
 
-      /* 5.6 — obří značka + malý štítek „FILIP" zmizí, jakmile hero odscrollujeme.
+      /* 5.6 - obří značka + malý štítek „FILIP" zmizí, jakmile hero odscrollujeme.
          Štítek jen fade (bez scale), ať mu zůstane CSS transform (posun na háček). */
       var wmTween = gsap.to(wm, {
         autoAlpha: 0, scale: .92, ease: 'none',
@@ -179,7 +179,7 @@
       };
     });
 
-    /* Mobil / omezený pohyb — obsah je staticky na místě */
+    /* Mobil / omezený pohyb - obsah je staticky na místě */
     mm.add('(max-width: 980px), (prefers-reduced-motion: reduce)', function () {
       gsap.set('.hero__bottom .ln__i', { yPercent: 0 });
     });
@@ -270,7 +270,7 @@
     };
   }
 
-  /* ══ 7b. Reference — decentní nafade pásu při vjezdu do viewportu ══
+  /* ══ 7b. Reference - decentní nafade pásu při vjezdu do viewportu ══
      Marquee samotný jede v CSS; tady jen řízený nástup opacity. */
   function buildBrands() {
     var sec = document.querySelector('.brands');
@@ -297,11 +297,11 @@
     });
   }
 
-  /* ══ 7c. O mně — reveal + prémiový parallax fotek ═════════════════
+  /* ══ 7c. O mně - reveal + prémiový parallax fotek ═════════════════
      Reveal: fotky vyjedou zpod masky (protipohyb picture/img), nadpis
      zpod masky, odstavce se staggerem.
      Parallax: obě fotky se při scrollu posouvají různou rychlostí
-     (hloubka) a na desktopu reagují 3D náklonem na pohyb myši —
+     (hloubka) a na desktopu reagují 3D náklonem na pohyb myši -
      menší „plovoucí" fotka výrazněji. */
   function buildAbout() {
     var sec = document.querySelector('.about');
@@ -347,7 +347,7 @@
       }
     });
 
-    /* Scroll parallax — obě fotky, opačná „hloubka".
+    /* Scroll parallax - obě fotky, opačná „hloubka".
        Jen desktop: ≤ 900 px je .about__media stejně zploštělé
        (bez překryvu/perspektivy), scrub by byl jen zbytečná zátěž. */
     if (window.matchMedia('(min-width: 901px)').matches) {
@@ -384,7 +384,7 @@
     }
   }
 
-  /* ══ 7c2. Média — reveal bloku „sportovní komentátor Nova Sport" ══
+  /* ══ 7c2. Média - reveal bloku „sportovní komentátor Nova Sport" ══
      Nadpis zpod masky → odstavce → loga (pružné „rozdání karet"),
      staggered. Loga navíc magneticky reagují na myš (mediaMagnetic).
      Fallback (!ST || reduce) nechá vše viditelné. */
@@ -422,7 +422,7 @@
     mediaMagnetic(logos);
   }
 
-  /* Magnetická interakce log — každé logo jemně jede za kurzorem v rámci
+  /* Magnetická interakce log - každé logo jemně jede za kurzorem v rámci
      své buňky (±~7 px), pružný návrat po opuštění. Jen desktop s myší,
      mimo reduce-motion. Posouvá .media__logo (obal), CSS hover zvedá <img>. */
   function mediaMagnetic(logos) {
@@ -442,7 +442,7 @@
     });
   }
 
-  /* ══ CTA v liště — „roll" textu po slovech (stejně jako [data-button-hover]
+  /* ══ CTA v liště - „roll" textu po slovech (stejně jako [data-button-hover]
      na heynesh.com). Text se rozdělí na slova ve dvou vrstvách v masce;
      na mouseenter původní řádek vyjede nahoru (-100 %) a klon nahoru
      zespodu (100 % → 0), po slovech se staggerem. Každý hover směr střídá,
@@ -494,7 +494,7 @@
     });
   }
 
-  /* ══ E-mail pill v liště — klik = kopírování, hover = tooltip.
+  /* ══ E-mail pill v liště - klik = kopírování, hover = tooltip.
      Chování jako .nav-email-item na heynesh.com (Clipboard modul):
      mouseenter → tooltip in; mouseleave → out + reset; click →
      navigator.clipboard.writeText, text „Zkopírováno", pop checku
@@ -560,7 +560,7 @@
     pill.addEventListener('click', copy);
   }
 
-  /* ══ 7d. Levá lišta — nástup po hero + aktivní sekce ═══════════
+  /* ══ 7d. Levá lišta - nástup po hero + aktivní sekce ═══════════
      Lišta je v CSS skrytá (autoAlpha 0). Jakmile scroll překročí
      ~42 % hero sekce, sjede zleva dovnitř; návrat nahoru ji schová.
      Odkazy dostávají .is-active podle sekce právě ve viewportu. */
@@ -628,7 +628,7 @@
     }
   }
 
-  /* ══ 7e. Portfolio služeb — prémiový reveal + 3D náklon ═════════
+  /* ══ 7e. Portfolio služeb - prémiový reveal + 3D náklon ═════════
      Hlavička vyjede zpod masky. Každá dlaždice při příchodu naskočí
      (fade + posun + mikro-rotace ke středu), číslo vyjede zpod masky,
      nadpis zpod masky, popis doskáče; přes sklo přeletí „sheen" a
@@ -742,9 +742,9 @@
     });
   }
 
-  /* ══ 7f. Portrét pod Portfoliem — profilová karta (glassmorphism) ══
+  /* ══ 7f. Portrét pod Portfoliem - profilová karta (glassmorphism) ══
      Vanilla náhrada za 21st.dev/@beratberkayg "glassmorphism-profile-
-     card" (React/Tailwind/shadcn) — tenhle web běží bez build kroku,
+     card" (React/Tailwind/shadcn) - tenhle web běží bez build kroku,
      takže reveal je přepsaný do prostého GSAP + DOM. */
   function buildPortrait() {
     var sec = document.querySelector('.portrait');
@@ -765,12 +765,12 @@
     }
   }
 
-  /* ══ 7g. Fotogalerie — „unfurling" panel + 3D parallax mřížka ═══
+  /* ══ 7g. Fotogalerie - „unfurling" panel + 3D parallax mřížka ═══
      Podle 3d-parallax-unfurling-gallery (21st.dev), přepsáno do GSAP:
      scroll nejdřív rozbalí tmavý zaoblený panel na celou plochu
      (0 → 15 %), pak odrotuje 3D mřížku fotek do skoro roviny a
      rozjede 4 sloupce různou rychlostí (15 → 100 %).
-     Jen desktop (≥ 901 px) mimo reduce-motion — jinak klidná mřížka. */
+     Jen desktop (≥ 901 px) mimo reduce-motion - jinak klidná mřížka. */
   function buildGallery() {
     var sec = document.querySelector('.gallery');
     if (!sec) return;
@@ -783,7 +783,7 @@
 
     if (!ST || reduce || !desktop) return;
 
-    /* Bez klonování — každá fotka jednou. Sloupce (4–5 fotek) jsou vyšší
+    /* Bez klonování - každá fotka jednou. Sloupce (4-5 fotek) jsou vyšší
        než mřížka (.gallery__matrix height), přesah ořízne .gallery__pin;
        paralaxa je proto malá, aby se nikde neukázala mezera. */
 
@@ -824,7 +824,7 @@
     });
   }
 
-  /* ══ 7h. Lightbox — po kliknutí na fotku v galerii se zvětší ════
+  /* ══ 7h. Lightbox - po kliknutí na fotku v galerii se zvětší ════
      Sestaví se unikátní seznam fotek (klony v mřížce ignoruje),
      overlay s tmavým pozadím, obrázek naskočí ze scale .92; šipky
      + klávesy ←/→ listují, Esc / klik mimo / křížek zavře. */
@@ -941,10 +941,10 @@
     });
   }
 
-  /* ══ 7i. Video prezentace — tři přehrávače pod sebou ═══════════
+  /* ══ 7i. Video prezentace - tři přehrávače pod sebou ═══════════
      Vzhled dle video-player (21st.dev / chetanverma16), přepsáno do
      vanilla JS: play/pauza (klik na video i tlačítko), scrub lišta,
-     hlasitost + mute, rychlosti 0,5–2×. Ovládání se ukazuje při
+     hlasitost + mute, rychlosti 0,5-2×. Ovládání se ukazuje při
      najetí / při pauze / při fokusu. Spustí-li se jedno video,
      ostatní se pauznou. Číslo + přehrávač naběhnou při scrollu. */
   function clampPct(n) { return Math.min(100, Math.max(0, n)); }
@@ -1075,7 +1075,7 @@
     });
   }
 
-  /* ══ 7i2. Výzva k akci — reveal CTA pásu (mezi Portrétem a Fotogalerií) ══ */
+  /* ══ 7i2. Výzva k akci - reveal CTA pásu (mezi Portrétem a Fotogalerií) ══ */
   function buildCta() {
     var sec = document.querySelector('.cta');
     if (!sec) return;
@@ -1108,7 +1108,7 @@
     });
   }
 
-  /* ══ 7j. Reference — kolotoč jedné recenze ════════════════════
+  /* ══ 7j. Reference - kolotoč jedné recenze ════════════════════
      Podle design-testimonial (21st.dev), přepsáno do vanilla JS:
      jedna recenze naráz, auto-přepínání po 6 s + kruhová navigace.
      Obří číslo bleeduje vlevo (parallax na myš, blur-in přechod),
@@ -1246,7 +1246,7 @@
       stage.addEventListener('pointerleave', function () { qx(0); qy(0); });
     }
 
-    /* Výchozí stav — blockquote je vidět (opacity 1), skrytá jsou jen
+    /* Výchozí stav - blockquote je vidět (opacity 1), skrytá jsou jen
        jednotlivá slova; badge/autor naběhnou jako celek. */
     paintStatic();
     gsap.set([sec.querySelector('.testi__badge'), sec.querySelector('.testi__author')], { opacity: 0 });
@@ -1275,7 +1275,7 @@
     });
   }
 
-  /* ══ 7k. Kontakt — formulář (contact-card) + prémiové mikrointerakce
+  /* ══ 7k. Kontakt - formulář (contact-card) + prémiové mikrointerakce
      Bez backendu: validace + sestavení mailto odkazu, honeypot.
      Reveal: karta nabíhá, „+" rohy „lupnou" z rotace, nadpis zpod
      masky, kontaktní čipy popnou, pole se staggerem. Interakce:
@@ -1342,14 +1342,14 @@
       if (sending) return;
       sending = true;
 
-      var subject = 'Poptávka moderování — ' + nameEl.value.trim();
+      var subject = 'Poptávka moderování - ' + nameEl.value.trim();
       var payload = {
         '_email.subject': subject,
         '_email.replyto': mailEl.value.trim(),
         _gotcha: '',
         'Jméno': nameEl.value.trim(),
         'E-mail': mailEl.value.trim(),
-        'Telefon': phoneEl.value.trim() || '—',
+        'Telefon': phoneEl.value.trim() || '-',
         'Zpráva': msgEl.value.trim()
       };
 
@@ -1377,7 +1377,7 @@
       .then(function (res) {
         if (!res.ok) throw new Error('formspark');
 
-        setNote('Děkuji, zpráva byla odeslána — ozvu se zpravidla do jednoho pracovního dne.', 'is-ok');
+        setNote('Děkuji, zpráva byla odeslána - ozvu se zpravidla do jednoho pracovního dne.', 'is-ok');
         form.reset();
         [nameEl, mailEl, phoneEl, msgEl].forEach(function (el) { mark(el, false); });
 
@@ -1392,7 +1392,7 @@
         }, 3200);
       })
       .catch(function () {
-        setNote('Automatické odeslání se nezdařilo — otevírám váš e-mailový klient.', 'is-err');
+        setNote('Automatické odeslání se nezdařilo - otevírám váš e-mailový klient.', 'is-err');
         fallbackMailto();
       })
       .then(finish);
@@ -1436,7 +1436,7 @@
     });
   }
 
-  /* ══ 7l. Patička — footer-section ════════════════════════════
+  /* ══ 7l. Patička - footer-section ════════════════════════════
      4 sloupce (sekce, kontakt, sociální sítě) + rychlý e-mail →
      mailto. Rok se dopočítá. Sloupce naběhnou při vjezdu. */
   function buildFooter() {
@@ -1577,7 +1577,7 @@
     window.addEventListener('load', init);
   }
 
-  /* ══ 8. Resize — přeměření značky a scroll triggerů ═════════════ */
+  /* ══ 8. Resize - přeměření značky a scroll triggerů ═════════════ */
   var rt;
   var lastW = window.innerWidth;
   window.addEventListener('resize', function () {
